@@ -1,0 +1,16 @@
+{
+    "id": "{0D86E724-D3DB-5685-03CE-DDD6B981F39B}",
+    "name": "SwitchBot Konfigurator",
+    "type": 4,
+    "vendor": "Switchbot",
+    "aliases": [],
+    "parentRequirements": [
+        "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}"
+    ],
+    "childRequirements": [],
+    "implemented": [
+        "{96111B9D-5260-8CFD-A2C4-5393BFFA1EB5}"
+    ],
+    "prefix": "SWB",
+    "url": "https://www.switch-bot.com/"
+}

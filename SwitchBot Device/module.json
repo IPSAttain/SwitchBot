@@ -1,0 +1,16 @@
+{
+    "id": "{074E9906-6BB5-E403-3987-2C7E11EAF46C}",
+    "name": "SwitchBot Device",
+    "type": 3,
+    "vendor": "Switchbot",
+    "aliases": [],
+    "parentRequirements": [
+        "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}"
+    ],
+    "childRequirements": [],
+    "implemented": [
+        "{96111B9D-5260-8CFD-A2C4-5393BFFA1EB4}"
+    ],
+    "prefix": "SWB",
+    "url": "https://www.switch-bot.com/"
+}

@@ -1,0 +1,28 @@
+{
+    "elements": [],
+    "actions": [
+        {
+            "type": "Configurator",
+            "name": "Configuration",
+            "delete": true,
+            "columns": [
+                {
+                    "caption": "Name",
+                    "name": "deviceName",
+                    "width": "20%"
+                },
+                {
+                    "caption": "Type",
+                    "name": "deviceType",
+                    "width": "20%"
+                },                {
+                    "caption": "ID",
+                    "name": "deviceID",
+                    "width": "auto"
+                }
+            ],
+            "values": []
+        }
+	],
+    "status": []
+}

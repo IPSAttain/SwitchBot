@@ -1,0 +1,17 @@
+{
+    "id": "{652A1EF5-9461-A361-8D30-80A4DD532931}",
+    "name": "SwitchBot Splitter",
+    "type": 2,
+    "vendor": "Switchbot",
+    "aliases": [],
+    "parentRequirements": [],
+    "childRequirements": [
+        "{96111B9D-5260-8CFD-A2C4-5393BFFA1EB4}",
+        "{96111B9D-5260-8CFD-A2C4-5393BFFA1EB5}"
+    ],
+    "implemented": [
+        "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}"
+    ],
+    "prefix": "SWB",
+    "url": "https://www.switch-bot.com/"
+}

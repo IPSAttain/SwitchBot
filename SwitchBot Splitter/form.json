@@ -1,0 +1,25 @@
+{
+    "elements": [
+        {
+            "type": "ValidationTextBox",
+            "name": "Token",
+            "caption": "Switchbot Token",
+            "enabled": true 
+        },
+        { 
+            "name": "Refresh", 
+            "type": "NumberSpinner", 
+            "caption": "Update interval", 
+            "minimum":0, 
+            "suffix": "Minutes"
+        }
+    ],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "Update",
+            "onClick": "SWB_UpdateData($id);"
+        }
+    ],
+    "status": []
+}

@@ -1,0 +1,12 @@
+{
+    "id": "{E32341E9-91C9-973D-E3C6-89690E861A7E}",
+    "name": "Switchbot",
+    "author": "Attain",
+    "url": "https://www.switch-bot.com/",
+    "compatibility": {
+        "version": "6.0"
+    },
+    "version": "1.0",
+    "build": 0,
+    "date": 0
+}
