@@ -39,7 +39,7 @@ declare(strict_types=1);
 			switch ($this->ReadPropertyString('deviceType'))
 			{
 				case 'Bot':
-					$form = json_decode(file_get_contents(__DIR__ . 'libs/formBotDevice.json'), true);
+					$form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
 					break;
 
 				default :
