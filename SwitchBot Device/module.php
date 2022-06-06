@@ -34,6 +34,21 @@ declare(strict_types=1);
 
 		}
 
+		public function GetConfigurationForm() 
+		{
+			switch ($this->ReadPropertyString('deviceType'))
+			{
+				case 'Bot':
+					$form = json_decode(file_get_contents(__DIR__ . 'libs/formBotDevice.json'), true);
+					break;
+
+				default :
+				$form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+			}
+			//$this->SendDebug("Elements", json_encode($Values), 0);
+			return json_encode($form);
+		}
+
 		public function ReceiveData($JSONString)
 		{
 			$data = json_decode($JSONString);
