@@ -84,7 +84,8 @@ declare(strict_types=1);
 					$success = $return['message'];
 					if ($success == 'success') {
 						if (!$pressMode) {
-							$return = $this->GetDeviceStatus();
+							$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
+							$return = $this->Send_to_Parent($data = json_encode($data));
 							$return = json_decode($return,true);
 							$state = $return['body']['power'];
 							if ($state == 'on') $this->SetValue($Ident,true);
@@ -101,12 +102,6 @@ declare(strict_types=1);
 				$this->SetValue($Ident,$Value);
 				}
 			return $return;
-		}
-
-		public function GetDeviceStatus()
-		{
-			$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
-			$return = $this->Send_to_Parent($data = json_encode($data));
 		}
 
 		protected function Send_to_Parent($Buffer)
