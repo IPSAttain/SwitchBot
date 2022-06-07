@@ -149,7 +149,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 			$data = array(
 				'action' => 'setupWebhook',
 				'url' => $webHookurl,
-				'devicelist' => 'ALL'
+				'deviceList' => 'ALL'
 			);
 			$data = json_encode($data);
 			$this->SendDebug(__FUNCTION__, "API data " . $data , 0);
