@@ -30,6 +30,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 					$this->SendDebug(__FUNCTION__, "WebHook URL " . $webhook_url , 0);
 					$return = $this->SetWebHook($webhook_url);
 					$this->SendDebug(__FUNCTION__, "WebHook response " . $return , 0);
+					$return = json_decode($return,true);
 				}
 				$this->SetStatus(IS_ACTIVE);
 			} else {
@@ -41,9 +42,8 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 		public function ForwardData($JSONString)
 		{
 			$data = json_decode($JSONString,true);
-			//$this->LogMessage(__FUNCTION__. utf8_decode($data->Buffer) , 10206);
 			$data = preg_split('/\n|\r\n?/', $data['Buffer']);
-			//$this->LogMessage(__FUNCTION__. print_r($data) , 10206) ;
+			$this->SendDebug(__FUNCTION__, $data , 0);
 			$returndata = "";
 			switch ($data[0])
 			{
