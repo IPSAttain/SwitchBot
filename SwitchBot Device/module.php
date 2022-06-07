@@ -84,7 +84,7 @@ declare(strict_types=1);
 					$success = $return['message'];
 					if ($success == 'success') {
 						if (!$pressMode) {
-							$return = $this->GetDeviceStatus;
+							$return = $this->GetDeviceStatus();
 							$return = json_decode($return,true);
 							$state = $return['body']['power'];
 							if ($state == 'on') $this->SetValue($Ident,true);
