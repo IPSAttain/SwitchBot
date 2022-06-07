@@ -10,7 +10,6 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 			parent::Create();
 
 			$this->RegisterPropertyString("Token", "");
-			//$this->RegisterTimer("Update", 300000, "SWB_UpdateData($this->InstanceID);");
 			$this->RegisterPropertyInteger("Refresh",5);
 		}
 
@@ -32,20 +31,12 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 					$return = $this->SetWebHook($webhook_url);
 					$this->SendDebug(__FUNCTION__, "WebHook response " . $return , 0);
 				}
-				//$this->SetTimerInterval("Update", $this->ReadPropertyInteger("Refresh")*60000);
 				$this->SetStatus(IS_ACTIVE);
 			} else {
 				$this->SetStatus(IS_INACTIVE);
 			}
 		}
 
-		public function UpdateData()
-		{
-			$this->SendDebug(__FUNCTION__, "Data Update requested " , 0);
-			$SwitchBotData = $this->GetDevices();
-			$this->SendDebug(__FUNCTION__, print_r($SwitchBotData,true) , 0);
-			$this->SendDataToChildren(json_encode(Array("DataID" => "{96111B9D-5260-8CFD-A2C4-5393BFFA1EB5}", "Buffer" => $SwitchBotData)));
-		}
 
 		public function ForwardData($JSONString)
 		{
