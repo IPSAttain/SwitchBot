@@ -69,13 +69,13 @@ declare(strict_types=1);
 					}
 					else 
 					{
-						If ($this->GetValue($Ident)) 
+						If ($Value) 
 						{
-							$data['command'] = 'turnOff';
+							$data['command'] = 'turnOn';
 						}
 						else 
 						{
-							$data['command'] = 'turnOn'; 
+							$data['command'] = 'turnOff'; 
 						}
 					}
 					$this->SendDebug(__FUNCTION__,$data['command'],0);
