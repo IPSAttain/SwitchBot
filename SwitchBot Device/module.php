@@ -55,13 +55,6 @@ declare(strict_types=1);
 			IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
 		}
 
-		public function GetDeviceStatus()
-		{
-			$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
-			$return = $this->Send_to_Parent($data = json_encode($data));
-			$return = json_decode($return,true);
-			
-		}
 
 		public function RequestAction($Ident,$Value)
 		{
@@ -90,9 +83,14 @@ declare(strict_types=1);
 					$return = json_decode($return,true);
 					$success = $return['message'];
 					if ($success == 'success') {
-						$this->SetValue($Ident,!$this->GetValue($Ident));
-						if ($pressMode) 
-						{
+						if (!$pressMode) {
+							$return = $this->GetDeviceStatus;
+							$return = json_decode($return,true);
+							$state = $return['body']['power'];
+							if ($state == 'on') $this->SetValue($Ident,true);
+							else $this->SetValue($Ident,false);
+						} else {
+							$this->SetValue($Ident,true);
 							IPS_Sleep(2000);
 							$this->SetValue($Ident,false);
 						}
@@ -103,6 +101,13 @@ declare(strict_types=1);
 				$this->SetValue($Ident,$Value);
 				}
 			return $return;
+		}
+
+		public function GetDeviceStatus()
+		{
+			$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
+			$return = $this->Send_to_Parent($data = json_encode($data));
+			$return = json_decode($return,true);
 		}
 
 		protected function Send_to_Parent($Buffer)
