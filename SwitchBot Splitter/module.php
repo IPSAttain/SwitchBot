@@ -28,7 +28,9 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 				$cc_id = IPS_GetInstanceListByModuleID('{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}')[0];
 				if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
 					$webhook_url = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
+					$this->SendDebug(__FUNCTION__, "WebHook URL " . $webhook_url , 0);
 					$return = $this->SetWebHook($webhook_url);
+					$this->SendDebug(__FUNCTION__, "WebHook response " . $return , 0);
 				}
 				//$this->SetTimerInterval("Update", $this->ReadPropertyInteger("Refresh")*60000);
 				$this->SetStatus(IS_ACTIVE);
