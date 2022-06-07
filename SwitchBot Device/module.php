@@ -55,6 +55,14 @@ declare(strict_types=1);
 			IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
 		}
 
+		public function GetDeviceStatus()
+		{
+			$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
+			$return = $this->Send_to_Parent($data = json_encode($data));
+			$return = json_decode($return,true);
+			
+		}
+
 		public function RequestAction($Ident,$Value)
 		{
 			switch ($Ident) {

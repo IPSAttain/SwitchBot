@@ -56,6 +56,10 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 				case 'getDevices':
 					$returndata = $this->GetDevices();
 					break;
+
+				case 'getStatus':
+					$returndata = $this->GetDeviceStatus($data['deviceID']);
+					break;
 				
 				default:
 					$returndata = $this->GetDevices();
@@ -111,6 +115,32 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 				'commandType' => 'command'
 			);
 			$data = json_encode($data);
+
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+			//for debug only!
+			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+			
+			$SwitchBotResponse = curl_exec($curl);
+			curl_close($curl);
+			return $SwitchBotResponse;
+		}
+
+		protected function GetDeviceStatus($deviceID)
+		{
+			$Token = $this->ReadPropertyString("Token");
+			$url = "https://api.switch-bot.com/v1.0/devices/" . $deviceID . "/status";
+			
+			$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			
+			$headers = array(
+			   "Accept: application/json",
+			   "Authorization: Bearer " . $Token,
+			   "Content-Type: application/json",
+			);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 			//for debug only!

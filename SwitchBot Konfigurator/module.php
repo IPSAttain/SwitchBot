@@ -34,9 +34,7 @@ declare(strict_types=1);
 		
 		private function GetFormData()
 		{
-			$data = array();
-			$data['deviceID'] = '';
-			$data['command'] = 'getDevices'; 
+			$data = array('deviceID' => '', 'command' => 'getDevices');
 			$devices = $this->SendData($data = json_encode($data));
 			$devices = json_decode($devices,true);
 			$devices = $devices['body']['deviceList'];
@@ -46,7 +44,6 @@ declare(strict_types=1);
 			
 			// Configurator
 			$Values = array();
-			//$this->LogMessage(__FUNCTION__.print_r($devices,true) , 10206);
 			foreach ($devices as $device)
 			{
 				$ID	= 0;
