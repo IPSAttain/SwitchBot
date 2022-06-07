@@ -26,12 +26,13 @@ declare(strict_types=1);
 		{
 			//Never delete this line!
 			parent::ApplyChanges();
-			$Ident = 'SwitchBot';
-			if ($this->ReadPropertyString('deviceType') == 'Bot') {
-				$this->RegisterVariableBoolean($Ident . 'BotSwitch', $this->Translate('turnOn'), '~Switch', 20);
-				$this->EnableAction($Ident.'BotSwitch');
-			}
 
+			switch ($this->ReadPropertyString('deviceType')) {
+				case 'Bot':
+					$this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
+					$this->EnableAction('setState');
+					break;
+			}
 		}
 
 		public function GetConfigurationForm() 
@@ -45,7 +46,6 @@ declare(strict_types=1);
 				default :
 				$form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
 			}
-			//$this->SendDebug("Elements", json_encode($Values), 0);
 			return json_encode($form);
 		}
 
@@ -57,34 +57,41 @@ declare(strict_types=1);
 
 		public function RequestAction($Ident,$Value)
 		{
-			$deviceMode = $this->ReadPropertyBoolean('deviceMode');
-			if ($deviceMode) 
-			{
-				$command = 'press';
-			}
-			else 
-			{
-				If ($this->GetValue($Ident)) 
-				{
-					$command = 'turnOff';
+			switch ($Ident) {
+				case 'setState':
+					$pressMode = $this->ReadPropertyBoolean('deviceMode');
+					if ($pressMode) 
+					{
+						$command = 'press';
+					}
+					else 
+					{
+						If ($this->GetValue($Ident)) 
+						{
+							$command = 'turnOff';
+						}
+						else 
+						{
+							$command = 'turnOn'; 
+						}
+					}
+					$this->SendDebug(__FUNCTION__,$command,0);
+					$return = $this->Send_to_Parent($command . "\r" . $this->ReadPropertyString('deviceID'));
+					$return = json_decode($return,true);
+					$success = $return['message'];
+					if ($success == 'success') {
+						$this->SetValue($Ident,!$this->GetValue($Ident));
+						if ($pressMode) 
+						{
+							IPS_Sleep(2000);
+							$this->SetValue($Ident,false);
+						}
+					}
+					break;
+				
+				default:
+				$this->SetValue($Ident,$Value);
 				}
-				else 
-				{
-					$command = 'turnOn'; 
-				}
-			}
-			$this->SendDebug(__FUNCTION__,$command,0);
-			$return = $this->Send_to_Parent($command . "\r" . $this->ReadPropertyString('deviceID'));
-			$return = json_decode($return,true);
-			$success = $return['message'];
-			if ($success == 'success') {
-				$this->SetValue($Ident,!$this->GetValue($Ident));
-				if ($deviceMode) 
-				{
-					IPS_Sleep(2000);
-					$this->SetValue($Ident,false);
-				}
-			}
 			return $return;
 		}
 

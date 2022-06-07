@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+include_once __DIR__ . '/../libs/WebHookModule.php';
 	class SwitchBotSplitter extends IPSModule
 	{
 		public function Create()
@@ -9,7 +10,7 @@ declare(strict_types=1);
 			parent::Create();
 
 			$this->RegisterPropertyString("Token", "");
-			$this->RegisterTimer("Update", 300000, "SWB_UpdateData($this->InstanceID);");
+			//$this->RegisterTimer("Update", 300000, "SWB_UpdateData($this->InstanceID);");
 			$this->RegisterPropertyInteger("Refresh",5);
 		}
 
@@ -23,7 +24,17 @@ declare(strict_types=1);
 		{
 			//Never delete this line!
 			parent::ApplyChanges();
-			$this->SetTimerInterval("Update", $this->ReadPropertyInteger("Refresh")*60000);
+			if ($this->ReadPropertyString('Token')) {
+				$cc_id = IPS_GetInstanceListByModuleID('{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}')[0];
+				if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
+					$webhook_url = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
+					$return = $this->SetWebHook($webhook_url);
+				}
+				//$this->SetTimerInterval("Update", $this->ReadPropertyInteger("Refresh")*60000);
+				$this->SetStatus(IS_ACTIVE);
+			} else {
+				$this->SetStatus(IS_INACTIVE);
+			}
 		}
 
 		public function UpdateData()
@@ -104,6 +115,39 @@ declare(strict_types=1);
 				'command' => $command,
 				'parameter' => 'default',
 				'commandType' => 'command'
+			);
+			$data = json_encode($data);
+
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+			//for debug only!
+			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+			
+			$SwitchBotResponse = curl_exec($curl);
+			curl_close($curl);
+			return $SwitchBotResponse;
+		}
+
+		protected function SetWebHook($webHookurl)
+		{
+			$Token = $this->ReadPropertyString("Token");
+			$url = "https://api.switch-bot.com/v1.0/webhook/setupWebhook";
+			
+			$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			
+			$headers = array(
+			   "Accept: application/json",
+			   "Authorization: Bearer " . $Token,
+			   "Content-Type: application/json",
+			);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+			$data = array(
+				'action' => 'setupWebhook',
+				'url' => $webHookurl,
+				'devicelist' => 'ALL'
 			);
 			$data = json_encode($data);
 
