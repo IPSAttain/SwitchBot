@@ -152,6 +152,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 				'devicelist' => 'ALL'
 			);
 			$data = json_encode($data);
+			$this->SendDebug(__FUNCTION__, "API data " . $data , 0);
 
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 			//for debug only!
