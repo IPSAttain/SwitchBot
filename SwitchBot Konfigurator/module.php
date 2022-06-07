@@ -35,7 +35,7 @@ declare(strict_types=1);
 		private function GetFormData()
 		{
 			$data = array();
-			$data['deviceID'] = $this->ReadPropertyString('deviceID');
+			$data['deviceID'] = '';
 			$data['command'] = 'getDevices'; 
 			$devices = $this->SendData($data = json_encode($data));
 			$devices = json_decode($devices,true);
