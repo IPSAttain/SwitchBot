@@ -77,8 +77,7 @@ declare(strict_types=1);
 							$data['command'] = 'turnOn'; 
 						}
 					}
-					$this->SendDebug(__FUNCTION__,$command,0);
-					//$data = array('command' => $command , 'deviceID' => $this->ReadPropertyString('deviceID'));
+					$this->SendDebug(__FUNCTION__,$data['command'],0);
 					$return = $this->Send_to_Parent($data = json_encode($data));
 					$return = json_decode($return,true);
 					$success = $return['message'];

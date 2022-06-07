@@ -10,7 +10,6 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 			parent::Create();
 
 			$this->RegisterPropertyString("Token", "");
-			$this->RegisterPropertyInteger("Refresh",5);
 		}
 
 		public function Destroy()
@@ -41,8 +40,10 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
 		public function ForwardData($JSONString)
 		{
+			
 			$data = json_decode($JSONString,true);
 			$data = json_decode($data['Buffer'],true);
+			If (!isset($data['command'])) $data['command'] = '';
 			$this->SendDebug(__FUNCTION__, 'Command: ' . $data['command'] . '  deviceID: ' . $data['deviceID'], 0);
 			$returndata = "";
 			switch ($data['command'])
