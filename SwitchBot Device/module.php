@@ -76,7 +76,10 @@ declare(strict_types=1);
 						}
 					}
 					$this->SendDebug(__FUNCTION__,$command,0);
-					$return = $this->Send_to_Parent($command . "\r" . $this->ReadPropertyString('deviceID'));
+					$data = array($command,$this->ReadPropertyString('deviceID'));
+					$data = json_encode($data);
+					//$return = $this->Send_to_Parent($command . "\r" . $this->ReadPropertyString('deviceID'));
+					$return = $this->Send_to_Parent($data);
 					$return = json_decode($return,true);
 					$success = $return['message'];
 					if ($success == 'success') {

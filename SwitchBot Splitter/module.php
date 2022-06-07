@@ -42,8 +42,9 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 		public function ForwardData($JSONString)
 		{
 			$data = json_decode($JSONString,true);
-			$data = preg_split('/\n|\r\n?/', $data['Buffer']);
-			$this->SendDebug(__FUNCTION__, 'Command: ' . $data[0] . 'deviceID: ' . $data[1], 0);
+			//$data = preg_split('/\n|\r\n?/', $data['Buffer']);
+			$data = json_decode($data['Buffer']);
+			$this->SendDebug(__FUNCTION__, 'Command: ' . $data[0] . '  deviceID: ' . $data[1], 0);
 			$returndata = "";
 			switch ($data[0])
 			{
@@ -61,6 +62,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 					$returndata = $this->GetDevices();
 					break;	
 			}
+			$this->SendDebug(__FUNCTION__, $returndata , 0);
 			return $returndata;
 		}
 
