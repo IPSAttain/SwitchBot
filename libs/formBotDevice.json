@@ -33,6 +33,12 @@
             ]
         }
     ],
-    "actions": [],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "getStatus",
+            "onClick": "SWB_GetDeviceStatus;"
+        }
+    ],
     "status": []
 }
