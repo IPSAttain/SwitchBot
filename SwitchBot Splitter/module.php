@@ -142,7 +142,6 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 			);
 			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 			//for debug only!
 			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
