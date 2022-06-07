@@ -84,7 +84,7 @@ declare(strict_types=1);
 					$success = $return['message'];
 					if ($success == 'success') {
 						if (!$pressMode) {
-							IPS_Sleep(500); //delay the status request
+							IPS_Sleep(2000); //delay the status request
 							$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
 							$return = $this->Send_to_Parent($data = json_encode($data));
 							$return = json_decode($return,true);
