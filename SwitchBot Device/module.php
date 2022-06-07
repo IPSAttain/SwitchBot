@@ -60,26 +60,26 @@ declare(strict_types=1);
 			switch ($Ident) {
 				case 'setState':
 					$pressMode = $this->ReadPropertyBoolean('deviceMode');
+					$data = array();
+					$data['deviceID'] = $this->ReadPropertyString('deviceID');
 					if ($pressMode) 
 					{
-						$command = 'press';
+							$data['command'] = 'press';
 					}
 					else 
 					{
 						If ($this->GetValue($Ident)) 
 						{
-							$command = 'turnOff';
+							$data['command'] = 'turnOff';
 						}
 						else 
 						{
-							$command = 'turnOn'; 
+							$data['command'] = 'turnOn'; 
 						}
 					}
 					$this->SendDebug(__FUNCTION__,$command,0);
-					$data = array($command,$this->ReadPropertyString('deviceID'));
-					$data = json_encode($data);
-					//$return = $this->Send_to_Parent($command . "\r" . $this->ReadPropertyString('deviceID'));
-					$return = $this->Send_to_Parent($data);
+					//$data = array('command' => $command , 'deviceID' => $this->ReadPropertyString('deviceID'));
+					$return = $this->Send_to_Parent($data = json_encode($data));
 					$return = json_decode($return,true);
 					$success = $return['message'];
 					if ($success == 'success') {

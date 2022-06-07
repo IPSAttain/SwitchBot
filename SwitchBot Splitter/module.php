@@ -42,16 +42,15 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 		public function ForwardData($JSONString)
 		{
 			$data = json_decode($JSONString,true);
-			//$data = preg_split('/\n|\r\n?/', $data['Buffer']);
-			$data = json_decode($data['Buffer']);
-			$this->SendDebug(__FUNCTION__, 'Command: ' . $data[0] . '  deviceID: ' . $data[1], 0);
+			$data = json_decode($data['Buffer'],true);
+			$this->SendDebug(__FUNCTION__, 'Command: ' . $data['command'] . '  deviceID: ' . $data['deviceID'], 0);
 			$returndata = "";
-			switch ($data[0])
+			switch ($data['command'])
 			{
 				case 'turnOn':
 				case 'turnOff':
 				case 'press':
-					$returndata = $this->PostToDevice($data[1],$data[0]);
+					$returndata = $this->PostToDevice($data['deviceID'],$data['command']);
 					break;
 				
 				case 'getDevices':
