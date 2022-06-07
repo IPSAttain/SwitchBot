@@ -43,7 +43,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 		{
 			$data = json_decode($JSONString,true);
 			$data = preg_split('/\n|\r\n?/', $data['Buffer']);
-			$this->SendDebug(__FUNCTION__, $data , 0);
+			$this->SendDebug(__FUNCTION__, 'Command: ' . $data[0] . 'deviceID: ' . $data[1], 0);
 			$returndata = "";
 			switch ($data[0])
 			{
