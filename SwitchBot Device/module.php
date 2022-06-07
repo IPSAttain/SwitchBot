@@ -107,7 +107,6 @@ declare(strict_types=1);
 		{
 			$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
 			$return = $this->Send_to_Parent($data = json_encode($data));
-			$return = json_decode($return,true);
 		}
 
 		protected function Send_to_Parent($Buffer)
