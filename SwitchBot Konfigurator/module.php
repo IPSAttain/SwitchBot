@@ -34,7 +34,10 @@ declare(strict_types=1);
 		
 		private function GetFormData()
 		{
-			$devices = $this->SendData();
+			$data = array();
+			$data['deviceID'] = $this->ReadPropertyString('deviceID');
+			$data['command'] = 'getDevices'; 
+			$devices = $this->SendData($data = json_encode($data));
 			$devices = json_decode($devices,true);
 			$devices = $devices['body']['deviceList'];
 
@@ -74,13 +77,12 @@ declare(strict_types=1);
 			return json_encode($Values);
 		}
 
-		protected function SendData() {
+		protected function SendData($Buffer) {
 			$return = $this->SendDataToParent(json_encode([
 				'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
-				'Buffer' => utf8_encode("getDevices"),
+				'Buffer' => utf8_encode($Buffer),
 			]));
 			$this->SendDebug("Received from Gateway", $return , 0);
-			//$this->LogMessage(__FUNCTION__, $return , 10206);
 			return $return;
 		}
 	}
