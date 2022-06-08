@@ -37,7 +37,6 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 			}
 		}
 
-
 		public function ForwardData($JSONString)
 		{
 			

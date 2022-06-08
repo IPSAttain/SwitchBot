@@ -59,6 +59,7 @@ declare(strict_types=1);
 					'deviceName' => $device['deviceName'],
 					'deviceID'   => $device['deviceId'],
 					'deviceType' => $device['deviceType'],
+					'hubDeviceId'=> $device['hubDeviceId'],
 					'create'	 => 
 					[
 						"moduleID"       => $guid,

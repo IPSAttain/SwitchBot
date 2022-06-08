@@ -100,7 +100,7 @@ declare(strict_types=1);
 					break;
 				
 				default:
-				$this->SetValue($Ident,$Value);
+					$this->SetValue($Ident,$Value);
 				}
 			return $return;
 		}
