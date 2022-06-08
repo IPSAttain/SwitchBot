@@ -5,6 +5,15 @@
             "type": "ValidationTextBox", 
             "caption": "Device Name"
         },
+        { 
+            "name": "deviceMode", 
+            "type": "CheckBox", 
+            "caption": "Device Mode"
+        },
+        { 
+            "type": "Label",
+            "caption": "If On = Switchmode, If Off = Pressmode" 
+        },
         {
             "type": "ExpansionPanel",
             "caption": "Device Info",
@@ -24,6 +33,12 @@
             ]
         }
     ],
-    "actions": [],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "getStatus",
+            "onClick": "SWB_GetDeviceStatus();"
+        }
+    ],
     "status": []
 }

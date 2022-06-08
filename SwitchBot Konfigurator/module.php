@@ -34,7 +34,8 @@ declare(strict_types=1);
 		
 		private function GetFormData()
 		{
-			$devices = $this->SendData();
+			$data = array('deviceID' => '', 'command' => 'getDevices');
+			$devices = $this->SendData($data = json_encode($data));
 			$devices = json_decode($devices,true);
 			$devices = $devices['body']['deviceList'];
 
@@ -43,7 +44,6 @@ declare(strict_types=1);
 			
 			// Configurator
 			$Values = array();
-			//$this->LogMessage(__FUNCTION__.print_r($devices,true) , 10206);
 			foreach ($devices as $device)
 			{
 				$ID	= 0;
@@ -59,6 +59,7 @@ declare(strict_types=1);
 					'deviceName' => $device['deviceName'],
 					'deviceID'   => $device['deviceId'],
 					'deviceType' => $device['deviceType'],
+					'hubDeviceId'=> $device['hubDeviceId'],
 					'create'	 => 
 					[
 						"moduleID"       => $guid,
@@ -74,13 +75,12 @@ declare(strict_types=1);
 			return json_encode($Values);
 		}
 
-		protected function SendData() {
+		protected function SendData($Buffer) {
 			$return = $this->SendDataToParent(json_encode([
 				'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
-				'Buffer' => utf8_encode("getDevices"),
+				'Buffer' => utf8_encode($Buffer),
 			]));
 			$this->SendDebug("Received from Gateway", $return , 0);
-			//$this->LogMessage(__FUNCTION__, $return , 10206);
 			return $return;
 		}
 	}

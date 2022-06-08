@@ -15,7 +15,13 @@
                     "caption": "Type",
                     "name": "deviceType",
                     "width": "20%"
-                },                {
+                },
+                {
+                    "caption": "Hub Device",
+                    "name": "hubDeviceId",
+                    "width": "20%"
+                },                                
+                {
                     "caption": "ID",
                     "name": "deviceID",
                     "width": "auto"

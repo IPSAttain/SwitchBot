@@ -26,12 +26,27 @@ declare(strict_types=1);
 		{
 			//Never delete this line!
 			parent::ApplyChanges();
-			$Ident = 'SwitchBot';
-			if ($this->ReadPropertyString('deviceType') == 'Bot') {
-				$this->RegisterVariableBoolean($Ident . 'BotSwitch', $this->Translate('turnOn'), '~Switch', 20);
-				$this->EnableAction($Ident.'BotSwitch');
-			}
 
+			switch ($this->ReadPropertyString('deviceType')) {
+				case 'Bot':
+					$this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
+					$this->EnableAction('setState');
+					break;
+			}
+		}
+
+		public function GetConfigurationForm() 
+		{
+			switch ($this->ReadPropertyString('deviceType'))
+			{
+				case 'Bot':
+					$form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
+					break;
+
+				default :
+				$form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+			}
+			return json_encode($form);
 		}
 
 		public function ReceiveData($JSONString)
@@ -40,36 +55,53 @@ declare(strict_types=1);
 			IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
 		}
 
+
 		public function RequestAction($Ident,$Value)
 		{
-			$deviceMode = $this->ReadPropertyBoolean('deviceMode');
-			if ($deviceMode) 
-			{
-				$command = 'press';
-			}
-			else 
-			{
-				If ($this->GetValue($Ident)) 
-				{
-					$command = 'turnOff';
+			switch ($Ident) {
+				case 'setState':
+					$pressMode = $this->ReadPropertyBoolean('deviceMode');
+					$data = array();
+					$data['deviceID'] = $this->ReadPropertyString('deviceID');
+					if ($pressMode) 
+					{
+							$data['command'] = 'press';
+					}
+					else 
+					{
+						If ($Value) 
+						{
+							$data['command'] = 'turnOn';
+						}
+						else 
+						{
+							$data['command'] = 'turnOff'; 
+						}
+					}
+					$this->SendDebug(__FUNCTION__,$data['command'],0);
+					$return = $this->Send_to_Parent($data = json_encode($data));
+					$return = json_decode($return,true);
+					$success = $return['message'];
+					if ($success == 'success') {
+						if (!$pressMode) {
+							IPS_Sleep(2000); //delay the status request
+							$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
+							$return = $this->Send_to_Parent($data = json_encode($data));
+							$return = json_decode($return,true);
+							$state = $return['body']['power'];
+							if ($state == 'on') $this->SetValue($Ident,true);
+							else $this->SetValue($Ident,false);
+						} else {
+							$this->SetValue($Ident,true);
+							IPS_Sleep(2000);
+							$this->SetValue($Ident,false);
+						}
+					}
+					break;
+				
+				default:
+					$this->SetValue($Ident,$Value);
 				}
-				else 
-				{
-					$command = 'turnOn'; 
-				}
-			}
-			$this->SendDebug(__FUNCTION__,$command,0);
-			$return = $this->Send_to_Parent($command . "\r" . $this->ReadPropertyString('deviceID'));
-			$return = json_decode($return,true);
-			$success = $return['message'];
-			if ($success == 'success') {
-				$this->SetValue($Ident,!$this->GetValue($Ident));
-				if ($deviceMode) 
-				{
-					IPS_Sleep(2000);
-					$this->SetValue($Ident,false);
-				}
-			}
 			return $return;
 		}
 
