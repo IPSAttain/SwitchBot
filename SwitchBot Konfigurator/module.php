@@ -36,7 +36,7 @@ declare(strict_types=1);
 		{
 			$data = array('deviceID' => '', 'command' => 'getDevices');
 			$devices = $this->SendData($data = json_encode($data));
-			print_r($devices);
+			//print_r($devices);
 			$Values = array();
 			$devices = json_decode($devices,true);
 			if (isset($devices['body']['deviceList']))
