@@ -79,14 +79,14 @@ declare(strict_types=1);
 						}
 					}
 					$this->SendDebug(__FUNCTION__,$data['command'],0);
-					$return = $this->Send_to_Parent($data = json_encode($data));
+					$return = $this->SendData($data = json_encode($data));
 					$return = json_decode($return,true);
 					$success = $return['message'];
 					if ($success == 'success') {
 						if (!$pressMode) {
 							IPS_Sleep(2000); //delay the status request
 							$data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
-							$return = $this->Send_to_Parent($data = json_encode($data));
+							$return = $this->SendData($data = json_encode($data));
 							$return = json_decode($return,true);
 							$state = $return['body']['power'];
 							if ($state == 'on') $this->SetValue($Ident,true);
@@ -105,7 +105,7 @@ declare(strict_types=1);
 			return $return;
 		}
 
-		protected function Send_to_Parent($Buffer)
+		protected function SendData($Buffer)
 		{
 			$return = $this->SendDataToParent(json_encode([
 				'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",

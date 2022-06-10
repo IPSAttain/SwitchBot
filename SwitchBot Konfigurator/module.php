@@ -36,41 +36,46 @@ declare(strict_types=1);
 		{
 			$data = array('deviceID' => '', 'command' => 'getDevices');
 			$devices = $this->SendData($data = json_encode($data));
-			$devices = json_decode($devices,true);
-			$devices = $devices['body']['deviceList'];
-
-			$guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
-			$Instances = IPS_GetInstanceListByModuleID($guid);
-			
-			// Configurator
+			//print_r($devices);
 			$Values = array();
-			foreach ($devices as $device)
+			$devices = json_decode($devices,true);
+			if (isset($devices['body']['deviceList']))
 			{
-				$ID	= 0;
-				foreach ($Instances as $Instance){
-					//$this->SendDebug("Created Instances", IPS_GetObject($Instance)['ObjectName'] , 0);
-					if (IPS_GetProperty($Instance,'deviceID')== $device['deviceId'])
-					{
-						$ID = $Instance;
+				$devices = $devices['body']['deviceList'];
+
+				$guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
+				$Instances = IPS_GetInstanceListByModuleID($guid);
+				
+				// Configurator
+				
+				foreach ($devices as $device)
+				{
+					$ID	= 0;
+					foreach ($Instances as $Instance){
+						//$this->SendDebug("Created Instances", IPS_GetObject($Instance)['ObjectName'] , 0);
+						if (IPS_GetProperty($Instance,'deviceID')== $device['deviceId'])
+						{
+							$ID = $Instance;
+						}
 					}
+					$Values[] = [
+						'instanceID' => $ID,
+						'deviceName' => $device['deviceName'],
+						'deviceID'   => $device['deviceId'],
+						'deviceType' => $device['deviceType'],
+						'hubDeviceId'=> $device['hubDeviceId'],
+						'create'	 => 
+						[
+							"moduleID"       => $guid,
+							"configuration"  => [
+								"deviceID"   => $device['deviceId'],
+								"deviceName" => $device['deviceName'],
+								"deviceType" => $device['deviceType']
+							],
+							'name'           => 'SwitchBot ' . $device['deviceType'] . ' (' . $device['deviceName'] . ')'
+						]
+					];
 				}
-				$Values[] = [
-					'instanceID' => $ID,
-					'deviceName' => $device['deviceName'],
-					'deviceID'   => $device['deviceId'],
-					'deviceType' => $device['deviceType'],
-					'hubDeviceId'=> $device['hubDeviceId'],
-					'create'	 => 
-					[
-						"moduleID"       => $guid,
-						"configuration"  => [
-							"deviceID"   => $device['deviceId'],
-							"deviceName" => $device['deviceName'],
-							"deviceType" => $device['deviceType']
-						],
-						'name'           => 'SwitchBot ' . $device['deviceType'] . ' (' . $device['deviceName'] . ')'
-					]
-				];
 			}
 			return json_encode($Values);
 		}
