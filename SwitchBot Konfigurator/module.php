@@ -36,8 +36,8 @@ declare(strict_types=1);
 		{
 			$data = array('deviceID' => '', 'command' => 'getDevices');
 			$devices = $this->SendData($data = json_encode($data));
+			if ($devices === null) return;
 			$devices = json_decode($devices,true);
-			if (!isset($devices['body']['deviceList'])) return;
 			$devices = $devices['body']['deviceList'];
 
 			$guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
