@@ -79,7 +79,7 @@ declare(strict_types=1);
                     $success = $return['message'];
                     if ($success == 'success') {
                         $this->SetValue($Ident, true);
-                        if ($switchMode) {
+                        if (!$switchMode) {
                             IPS_Sleep(2000);
                             $this->SetValue($Ident, false);
                         }
