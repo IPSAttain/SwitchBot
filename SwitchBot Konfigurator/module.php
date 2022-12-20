@@ -38,9 +38,10 @@ declare(strict_types=1);
             //print_r($devices);
             $Values = array();
             $devices = json_decode($devices, true);
+            if (isset($devices['body']['infraredRemoteList'])) $remotedevices = $devices['body']['infraredRemoteList'];
             if (isset($devices['body']['deviceList'])) {
                 $devices = $devices['body']['deviceList'];
-                $devices = array_merge($devices['body']['infraredRemoteList'],$devices);
+                $devices = array_merge($remotedevices,$devices);
                 $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
                 $Instances = IPS_GetInstanceListByModuleID($guid);
                 
