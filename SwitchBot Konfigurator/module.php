@@ -40,7 +40,7 @@ declare(strict_types=1);
             $devices = json_decode($devices, true);
             if (isset($devices['body']['deviceList'])) {
                 $devices = $devices['body']['deviceList'];
-
+                $devices = array_merge($devices['body']['infraredRemoteList'],$devices);
                 $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
                 $Instances = IPS_GetInstanceListByModuleID($guid);
                 
@@ -48,6 +48,7 @@ declare(strict_types=1);
                 
                 foreach ($devices as $device) {
                     $ID	= 0;
+                    if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
                     foreach ($Instances as $Instance) {
                         //$this->SendDebug("Created Instances", IPS_GetObject($Instance)['ObjectName'] , 0);
                         if (IPS_GetProperty($Instance, 'deviceID')== $device['deviceId']) {
