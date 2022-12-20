@@ -78,19 +78,8 @@ declare(strict_types=1);
                     $return = json_decode($return, true);
                     $success = $return['message'];
                     if ($success == 'success') {
+                        $this->SetValue($Ident, true);
                         if ($switchMode) {
-                            IPS_Sleep(2000); //delay the status request
-                            $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
-                            $return = $this->SendData($data = json_encode($data));
-                            $return = json_decode($return, true);
-                            $state = $return['body']['power'];
-                            if ($state == 'on') {
-                                $this->SetValue($Ident, true);
-                            } else {
-                                $this->SetValue($Ident, false);
-                            }
-                        } else {
-                            $this->SetValue($Ident, true);
                             IPS_Sleep(2000);
                             $this->SetValue($Ident, false);
                         }
