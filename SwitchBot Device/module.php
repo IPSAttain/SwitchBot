@@ -28,6 +28,7 @@ declare(strict_types=1);
 
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
+                case 'Light':
                     $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
                     $this->EnableAction('setState');
                     break;
