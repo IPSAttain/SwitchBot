@@ -12,7 +12,7 @@ declare(strict_types=1);
             $this->RegisterPropertyString('deviceID', "");
             $this->RegisterPropertyString('deviceName', "");
             $this->RegisterPropertyString('deviceType', "");
-            $this->RegisterPropertyBoolean('deviceMode', false);
+            $this->RegisterPropertyBoolean('deviceMode', true);
         }
 
         public function Destroy()
@@ -40,7 +40,9 @@ declare(strict_types=1);
                 case 'Bot':
                     $form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
                     break;
-
+                    case 'Light':
+                        $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
+                        break;
                 default:
                 $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
             }
