@@ -61,10 +61,10 @@ declare(strict_types=1);
         {
             switch ($Ident) {
                 case 'setState':
-                    $pressMode = $this->ReadPropertyBoolean('deviceMode');
+                    $switchMode = $this->ReadPropertyBoolean('deviceMode');
                     $data = array();
                     $data['deviceID'] = $this->ReadPropertyString('deviceID');
-                    if ($pressMode) {
+                    if (!$switchMode) {
                         $data['command'] = 'press';
                     } else {
                         if ($Value) {
@@ -78,7 +78,7 @@ declare(strict_types=1);
                     $return = json_decode($return, true);
                     $success = $return['message'];
                     if ($success == 'success') {
-                        if (!$pressMode) {
+                        if ($switchMode) {
                             IPS_Sleep(2000); //delay the status request
                             $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'command' => 'getStatus');
                             $return = $this->SendData($data = json_encode($data));
