@@ -28,10 +28,16 @@ declare(strict_types=1);
 
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
-                case 'Light':
                     $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
                     $this->EnableAction('setState');
                     break;
+                    
+                case 'Light':
+                        $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
+                        $this->EnableAction('setState');
+                        $this->RegisterVariableBoolean('setBrightness', $this->Translate('Brightness'), 'Brightness', 20);
+                        $this->EnableAction('setBrightness');
+                        break;
             }
         }
 
@@ -59,11 +65,11 @@ declare(strict_types=1);
 
         public function RequestAction($Ident, $Value)
         {
+            $data = array();
+            $data['deviceID'] = $this->ReadPropertyString('deviceID');
             switch ($Ident) {
                 case 'setState':
                     $switchMode = $this->ReadPropertyBoolean('deviceMode');
-                    $data = array();
-                    $data['deviceID'] = $this->ReadPropertyString('deviceID');
                     if (!$switchMode) {
                         $data['command'] = 'press';
                     } else {
@@ -85,7 +91,19 @@ declare(strict_types=1);
                         }
                     }
                     break;
-                
+                    
+                case 'setBrightness':
+                    if ($Value) {
+                        $data['command'] = 'brightnessUp';
+                    } else {
+                        $data['command'] = 'brightnessDown';
+                    }
+                    $this->SendDebug(__FUNCTION__, $data['command'], 0);
+                    $return = $this->SendData($data = json_encode($data));
+                    $return = json_decode($return, true);
+                    if ($return['message'] == 'success') $this->SetValue($Ident, $Value);
+                    break;
+
                 default:
                     $this->SetValue($Ident, $Value);
                 }
