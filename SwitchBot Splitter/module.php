@@ -67,10 +67,15 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $token = $this->ReadPropertyString("Token");
             $secret = $this->ReadPropertyString("Secret");
             $nonce = random_bytes(5);
+            $this->SendDebug(__FUNCTION__ . ' Nounce ', $nonce, 0);
             $t = microtime();
+            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
             $data = utf8_encode($token . $t . $nonce);
+            $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
             $sign = hash_hmac('sha256', $data, $secret);
+            $this->SendDebug(__FUNCTION__ . ' sign ', $sign, 0);
             $sign = strtoupper($sign);
+            $this->SendDebug(__FUNCTION__ . ' SIGN ', $sign, 0);
 
             $url = "https://api.switch-bot.com/v1.1/devices";
             
