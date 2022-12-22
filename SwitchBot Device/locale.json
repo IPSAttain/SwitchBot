@@ -4,7 +4,8 @@
             "Device Name": "Geräte Name",
             "Device Mode": "Schalt Modus",
             "If On = Switchmode, If Off = Pressmode": "An = Schalter Modus | Aus = Drücken Modus",
-            "Device Info": "Geräte Informationen"
+            "Device Info": "Geräte Informationen",
+            "Brightness": "Helligkeit"
         }
     }
 }
