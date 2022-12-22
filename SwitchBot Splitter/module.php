@@ -66,10 +66,9 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         {
             $token = $this->ReadPropertyString("Token");
             $secret = $this->ReadPropertyString("Secret");
-            $nonce = $this-> RandomString();
-            $nonce = rand(0,1000);
+            $nonce = rand(0,10000);
             $this->SendDebug(__FUNCTION__ . ' Nounce ', $nonce, 0);
-            $t = (time() * 1000);
+            $t = time() * 1000;
             $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
             $data = utf8_encode($token . $t . $nonce);
             $data = $token . $t . $nonce;
@@ -88,9 +87,9 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $headers = array(
                 "Accept: application/json",
                 "Content-Type: application/json",
-                "Authorization: " . $token,
-                "sign: " . $sign,
-                "nonce: " . $nonce,
+                "Authorization:" . $token,
+                "sign:" . $sign,
+                "nonce:" . $nonce,
                 "t:" . $t
             );
             $this->SendDebug(__FUNCTION__ . ' Headers ', implode('|' , $headers), 0);
@@ -200,13 +199,4 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             return $SwitchBotResponse;
         }
 
-        protected function RandomString()
-        {
-            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            $randstring = '';
-            for ($i = 0; $i < 10; $i++) {
-                $randstring .= $characters[rand(0, strlen($characters))];
-            }
-            return $randstring;
-        }
     }
