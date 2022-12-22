@@ -91,7 +91,7 @@ declare(strict_types=1);
                         }
                     }
                     break;
-                    
+
                 case 'setBrightness':
                     if ($Value) {
                         $data['command'] = 'brightnessUp';
@@ -107,6 +107,7 @@ declare(strict_types=1);
                 default:
                     $this->SetValue($Ident, $Value);
                 }
+            $this->SendDebug(__FUNCTION__, $return, 0);
             return $return;
         }
 
