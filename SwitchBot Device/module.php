@@ -81,7 +81,6 @@ declare(strict_types=1);
                     }
                     $this->SendDebug(__FUNCTION__, $data['command'], 0);
                     $return = $this->SendData($data = json_encode($data));
-                    $this->SendDebug(__FUNCTION__, $return, 0);
                     $return = json_decode($return, true);
                     $success = $return['message'];
                     if ($success == 'success') {
@@ -101,7 +100,6 @@ declare(strict_types=1);
                     }
                     $this->SendDebug(__FUNCTION__, $data['command'], 0);
                     $return = $this->SendData($data = json_encode($data));
-                    $this->SendDebug(__FUNCTION__, $return, 0);
                     $return = json_decode($return, true);
                     if ($return['message'] == 'success') $this->SetValue($Ident, $Value);
                     break;
@@ -109,6 +107,7 @@ declare(strict_types=1);
                 default:
                     $this->SetValue($Ident, $Value);
                 }
+            $this->SendDebug(__FUNCTION__, $return['message'], 0);
             return $return;
         }
 
