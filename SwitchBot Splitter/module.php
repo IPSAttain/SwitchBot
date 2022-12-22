@@ -71,6 +71,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $t = strval((time() * 1000));
             $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
             $data = utf8_encode($token . $t . $nonce);
+            $data = $token . $t . $nonce;
             $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
             $sign = hash_hmac('sha256', $data, $secret);
             $this->SendDebug(__FUNCTION__ . ' sign ', $sign, 0);
