@@ -68,7 +68,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $secret = $this->ReadPropertyString("Secret");
             $nonce = random_bytes(5);
             $this->SendDebug(__FUNCTION__ . ' Nounce ', $nonce, 0);
-            $t = microtime();
+            $t = strval((time() * 1000));
             $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
             $data = utf8_encode($token . $t . $nonce);
             $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
