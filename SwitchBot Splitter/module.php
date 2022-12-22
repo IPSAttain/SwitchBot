@@ -84,7 +84,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             
             $headers = array(
-                "Accept: application/json",
+                "Content-Type: application/json",
                 "Authorization: " . $token,
                 "sign: " . $sign,
                 "nonce: " . $nonce,
