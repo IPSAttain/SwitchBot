@@ -66,7 +66,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         {
             $token = $this->ReadPropertyString("Token");
             $secret = $this->ReadPropertyString("Secret");
-            $nonce = random_bytes(5);
+            $nonce = $this-> RandomString();
             $this->SendDebug(__FUNCTION__ . ' Nounce ', $nonce, 0);
             $t = strval((time() * 1000));
             $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
@@ -194,5 +194,15 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $SwitchBotResponse = curl_exec($curl);
             curl_close($curl);
             return $SwitchBotResponse;
+        }
+
+        protected function RandomString()
+        {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $randstring = '';
+            for ($i = 0; $i < 10; $i++) {
+                $randstring = $characters[rand(0, strlen($characters))];
+            }
+            return $randstring;
         }
     }
