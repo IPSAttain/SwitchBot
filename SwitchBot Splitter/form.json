@@ -5,6 +5,12 @@
             "name": "Token",
             "caption": "Switchbot Token",
             "enabled": true 
+        },
+        {
+            "type": "ValidationTextBox",
+            "name": "Secret",
+            "caption": "Switchbot Secret",
+            "enabled": true 
         }
     ],
     "actions": [],

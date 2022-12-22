@@ -10,6 +10,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             parent::Create();
 
             $this->RegisterPropertyString("Token", "");
+            $this->RegisterPropertyString("Secret", "");
         }
 
         public function Destroy()
@@ -22,7 +23,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         {
             //Never delete this line!
             parent::ApplyChanges();
-            if ($this->ReadPropertyString('Token')) {
+            /*if ($this->ReadPropertyString('Token')) {
                 $cc_id = IPS_GetInstanceListByModuleID('{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}')[0];
                 if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
                     $webhook_url = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
@@ -35,6 +36,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             } else {
                 $this->SetStatus(IS_INACTIVE);
             }
+            */
         }
 
         public function ForwardData($JSONString)
@@ -62,16 +64,26 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function GetDevices()
         {
-            $Token = $this->ReadPropertyString("Token");
-            $url = "https://api.switch-bot.com/v1.0/devices";
+            $token = $this->ReadPropertyString("Token");
+            $secret = $this->ReadPropertyString("Secret");
+            $nonce = random_bytes(5);
+            $t = microtime();
+            $data = utf8_encode($token . $t . $nonce);
+            $sign = hash_hmac('sha256', $data, $secret);
+            $sign = strtoupper($sign);
+
+            $url = "https://api.switch-bot.com/v1.1/devices";
             
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             
             $headers = array(
-               "Accept: application/json",
-               "Authorization: Bearer " . $Token,
+                "Accept: application/json",
+                "Authorization: " . $token,
+                "sign: " . $sign,
+                "nonce: " . $nonce,
+                "t:" . $t
             );
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
             
@@ -87,7 +99,8 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         protected function PostToDevice($deviceID, $command, $parameter, $commandType)
         {
             $Token = $this->ReadPropertyString("Token");
-            $url = "https://api.switch-bot.com/v1.0/devices/" . $deviceID . "/commands";
+            $Secret = $this->ReadPropertyString("Secret");
+            $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/commands";
             
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
@@ -95,7 +108,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             
             $headers = array(
                "Accept: application/json",
-               "Authorization: Bearer " . $Token,
+               "Authorization: " . $Token,
                "Content-Type: application/json",
             );
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
@@ -120,7 +133,8 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         protected function GetDeviceStatus($deviceID)
         {
             $Token = $this->ReadPropertyString("Token");
-            $url = "https://api.switch-bot.com/v1.0/devices/" . $deviceID . "/status";
+            $Secret = $this->ReadPropertyString("Secret");
+            $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/status";
             
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
@@ -145,7 +159,8 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         protected function SetWebHook($webHookurl)
         {
             $Token = $this->ReadPropertyString("Token");
-            $url = "https://api.switch-bot.com/v1.0/webhook/setupWebhook";
+            $Secret = $this->ReadPropertyString("Secret");
+            $url = "https://api.switch-bot.com/v1.1/webhook/setupWebhook";
             
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
