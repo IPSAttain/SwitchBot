@@ -28,6 +28,7 @@ declare(strict_types=1);
 
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
+                case 'Plug':
                     $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
                     $this->EnableAction('setState');
                     break;
@@ -47,9 +48,10 @@ declare(strict_types=1);
                 case 'Bot':
                     $form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
                     break;
-                    case 'Light':
-                        $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
-                        break;
+                case 'Light':
+                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
+                    break;
+
                 default:
                 $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
             }
@@ -67,6 +69,8 @@ declare(strict_types=1);
         {
             $data = array();
             $data['deviceID'] = $this->ReadPropertyString('deviceID');
+            $data['parameter'] = 'default';
+            $data['commandType'] = 'command';
             switch ($Ident) {
                 case 'setState':
                     $switchMode = $this->ReadPropertyBoolean('deviceMode');
@@ -109,6 +113,17 @@ declare(strict_types=1);
                 }
             $this->SendDebug(__FUNCTION__, $return['message'], 0);
             return $return;
+        }
+
+        public function DeviceStatus()
+        {
+            $data = array();
+            $data['deviceID'] = $this->ReadPropertyString('deviceID');
+            $data['command'] = 'getStatus';
+            $this->SendDebug(__FUNCTION__, $data['command'], 0);
+            $return = $this->SendData($data = json_encode($data));
+            $return = json_decode($return, true);
+            $this->SendDebug(__FUNCTION__, $return['message'], 0);
         }
 
         protected function SendData($Buffer)

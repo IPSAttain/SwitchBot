@@ -44,12 +44,6 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $this->SendDebug(__FUNCTION__, 'Command: ' . $data['command'] . '  deviceID: ' . $data['deviceID'], 0);
             $returndata = "";
             switch ($data['command']) {
-                case 'turnOn':
-                case 'turnOff':
-                case 'press':
-                    $returndata = $this->PostToDevice($data['deviceID'], $data['command']);
-                    break;
-                
                 case 'getDevices':
                     $returndata = $this->GetDevices();
                     break;
@@ -59,7 +53,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                     break;
                 
                 default:
-                    $returndata = $this->GetDevices();
+                    $returndata = $this->PostToDevice($data['deviceID'], $data['command'], $data['parameter'], $data['commandType']);
                     break;
             }
             $this->SendDebug(__FUNCTION__, $returndata, 0);
@@ -90,7 +84,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             return $SwitchBotResponse;
         }
 
-        protected function PostToDevice($deviceID, $command)
+        protected function PostToDevice($deviceID, $command, $parameter, $commandType)
         {
             $Token = $this->ReadPropertyString("Token");
             $url = "https://api.switch-bot.com/v1.0/devices/" . $deviceID . "/commands";
@@ -108,8 +102,8 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
             $data = array(
                 'command' => $command,
-                'parameter' => 'default',
-                'commandType' => 'command'
+                'parameter' => $parameter,
+                'commandType' => $commandType
             );
             $data = json_encode($data);
 
