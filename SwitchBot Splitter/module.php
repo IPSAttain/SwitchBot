@@ -90,6 +90,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 "nonce: " . $nonce,
                 "t:" . $t
             );
+            $this->SendDebug(__FUNCTION__ . ' Headers ', $headers, 0);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
             
             //for debug only!
@@ -201,7 +202,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
             $randstring = '';
             for ($i = 0; $i < 10; $i++) {
-                $randstring = $characters[rand(0, strlen($characters))];
+                $randstring .= $characters[rand(0, strlen($characters))];
             }
             return $randstring;
         }
