@@ -90,7 +90,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 "nonce: " . $nonce,
                 "t:" . $t
             );
-            $this->SendDebug(__FUNCTION__ . ' Headers ', $headers, 0);
+            $this->SendDebug(__FUNCTION__ . ' Headers ', implode('|' , $headers), 0);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
             
             //for debug only!
