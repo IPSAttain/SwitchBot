@@ -32,7 +32,7 @@
         {
             "type": "Button",
             "caption": "getStatus",
-            "onClick": "SWB_DeviceStatus();"
+            "onClick": "SWB_DeviceStatus($id);"
         }
     ],
     "status": []

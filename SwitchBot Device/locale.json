@@ -2,10 +2,11 @@
     "translations": {
         "de": {
             "Device Name": "Geräte Name",
-            "Device Mode": "Schalt Modus",
+            "Device Mode": "Schalter Modus",
             "If On = Switchmode, If Off = Pressmode": "An = Schalter Modus | Aus = Drücken Modus",
             "Device Info": "Geräte Informationen",
-            "Brightness": "Helligkeit"
+            "Brightness": "Helligkeit",
+            "Press":"Status"
         }
     }
 }

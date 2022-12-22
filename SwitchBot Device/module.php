@@ -67,10 +67,7 @@ declare(strict_types=1);
 
         public function RequestAction($Ident, $Value)
         {
-            $data = array();
-            $data['deviceID'] = $this->ReadPropertyString('deviceID');
-            $data['parameter'] = 'default';
-            $data['commandType'] = 'command';
+            $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command');
             switch ($Ident) {
                 case 'setState':
                     $switchMode = $this->ReadPropertyBoolean('deviceMode');

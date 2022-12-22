@@ -2,6 +2,7 @@
     "translations": {
         "de": {
             "Hub Device": "Gateway",
+            "Type":"Typ",
             "Translation 2": "Übersetzung 2"
         }
     }
