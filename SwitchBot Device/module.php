@@ -83,6 +83,10 @@ declare(strict_types=1);
                     $this->SendDebug(__FUNCTION__, $data['command'], 0);
                     $return = $this->SendData($data = json_encode($data));
                     $return = json_decode($return, true);
+                    if (isset($return['body']['items'][0]['status']['battery'])) {
+                        $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
+                        $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
+                    }
                     $this->SendDebug(__FUNCTION__, $return['body']['items'][0]['status']['battery'], 0);
                     $success = $return['message'];
                     if ($success == 'success') {
