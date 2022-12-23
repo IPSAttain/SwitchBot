@@ -83,6 +83,7 @@ declare(strict_types=1);
                     $this->SendDebug(__FUNCTION__, $data['command'], 0);
                     $return = $this->SendData($data = json_encode($data));
                     $return = json_decode($return, true);
+                    $this->SendDebug(__FUNCTION__, $return['body']['items']['status']['battery'], 0);
                     $success = $return['message'];
                     if ($success == 'success') {
                         $this->SetValue($Ident, $Value);
@@ -129,7 +130,7 @@ declare(strict_types=1);
                 'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
                 'Buffer' => utf8_encode($Buffer),
             ]));
-            $this->SendDebug(__FUNCTION__, $return, 0);
+            $this->SendDebug('Answer from API', $return, 0);
             return $return;
         }
     }

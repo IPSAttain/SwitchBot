@@ -79,8 +79,8 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function PostToDevice($deviceID, $command, $parameter, $commandType)
         {
+            $this->SendDebug(__FUNCTION__, $deviceID, 0);
             $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/commands";
-            
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

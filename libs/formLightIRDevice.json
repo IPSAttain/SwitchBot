@@ -28,12 +28,6 @@
             ]
         }
     ],
-    "actions": [
-        {
-            "type": "Button",
-            "caption": "getStatus",
-            "onClick": "SWB_DeviceStatus($id);"
-        }
-    ],
+    "actions": [],
     "status": []
 }
