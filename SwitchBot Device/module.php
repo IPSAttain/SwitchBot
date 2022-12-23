@@ -83,7 +83,7 @@ declare(strict_types=1);
                     $this->SendDebug(__FUNCTION__, $data['command'], 0);
                     $return = $this->SendData($data = json_encode($data));
                     $return = json_decode($return, true);
-                    $this->SendDebug(__FUNCTION__, $return['body']['items'], 0);
+                    $this->SendDebug(__FUNCTION__, implode(' |',$return['body']['items']), 0);
                     $success = $return['message'];
                     if ($success == 'success') {
                         $this->SetValue($Ident, $Value);
