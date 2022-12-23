@@ -65,26 +65,13 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         protected function GetDevices()
         {
             $url = "https://api.switch-bot.com/v1.1/devices";
-            
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            
-            $headers = $this->GetHeaders();
-            /*$headers = array(
-                "Content-Type:application/json",
-                "Authorization:" . $token,
-                "sign:" . $sign,
-                "nonce:" . $nonce,
-                "t:" . $t
-            );
-*/
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
             //for debug only!
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            
             $SwitchBotResponse = curl_exec($curl);
             curl_close($curl);
             return $SwitchBotResponse;
@@ -92,20 +79,12 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function PostToDevice($deviceID, $command, $parameter, $commandType)
         {
-            $Token = $this->ReadPropertyString("Token");
-            $Secret = $this->ReadPropertyString("Secret");
             $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/commands";
             
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            
-            $headers = array(
-               "Accept: application/json",
-               "Authorization: " . $Token,
-               "Content-Type: application/json",
-            );
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
 
             $data = array(
                 'command' => $command,
@@ -115,7 +94,6 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $data = json_encode($data);
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            //for debug only!
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             
@@ -126,25 +104,14 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function GetDeviceStatus($deviceID)
         {
-            $Token = $this->ReadPropertyString("Token");
-            $Secret = $this->ReadPropertyString("Secret");
             $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/status";
-            
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            
-            $headers = array(
-               "Accept: application/json",
-               "Authorization: Bearer " . $Token,
-               "Content-Type: application/json",
-            );
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
             //for debug only!
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            
             $SwitchBotResponse = curl_exec($curl);
             curl_close($curl);
             return $SwitchBotResponse;
@@ -152,20 +119,11 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function SetWebHook($webHookurl)
         {
-            $Token = $this->ReadPropertyString("Token");
-            $Secret = $this->ReadPropertyString("Secret");
             $url = "https://api.switch-bot.com/v1.1/webhook/setupWebhook";
-            
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            
-            $headers = array(
-               "Accept: application/json",
-               "Authorization: Bearer " . $Token,
-               "Content-Type: application/json",
-            );
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
 
             $data = array(
                 'action' => 'setupWebhook',
@@ -192,7 +150,6 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $data = utf8_encode($token . $t . $nonce);
             $sign = hash_hmac('sha256', $data, $secret,true);
             $sign = strtoupper(base64_encode($sign));
-
             $this->SendDebug(__FUNCTION__ . ' nonce ', $nonce, 0);
             $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
             $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
