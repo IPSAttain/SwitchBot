@@ -64,34 +64,21 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function GetDevices()
         {
-            $token = $this->ReadPropertyString("Token");
-            $secret = $this->ReadPropertyString("Secret");
-            $nonce = $this->guidv4();
-            //$nonce = rand(0,99999);
-            $t = time() * 1000;
-            $data = utf8_encode($token . $t . $nonce);
-            $sign = hash_hmac('sha256', $data, $secret,true);
-            $sign = strtoupper(base64_encode($sign));
-
-            $this->SendDebug(__FUNCTION__ . ' nonce ', $nonce, 0);
-            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
-            $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
-            $this->SendDebug(__FUNCTION__ . ' SIGN ', $sign, 0);
-
             $url = "https://api.switch-bot.com/v1.1/devices";
             
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             
-            $headers = array(
+            $headers = $this->GetHeaders();
+            /*$headers = array(
                 "Content-Type:application/json",
                 "Authorization:" . $token,
                 "sign:" . $sign,
                 "nonce:" . $nonce,
                 "t:" . $t
             );
-
+*/
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
             
             //for debug only!
@@ -196,6 +183,28 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $SwitchBotResponse = curl_exec($curl);
             curl_close($curl);
             return $SwitchBotResponse;
+        }
+        protected function GetHeaders() {
+            $token = $this->ReadPropertyString("Token");
+            $secret = $this->ReadPropertyString("Secret");
+            $nonce = $this->guidv4();
+            $t = time() * 1000;
+            $data = utf8_encode($token . $t . $nonce);
+            $sign = hash_hmac('sha256', $data, $secret,true);
+            $sign = strtoupper(base64_encode($sign));
+
+            $this->SendDebug(__FUNCTION__ . ' nonce ', $nonce, 0);
+            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
+            $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
+            $this->SendDebug(__FUNCTION__ . ' SIGN ', $sign, 0);
+            $headers = array(
+                "Content-Type:application/json",
+                "Authorization:" . $token,
+                "sign:" . $sign,
+                "nonce:" . $nonce,
+                "t:" . $t
+            );
+            return $headers;
         }
         protected function guidv4($data = null) {
             // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
