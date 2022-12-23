@@ -28,6 +28,7 @@ declare(strict_types=1);
 
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
+                case 'Plug':
                     $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
                     $this->EnableAction('setState');
                     break;
@@ -47,9 +48,10 @@ declare(strict_types=1);
                 case 'Bot':
                     $form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
                     break;
-                    case 'Light':
-                        $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
-                        break;
+                case 'Light':
+                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
+                    break;
+
                 default:
                 $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
             }
@@ -65,8 +67,7 @@ declare(strict_types=1);
 
         public function RequestAction($Ident, $Value)
         {
-            $data = array();
-            $data['deviceID'] = $this->ReadPropertyString('deviceID');
+            $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command');
             switch ($Ident) {
                 case 'setState':
                     $switchMode = $this->ReadPropertyBoolean('deviceMode');
@@ -82,6 +83,11 @@ declare(strict_types=1);
                     $this->SendDebug(__FUNCTION__, $data['command'], 0);
                     $return = $this->SendData($data = json_encode($data));
                     $return = json_decode($return, true);
+                    if (isset($return['body']['items'][0]['status']['battery'])) {
+                        $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
+                        $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
+                        $this->SendDebug(__FUNCTION__, 'Battery: ' . $return['body']['items'][0]['status']['battery'], 0);
+                    }
                     $success = $return['message'];
                     if ($success == 'success') {
                         $this->SetValue($Ident, $Value);
@@ -107,8 +113,19 @@ declare(strict_types=1);
                 default:
                     $this->SetValue($Ident, $Value);
                 }
-            $this->SendDebug(__FUNCTION__, $return['message'], 0);
+            $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
             return $return;
+        }
+
+        public function DeviceStatus()
+        {
+            $data = array();
+            $data['deviceID'] = $this->ReadPropertyString('deviceID');
+            $data['command'] = 'getStatus';
+            $this->SendDebug(__FUNCTION__, $data['command'], 0);
+            $return = $this->SendData($data = json_encode($data));
+            $return = json_decode($return, true);
+            $this->SendDebug(__FUNCTION__, $return['message'], 0);
         }
 
         protected function SendData($Buffer)
@@ -117,7 +134,7 @@ declare(strict_types=1);
                 'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
                 'Buffer' => utf8_encode($Buffer),
             ]));
-            $this->SendDebug(__FUNCTION__, $return, 0);
+            $this->SendDebug('Answer from API', $return, 0);
             return $return;
         }
     }

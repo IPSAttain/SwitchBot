@@ -1,5 +1,7 @@
 # Switchbot
 
+# SwitchBot API v1.0
+
 Folgende Module beinhaltet das Switchbot Repository:
 
 - __SwitchBot Splitter__ ([Dokumentation](SwitchBot%20Splitter))  

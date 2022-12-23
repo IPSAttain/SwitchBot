@@ -10,6 +10,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             parent::Create();
 
             $this->RegisterPropertyString("Token", "");
+            $this->RegisterPropertyString("Secret", "");
         }
 
         public function Destroy()
@@ -22,7 +23,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         {
             //Never delete this line!
             parent::ApplyChanges();
-            if ($this->ReadPropertyString('Token')) {
+            /*if ($this->ReadPropertyString('Token')) {
                 $cc_id = IPS_GetInstanceListByModuleID('{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}')[0];
                 if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
                     $webhook_url = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
@@ -35,21 +36,15 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             } else {
                 $this->SetStatus(IS_INACTIVE);
             }
+            */
         }
 
         public function ForwardData($JSONString)
         {
             $data = json_decode($JSONString, true);
             $data = json_decode($data['Buffer'], true);
-            $this->SendDebug(__FUNCTION__, 'Command: ' . $data['command'] . '  deviceID: ' . $data['deviceID'], 0);
             $returndata = "";
             switch ($data['command']) {
-                case 'turnOn':
-                case 'turnOff':
-                case 'press':
-                    $returndata = $this->PostToDevice($data['deviceID'], $data['command']);
-                    break;
-                
                 case 'getDevices':
                     $returndata = $this->GetDevices();
                     break;
@@ -59,7 +54,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                     break;
                 
                 default:
-                    $returndata = $this->GetDevices();
+                    $returndata = $this->PostToDevice($data['deviceID'], $data['command'], $data['parameter'], $data['commandType']);
                     break;
             }
             $this->SendDebug(__FUNCTION__, $returndata, 0);
@@ -68,53 +63,36 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function GetDevices()
         {
-            $Token = $this->ReadPropertyString("Token");
-            $url = "https://api.switch-bot.com/v1.0/devices";
-            
+            $url = "https://api.switch-bot.com/v1.1/devices";
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            
-            $headers = array(
-               "Accept: application/json",
-               "Authorization: Bearer " . $Token,
-            );
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
             //for debug only!
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            
             $SwitchBotResponse = curl_exec($curl);
             curl_close($curl);
             return $SwitchBotResponse;
         }
 
-        protected function PostToDevice($deviceID, $command)
+        protected function PostToDevice($deviceID, $command, $parameter, $commandType)
         {
-            $Token = $this->ReadPropertyString("Token");
-            $url = "https://api.switch-bot.com/v1.0/devices/" . $deviceID . "/commands";
-            
+            $this->SendDebug(__FUNCTION__, $deviceID, 0);
+            $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/commands";
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            
-            $headers = array(
-               "Accept: application/json",
-               "Authorization: Bearer " . $Token,
-               "Content-Type: application/json",
-            );
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
 
             $data = array(
                 'command' => $command,
-                'parameter' => 'default',
-                'commandType' => 'command'
+                'parameter' => $parameter,
+                'commandType' => $commandType
             );
             $data = json_encode($data);
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            //for debug only!
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             
@@ -125,24 +103,15 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function GetDeviceStatus($deviceID)
         {
-            $Token = $this->ReadPropertyString("Token");
-            $url = "https://api.switch-bot.com/v1.0/devices/" . $deviceID . "/status";
-            
+            $this->SendDebug(__FUNCTION__, $deviceID, 0);
+            $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/status";
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            
-            $headers = array(
-               "Accept: application/json",
-               "Authorization: Bearer " . $Token,
-               "Content-Type: application/json",
-            );
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
             //for debug only!
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            
             $SwitchBotResponse = curl_exec($curl);
             curl_close($curl);
             return $SwitchBotResponse;
@@ -150,19 +119,11 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function SetWebHook($webHookurl)
         {
-            $Token = $this->ReadPropertyString("Token");
-            $url = "https://api.switch-bot.com/v1.0/webhook/setupWebhook";
-            
+            $url = "https://api.switch-bot.com/v1.1/webhook/setupWebhook";
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            
-            $headers = array(
-               "Accept: application/json",
-               "Authorization: Bearer " . $Token,
-               "Content-Type: application/json",
-            );
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
 
             $data = array(
                 'action' => 'setupWebhook',
@@ -180,5 +141,39 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $SwitchBotResponse = curl_exec($curl);
             curl_close($curl);
             return $SwitchBotResponse;
+        }
+        protected function GetHeaders() {
+            $token = $this->ReadPropertyString("Token");
+            $secret = $this->ReadPropertyString("Secret");
+            $nonce = $this->guidv4();
+            $t = time() * 1000;
+            $data = utf8_encode($token . $t . $nonce);
+            $sign = hash_hmac('sha256', $data, $secret,true);
+            $sign = strtoupper(base64_encode($sign));
+            $this->SendDebug(__FUNCTION__ . ' nonce ', $nonce, 0);
+            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
+            $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
+            $this->SendDebug(__FUNCTION__ . ' SIGN ', $sign, 0);
+            $headers = array(
+                "Content-Type:application/json",
+                "Authorization:" . $token,
+                "sign:" . $sign,
+                "nonce:" . $nonce,
+                "t:" . $t
+            );
+            return $headers;
+        }
+        protected function guidv4($data = null) {
+            // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
+            $data = $data ?? random_bytes(16);
+            assert(strlen($data) == 16);
+
+            // Set version to 0100
+            $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+            // Set bits 6-7 to 10
+            $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+            // Output the 36 character UUID.
+            return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
         }
     }
