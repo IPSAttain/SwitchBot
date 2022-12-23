@@ -66,16 +66,15 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         {
             $token = $this->ReadPropertyString("Token");
             $secret = $this->ReadPropertyString("Secret");
-            $nonce = rand(0,10000);
-            $this->SendDebug(__FUNCTION__ . ' Nounce ', $nonce, 0);
+            $nonce = guidv4();
             $t = time() * 1000;
-            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
             $data = utf8_encode($token . $t . $nonce);
-            $data = $token . $t . $nonce;
+            $sign = hash_hmac('sha256', $data, $secret,true);
+            $sign = strtoupper(base64_encode($sign));
+
+            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
+            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
             $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
-            $sign = hash_hmac('sha256', $data, $secret);
-            $this->SendDebug(__FUNCTION__ . ' sign ', $sign, 0);
-            $sign = strtoupper($sign);
             $this->SendDebug(__FUNCTION__ . ' SIGN ', $sign, 0);
 
             $url = "https://api.switch-bot.com/v1.1/devices";
@@ -92,7 +91,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 "nonce:" . $nonce,
                 "t:" . $t
             );
-            $this->SendDebug(__FUNCTION__ . ' Headers ', implode('|' , $headers), 0);
+
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
             
             //for debug only!
