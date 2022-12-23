@@ -66,14 +66,14 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         {
             $token = $this->ReadPropertyString("Token");
             $secret = $this->ReadPropertyString("Secret");
-            //$nonce = guidv4();
-            $nonce = rand(0,99999);
+            $nonce = guidv4();
+            //$nonce = rand(0,99999);
             $t = time() * 1000;
             $data = utf8_encode($token . $t . $nonce);
             $sign = hash_hmac('sha256', $data, $secret,true);
             $sign = strtoupper(base64_encode($sign));
 
-            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
+            $this->SendDebug(__FUNCTION__ . ' nonce ', $nonce, 0);
             $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
             $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
             $this->SendDebug(__FUNCTION__ . ' SIGN ', $sign, 0);
@@ -85,8 +85,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             
             $headers = array(
-                "Accept: application/json",
-                "Content-Type: application/json",
+                "Content-Type:application/json",
                 "Authorization:" . $token,
                 "sign:" . $sign,
                 "nonce:" . $nonce,
@@ -198,5 +197,17 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             curl_close($curl);
             return $SwitchBotResponse;
         }
+        protected function guidv4($data = null) {
+            // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
+            $data = $data ?? random_bytes(16);
+            assert(strlen($data) == 16);
 
+            // Set version to 0100
+            $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+            // Set bits 6-7 to 10
+            $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+            // Output the 36 character UUID.
+            return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+        }
     }
