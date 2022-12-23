@@ -86,8 +86,8 @@ declare(strict_types=1);
                     if (isset($return['body']['items'][0]['status']['battery'])) {
                         $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
                         $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
+                        $this->SendDebug(__FUNCTION__, 'Battery: ' . $return['body']['items'][0]['status']['battery'], 0);
                     }
-                    $this->SendDebug(__FUNCTION__, $return['body']['items'][0]['status']['battery'], 0);
                     $success = $return['message'];
                     if ($success == 'success') {
                         $this->SetValue($Ident, $Value);
@@ -113,7 +113,7 @@ declare(strict_types=1);
                 default:
                     $this->SetValue($Ident, $Value);
                 }
-            $this->SendDebug(__FUNCTION__, $return['message'], 0);
+            $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
             return $return;
         }
 
