@@ -104,6 +104,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
         protected function GetDeviceStatus($deviceID)
         {
+            $this->SendDebug(__FUNCTION__, $deviceID, 0);
             $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/status";
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
