@@ -6,7 +6,8 @@
             "If On = Switchmode, If Off = Pressmode": "An = Schalter Modus | Aus = Drücken Modus",
             "Device Info": "Geräte Informationen",
             "Brightness": "Helligkeit",
-            "Press":"Status"
+            "Press":"Status",
+            "Battery":"Batterie"
         }
     }
 }
