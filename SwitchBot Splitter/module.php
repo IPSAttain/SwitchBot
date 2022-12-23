@@ -66,7 +66,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         {
             $token = $this->ReadPropertyString("Token");
             $secret = $this->ReadPropertyString("Secret");
-            $nonce = guidv4();
+            $nonce = $this->guidv4();
             //$nonce = rand(0,99999);
             $t = time() * 1000;
             $data = utf8_encode($token . $t . $nonce);
