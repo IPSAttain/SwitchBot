@@ -39,11 +39,12 @@ declare(strict_types=1);
                         $this->RegisterProfile('SwitchBot.setBrightnessUp', 'HollowArrowUp', '', '', 0, 0, 0, '' , 1);
                         IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessUp', 0, $this->Translate('Brightness Up'), 'HollowArrowUp', 0xFFFFFF); 
                         // RegisterProfile($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize, $Digits, $Vartype)
-                        $this->RegisterVariableInteger('SwitchBot.setBrightnessUp', $this->Translate('Brightness Up'), 'BrightnessUp', 31);
+                        $this->RegisterVariableInteger('setBrightnessUp', $this->Translate('Brightness Up'), 'SwitchBot.setBrightnessUp', 31);
                         $this->EnableAction('setBrightnessUp');
+                        
                         $this->RegisterProfile('SwitchBot.setBrightnessDown', 'HollowArrowDown', '', '', 0, 0, 0, '', 1);
                         IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessDown', 0, $this->Translate('Brightness Down'), 'HollowArrowDown', 0xFFFFFF);
-                        $this->RegisterVariableInteger('setBrightnessDown', $this->Translate('Brightness Down'), 'BrightnessDown', 32);
+                        $this->RegisterVariableInteger('setBrightnessDown', $this->Translate('Brightness Down'), 'SwitchBot.setBrightnessDown', 32);
                         $this->EnableAction('setBrightnessDown');
                         break;
             }
