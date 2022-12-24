@@ -95,7 +95,6 @@ declare(strict_types=1);
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
             $return = json_decode($this->SendData($data = json_encode($data)), true); // Send Command to Splitter
-            $this->SendDebug('Answer from API', $return, 0);
             if ($return['message'] == 'success') {
                 $this->SetValue($Ident, $Value);
                 if (!$this->ReadPropertyBoolean('deviceMode')) {
@@ -127,6 +126,7 @@ declare(strict_types=1);
                 'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
                 'Buffer' => utf8_encode($Buffer),
             ]));
+            $this->SendDebug('Answer from API', $return, 0);
             return $return;
         }
 
