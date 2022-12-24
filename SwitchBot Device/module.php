@@ -36,12 +36,12 @@ declare(strict_types=1);
                 case 'Light':
                         $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
                         $this->EnableAction('setState');
+
                         $this->RegisterProfile('SwitchBot.setBrightnessUp', 'HollowArrowUp', '', '', 0, 0, 0, '' , 1);
                         IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessUp', 0, $this->Translate('Brightness Up'), 'HollowArrowUp', 0xFFFFFF); 
-                        // RegisterProfile($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize, $Digits, $Vartype)
                         $this->RegisterVariableInteger('setBrightnessUp', $this->Translate('Brightness Up'), 'SwitchBot.setBrightnessUp', 31);
                         $this->EnableAction('setBrightnessUp');
-                        
+
                         $this->RegisterProfile('SwitchBot.setBrightnessDown', 'HollowArrowDown', '', '', 0, 0, 0, '', 1);
                         IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessDown', 0, $this->Translate('Brightness Down'), 'HollowArrowDown', 0xFFFFFF);
                         $this->RegisterVariableInteger('setBrightnessDown', $this->Translate('Brightness Down'), 'SwitchBot.setBrightnessDown', 32);
@@ -78,54 +78,36 @@ declare(strict_types=1);
             $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command');
             switch ($Ident) {
                 case 'setState':
-                    $switchMode = $this->ReadPropertyBoolean('deviceMode');
-                    if (!$switchMode) {
-                        $data['command'] = 'press';
-                    } else {
-                        if ($Value) {
-                            $data['command'] = 'turnOn';
-                        } else {
-                            $data['command'] = 'turnOff';
-                        }
-                    }
-                    $this->SendDebug(__FUNCTION__, $data['command'], 0);
-                    $return = $this->SendData($data = json_encode($data));
-                    $return = json_decode($return, true);
-                    if (isset($return['body']['items'][0]['status']['battery'])) {
-                        $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
-                        $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
-                        $this->SendDebug(__FUNCTION__, 'Battery: ' . $return['body']['items'][0]['status']['battery'], 0);
-                    }
-                    $success = $return['message'];
-                    if ($success == 'success') {
-                        $this->SetValue($Ident, $Value);
-                        if (!$switchMode) {
-                            IPS_Sleep(2000);
-                            $this->SetValue($Ident, false);
-                        }
-                    }
+                    $data['command'] = 'turnOff';
+                    if ($Value) $data['command'] = 'turnOn';
                     break;
 
                 case 'setBrightnessUp':
                     $data['command'] = 'brightnessUp';
-                    $this->SendDebug(__FUNCTION__, $data['command'], 0);
-                    $return = $this->SendData($data = json_encode($data));
-                    $return = json_decode($return, true);
-                    if ($return['message'] == 'success') $this->SetValue($Ident, $Value);
                     break;
 
                 case 'setBrightnessDown':
                     $data['command'] = 'brightnessDown';
-                    $this->SendDebug(__FUNCTION__, $data['command'], 0);
-                    $return = $this->SendData($data = json_encode($data));
-                    $return = json_decode($return, true);
-                    if ($return['message'] == 'success') $this->SetValue($Ident, $Value);
                     break;
 
                 default:
-                    $this->SetValue($Ident, $Value);
+                    $data['command'] = 'unknown';
+            }
+            $this->SendDebug(__FUNCTION__, $data['command'], 0);
+            $return = json_decode($this->SendData($data = json_encode($data)), true); // Send Command to Splitter
+            if ($return['message'] == 'success') {
+                $this->SetValue($Ident, $Value);
+                if (!$this->ReadPropertyBoolean('deviceMode')) {
+                    IPS_Sleep(1000);
+                    $this->SetValue($Ident, false);
                 }
+            }
             $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
+            if (isset($return['body']['items'][0]['status']['battery'])) {
+                $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
+                $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
+                $this->SendDebug(__FUNCTION__, 'ReturnBatteryValue: ' . $return['body']['items'][0]['status']['battery'], 0);
+            }
             return $return;
         }
 
