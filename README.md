@@ -51,6 +51,7 @@ Den nötigen Token Key und den Security Key müssen in der App generiert werden.
 * Damit werden die Entwikler Optionen aktiviert und ein neuer Menu Eintrag wird angezeigt.
 * Gehe zum Menu Entwickler Optionen
 * Generiere einen neuen Key
+
 ![Keys](libs\SwitchBot1.jpg)
 
 
