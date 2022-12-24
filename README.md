@@ -1,5 +1,5 @@
 # Symcon Module SwitchBot
-# API Version 1.1
+### API Version 1.1
 
 ### Inhaltsverzeichnis
 
@@ -11,11 +11,12 @@
 6. [Instanz Dokumentation](#6-instanz-dokumentation)
 7. [Weitere Links](#7-weitere-links)
 
+8. [Spenden](#8-spenden)
 
 ### 1. Funktionsumfang
 
 
-# Das Modul unterstützt aktuell (24.12.2022) folgende Geräte.
+### Das Modul unterstützt aktuell (24.12.2022) folgende Geräte.
 * SwitchBot Bot (Cloud Unterstützung muss aktiviert sein)
 * IR Fernbedienung - Light
 
@@ -23,7 +24,8 @@
 
 * IP-Symcon ab Version 6.0
 * SwitchBot Hub Mini
-* SwitchBot App (IOS oder Android) Login mit einem Account
+* SwitchBot App (IOS oder Android) 
+* Registrierten SwitchBot Account
 
 
 ### 3. Software-Installation
@@ -41,7 +43,16 @@
 
 ### 5. Entwickler Keys
 
-Die Statusvariablen/Kategorien werden automatisch angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
+Den nötigen Token Key und den Security Key müssen in der App generiert werden.
+* Öffne App
+* Gehe zum Profil
+* Einstellungen
+* Tippe 10 mal auf das App Versions Feld
+* Damit werden die Entwikler Optionen aktiviert und ein neuer Menu Eintrag wird angezeigt.
+* Gehe zum Menu Entwickler Optionen
+* Generiere einen neuen Key
+![Keys](libs\SwitchBot1.jpg)
+
 
 ### 6. Instanz Dokumentation
 
@@ -61,3 +72,8 @@ Folgende Module beinhaltet das Switchbot Repository:
 * [SwitchBot (Official website)](https://www.switch-bot.com/)
 * [API Dokumentation (GitHub)](https://github.com/OpenWonderLabs/SwitchBotAPI)
 
+### 8. Spenden
+
+Schenkungen zur Unterstützung sind hier möglich:
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6CSLZLEKKGT8Q" target="_blank"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" border="0" /></a>

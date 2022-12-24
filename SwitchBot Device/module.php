@@ -36,8 +36,15 @@ declare(strict_types=1);
                 case 'Light':
                         $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
                         $this->EnableAction('setState');
-                        $this->RegisterVariableBoolean('setBrightness', $this->Translate('Brightness'), 'Brightness', 20);
-                        $this->EnableAction('setBrightness');
+                        $this->RegisterProfile('SwitchBot.setBrightnessUp', 'HollowArrowUp', '', '', 0, 0, 0, , 1)
+                        IPS_SetVariableProfileAssociation ('SwitchBot.setBrightnessUp', 0, $this->Translate('Brightness Up'), 'HollowArrowUp', 0xFFFFFF) 
+                        // RegisterProfile($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize, $Digits, $Vartype)
+                        $this->RegisterVariableInteger('SwitchBot.setBrightnessUp', $this->Translate('Brightness Up'), 'BrightnessUp', 31);
+                        $this->EnableAction('setBrightnessUp');
+                        $this->RegisterProfile('SwitchBot.setBrightnessDown', 'HollowArrowDown', '', '', 0, 0, 0, , 1)
+                        IPS_SetVariableProfileAssociation ('SwitchBot.setBrightnessDown', 0, $this->Translate('Brightness Down'), 'HollowArrowDown', 0xFFFFFF) 
+                        $this->RegisterVariableInteger('setBrightnessDown', $this->Translate('Brightness Down'), 'BrightnessDown', 32);
+                        $this->EnableAction('setBrightnessDown');
                         break;
             }
         }
@@ -137,4 +144,21 @@ declare(strict_types=1);
             $this->SendDebug('Answer from API', $return, 0);
             return $return;
         }
+
+        protected function RegisterProfile($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize, $Digits, $Vartype)
+        {
+            if (!IPS_VariableProfileExists($Name)) {
+                IPS_CreateVariableProfile($Name, $Vartype); // 0 boolean, 1 int, 2 float, 3 string,
+            } else {
+                $profile = IPS_GetVariableProfile($Name);
+                if ($profile['ProfileType'] != $Vartype) {
+                    $this->SendDebug(__FUNCTION__, 'Variable profile type does not match for profile ' . $Name, 0);
+                }
+            }
+            IPS_SetVariableProfileIcon($Name, $Icon);
+            IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+            if (isset($Digits)) IPS_SetVariableProfileDigits($Name, $Digits); //  Nachkommastellen
+            IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
+        }
     }
+
