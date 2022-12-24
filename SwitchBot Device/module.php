@@ -115,7 +115,7 @@ declare(strict_types=1);
 
                 case 'setColor':
                     $data['command'] = $Ident;
-                    $data['parameter'] = $Value >> 16 & 255 . ':' . $Value >> 8 & 255 . ':' . $Value & 255;
+                    $data['parameter'] = strval($Value >> 16 & 255) . ':' . strval($Value >> 8 & 255) . ':' . $Value & 255;
                     break;
 
                 case 'setBrightness':
