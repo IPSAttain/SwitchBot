@@ -2,13 +2,20 @@
     "translations": {
         "de": {
             "Device Name": "Geräte Name",
-            "Device Mode": "Schalter Modus",
+            "Device Mode": "Geräte Modus",
             "If On = Switchmode, If Off = Pressmode": "An = Schalter Modus | Aus = Drücken Modus",
+            "If On = Performance Mode, If Off = Silent Mode":"An = Performance Modus | Aus = Leise Modus",
             "Device Info": "Geräte Informationen",
             "Brightness": "Helligkeit",
             "Brightness Up":"Heller ",
             "Brightness Down":"Dunkler",
+            "Color":"Licht Farbe",
+            "Color Temperature":"Licht Temperatur",
             "Press":"Status",
+            "Toggle":"Umschalten",
+            "Light":"Licht",
+            "Lock":"Schloss",
+            "Curtain":"Vorhang",
             "Battery":"Batterie"
         }
     }

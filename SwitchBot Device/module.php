@@ -31,22 +31,51 @@ declare(strict_types=1);
                 case 'Plug':
                     $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
                     $this->EnableAction('setState');
+                    $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
+                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', 0xFFFFFF);
                     break;
                     
+                case 'Lock':
+                    $this->RegisterVariableBoolean('setLock', $this->Translate('Lock'), '~Lock', 20);
+                    $this->EnableAction('setLock');
+                    break;
+                
+                case 'Curtain':
+                    $this->RegisterVariableBoolean('setState', $this->Translate('Curtain'), '~ShutterMove', 20);
+                    $this->EnableAction('setState');
+                    $this->RegisterVariableInteger('setShutterPosition', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
+                    $this->EnableAction('setShutterPosition');
+                    break;
+
                 case 'Light':
-                        $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
-                        $this->EnableAction('setState');
+                    $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
+                    $this->EnableAction('setState');
 
-                        $this->RegisterProfile('SwitchBot.setBrightnessUp', 'HollowArrowUp', '', '', 0, 0, 0, '' , 1);
-                        IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessUp', 0, $this->Translate('Brightness Up'), 'HollowArrowUp', 0xFFFFFF); 
-                        $this->RegisterVariableInteger('setBrightnessUp', $this->Translate('Brightness Up'), 'SwitchBot.setBrightnessUp', 31);
-                        $this->EnableAction('setBrightnessUp');
+                    $this->RegisterProfile('SwitchBot.setBrightnessUp', 'HollowArrowUp', '', '', 0, 0, 0, '' , 1);
+                    IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessUp', 0, $this->Translate('Brightness Up'), 'HollowArrowUp', 0xFFFFFF); 
+                    $this->RegisterVariableInteger('brightnessUp', $this->Translate('Brightness Up'), 'SwitchBot.setBrightnessUp', 31);
+                    $this->EnableAction('brightnessUp');
 
-                        $this->RegisterProfile('SwitchBot.setBrightnessDown', 'HollowArrowDown', '', '', 0, 0, 0, '', 1);
-                        IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessDown', 0, $this->Translate('Brightness Down'), 'HollowArrowDown', 0xFFFFFF);
-                        $this->RegisterVariableInteger('setBrightnessDown', $this->Translate('Brightness Down'), 'SwitchBot.setBrightnessDown', 32);
-                        $this->EnableAction('setBrightnessDown');
-                        break;
+                    $this->RegisterProfile('SwitchBot.setBrightnessDown', 'HollowArrowDown', '', '', 0, 0, 0, '', 1);
+                    IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessDown', 0, $this->Translate('Brightness Down'), 'HollowArrowDown', 0xFFFFFF);
+                    $this->RegisterVariableInteger('brightnessDown', $this->Translate('Brightness Down'), 'SwitchBot.setBrightnessDown', 32);
+                    $this->EnableAction('brightnessDown');
+                    break;
+                
+                case 'Color Bulb':
+                case 'Strip Light':
+                    $this->RegisterVariableBoolean('setState', $this->Translate('Light'), '~Switch', 20);
+                    $this->EnableAction('setState');
+                    $this->RegisterVariableInteger('setBrightness', $this->Translate('Brightness'), '~Intensity.100', 31);
+                    $this->EnableAction('setBrightness');
+                    $this->RegisterVariableInteger('setColor', $this->Translate('Color'), '~HexColor', 32);
+                    $this->EnableAction('setColor');
+                    $this->RegisterVariableInteger('setColorTemperature', $this->Translate('Color Temperature'), '~TWColor', 33);
+                    $this->EnableAction('setColorTemperature');
+                    $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
+                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', 0xFFFFFF);
+
+                    break;
             }
         }
 
@@ -59,7 +88,9 @@ declare(strict_types=1);
                 case 'Light':
                     $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
                     break;
-
+                case 'Curtain':
+                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json'), true);
+                    break;
                 default:
                 $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
             }
@@ -82,13 +113,32 @@ declare(strict_types=1);
                     if ($Value) $data['command'] = 'turnOn';
                     break;
 
-                case 'setBrightnessUp':
-                    $data['command'] = 'brightnessUp';
+                case 'setColor':
+                    $data['command'] = $Ident;
+                    $data['parameter'] = $Value >>16 & 255 . ':' . $Value >> 8 & 255 . ':' . $Value & 255;
                     break;
 
-                case 'setBrightnessDown':
-                    $data['command'] = 'brightnessDown';
+                case 'setBrightness':
+                case 'setColorTemperature':
+                    $data['command'] = $Ident;
+                    $data['parameter'] = strval($Value);
                     break;
+                
+                case 'brightnessUp':
+                case 'brightnessDown':
+                case 'toggle':
+                    $data['command'] = $Ident;
+                    break;
+
+                case 'setLock':
+                    $data['command'] = 'unlock';
+                    if ($Value) $data['command'] = 'lock';
+                    break;
+                
+                case 'setShutterPosition':
+                    $data['command'] = 'setPosition';
+                    if ($this->ReadPropertyBoolean('deviceMode')) $data['parameter'] = '0,1,' . $Value;
+                    else $data['parameter'] = '0,0,' . $Value;
 
                 default:
                     $data['command'] = 'unknown';
@@ -102,9 +152,11 @@ declare(strict_types=1);
                     $this->SetValue($Ident, false);
                 }
             }
+            $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
             if (isset($return['body']['items'][0]['status']['battery'])) {
                 $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
                 $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
+                $this->SendDebug(__FUNCTION__, 'ReturnBatteryValue: ' . $return['body']['items'][0]['status']['battery'], 0);
             }
             return $return;
         }
