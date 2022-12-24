@@ -145,7 +145,7 @@ declare(strict_types=1);
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
             $return = json_decode($this->SendData($data = json_encode($data)), true); // Send Command to Splitter
-            if ($return['message'] == 'success') {
+            if ($return['message'] == 'success' && $Ident == 'setState') {
                 $this->SetValue($Ident, $Value);
                 if ($this->ReadPropertyBoolean('deviceMode')) {
                     IPS_Sleep(1000);
