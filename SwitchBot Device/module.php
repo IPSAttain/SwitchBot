@@ -33,6 +33,8 @@ declare(strict_types=1);
                     $this->EnableAction('setState');
                     $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
                     IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', 0xFFFFFF);
+                    $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
+                    $this->EnableAction('toggle');
                     break;
                     
                 case 'Lock':
@@ -74,6 +76,8 @@ declare(strict_types=1);
                     $this->EnableAction('setColorTemperature');
                     $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
                     IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', 0xFFFFFF);
+                    $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
+                    $this->EnableAction('toggle');
 
                     break;
             }
