@@ -95,6 +95,7 @@ declare(strict_types=1);
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
             $return = json_decode($this->SendData($data = json_encode($data)), true); // Send Command to Splitter
+            $this->SendDebug('Answer from API', $return, 0);
             if ($return['message'] == 'success') {
                 $this->SetValue($Ident, $Value);
                 if (!$this->ReadPropertyBoolean('deviceMode')) {
@@ -102,11 +103,9 @@ declare(strict_types=1);
                     $this->SetValue($Ident, false);
                 }
             }
-            $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
             if (isset($return['body']['items'][0]['status']['battery'])) {
                 $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
                 $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
-                $this->SendDebug(__FUNCTION__, 'ReturnBatteryValue: ' . $return['body']['items'][0]['status']['battery'], 0);
             }
             return $return;
         }
@@ -128,7 +127,6 @@ declare(strict_types=1);
                 'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
                 'Buffer' => utf8_encode($Buffer),
             ]));
-            $this->SendDebug('Answer from API', $return, 0);
             return $return;
         }
 
