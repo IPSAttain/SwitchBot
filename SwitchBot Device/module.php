@@ -77,7 +77,7 @@ declare(strict_types=1);
 
                 case 'TV':
                 case 'Set Top Box':
-                    $this->RegisterProfile('SwitchBot.setChannel', 'TV', '', '', 0, 255, 1, '' , 1);
+                    $this->RegisterProfile('SwitchBot.setChannel', 'TV', '', '', 0, 9, 1, '' , 1);
                     $this->RegisterVariableInteger('SetChannel', $this->Translate('Channel'), 'SwitchBot.setChannel', 25);
                     $this->EnableAction('SetChannel');
                     IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
@@ -183,8 +183,7 @@ declare(strict_types=1);
                 
                 case 'setShutterPosition':
                     $data['command'] = 'setPosition';
-                    if ($this->ReadPropertyBoolean('deviceMode')) $data['parameter'] = '0,1,' . $Value;
-                    else $data['parameter'] = '0,0,' . $Value;
+                    $data['parameter'] = ($this->ReadPropertyBoolean('deviceMode') ? '0,1,' . $Value : '0,0,' . $Value);
 
                 case 'setPlayback':
                     $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
