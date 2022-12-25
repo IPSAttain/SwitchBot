@@ -84,8 +84,10 @@ declare(strict_types=1);
                     $this->RegisterVariableInteger('setMute', $this->Translate('Mute'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('setMute');
                     $this->RegisterVariableInteger('irVolume', $this->Translate('Volume'), 'SwitchBot.UpDown', 30);
+                    IPS_SetIcon ($this->GetIDForIdent("irVolume"), 'TV');
                     $this->EnableAction('irVolume');
                     $this->RegisterVariableInteger('irChannel', $this->Translate('Channel'), 'SwitchBot.UpDown', 31);
+                    IPS_SetIcon ($this->GetIDForIdent("irChannel"), 'TV');
                     $this->EnableAction('irChannel');
                     break;
 
