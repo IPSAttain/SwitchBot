@@ -83,7 +83,7 @@ declare(strict_types=1);
                     $this->RegisterVariableInteger('setChannel', $this->Translate('Channel'), 'SwitchBot.setChannel', 25);
                     $this->EnableAction('setChannel');
                     IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
-                    $this->RegisterVariableBoolean('setMute', $this->Translate('Mute'), 'SwitchBot.toggle', 30);
+                    $this->RegisterVariableInteger('setMute', $this->Translate('Mute'), 'SwitchBot.toggle', 30);
                     $this->EnableAction('setMute');
                     break;
 
