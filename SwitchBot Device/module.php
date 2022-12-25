@@ -158,6 +158,7 @@ declare(strict_types=1);
                 case 'brightnessUp':
                 case 'brightnessDown':
                 case 'toggle':
+                case 'setMute':
                     $data['command'] = $Ident;
                     break;
 
@@ -174,6 +175,7 @@ declare(strict_types=1);
                 case 'setPlayback':
                     $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
                     $data['command'] =$Playback[$Value];
+
                 default:
                     $data['command'] = 'unknown';
             }
