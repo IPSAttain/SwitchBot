@@ -78,8 +78,8 @@ declare(strict_types=1);
                 case 'TV':
                 case 'Set Top Box':
                     $this->RegisterProfile('SwitchBot.setChannel', 'TV', '', '', 0, 255, 1, '' , 1);
-                    $this->RegisterVariableInteger('setChannel', $this->Translate('Channel'), 'SwitchBot.setChannel', 25);
-                    $this->EnableAction('setChannel');
+                    $this->RegisterVariableInteger('SetChannel', $this->Translate('Channel'), 'SwitchBot.setChannel', 25);
+                    $this->EnableAction('SetChannel');
                     IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
                     $this->RegisterVariableInteger('setMute', $this->Translate('Mute'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('setMute');
@@ -155,7 +155,7 @@ declare(strict_types=1);
 
                 case 'setBrightness':
                 case 'setColorTemperature':
-                case 'setChannel':
+                case 'SetChannel':
                     $data['command'] = $Ident;
                     $data['parameter'] = strval($Value);
                     break;
