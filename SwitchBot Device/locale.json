@@ -25,7 +25,9 @@
             "Previous":"Zurück",
             "Pause":"Pause",
             "Play":"Play",
-            "Stop":"Stop"
+            "Stop":"Stop",
+            "Volume":"Lautstärke",
+            "Channel":"Kanal"
         }
     }
 }

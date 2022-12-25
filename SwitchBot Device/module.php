@@ -27,6 +27,10 @@ declare(strict_types=1);
             parent::ApplyChanges();
 
             $stateVariable = true;
+            $this->RegisterProfile('SwitchBot.UpDown', 'Bulb', '', '', 0, 1, 0, '' , 1);
+            IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 0, '▲', '', -1); 
+            IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 1, '▼', '', -1); 
+
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Plug':
                     $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
@@ -67,14 +71,8 @@ declare(strict_types=1);
                 
                 //  IR Devices
                 case 'Light':
-                    $this->RegisterProfile('SwitchBot.setBrightnessUp', 'HollowArrowUp', '', '', 0, 0, 0, '' , 1);
-                    IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessUp', 0, $this->Translate('Brightness Up'), 'HollowArrowUp', -1); 
-                    $this->RegisterVariableInteger('brightnessUp', $this->Translate('Brightness Up'), 'SwitchBot.setBrightnessUp', 31);
-                    $this->EnableAction('brightnessUp');
-                    $this->RegisterProfile('SwitchBot.setBrightnessDown', 'HollowArrowDown', '', '', 0, 0, 0, '', 1);
-                    IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessDown', 0, $this->Translate('Brightness Down'), 'HollowArrowDown', -1);
-                    $this->RegisterVariableInteger('brightnessDown', $this->Translate('Brightness Down'), 'SwitchBot.setBrightnessDown', 32);
-                    $this->EnableAction('brightnessDown');
+                    $this->RegisterVariableInteger('irBrightness', $this->Translate('Brightness'), 'SwitchBot.UpDown', 31);
+                    $this->EnableAction('irBrightness');
                     break;
 
                 case 'TV':
@@ -83,8 +81,12 @@ declare(strict_types=1);
                     $this->RegisterVariableInteger('setChannel', $this->Translate('Channel'), 'SwitchBot.setChannel', 25);
                     $this->EnableAction('setChannel');
                     IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
-                    $this->RegisterVariableInteger('setMute', $this->Translate('Mute'), 'SwitchBot.toggle', 30);
+                    $this->RegisterVariableInteger('setMute', $this->Translate('Mute'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('setMute');
+                    $this->RegisterVariableInteger('irVolume', $this->Translate('Volume'), 'SwitchBot.UpDown', 30);
+                    $this->EnableAction('irVolume');
+                    $this->RegisterVariableInteger('irChannel', $this->Translate('Channel'), 'SwitchBot.UpDown', 31);
+                    $this->EnableAction('irChannel');
                     break;
 
                 case 'DVD':
@@ -155,14 +157,27 @@ declare(strict_types=1);
                     $data['command'] = $Ident;
                     $data['parameter'] = strval($Value);
                     break;
-                
-                case 'brightnessUp':
-                case 'brightnessDown':
+
                 case 'toggle':
                 case 'setMute':
                     $data['command'] = $Ident;
                     break;
 
+                case 'irBrightness':
+                    if (!$Value) $data['command'] = 'brightnessUp';
+                    else $data['command'] = 'brightnessDown';
+                    break;
+
+                case 'irVolume':
+                    if (!$Value) $data['command'] = 'volumeAdd';
+                    else $data['command'] = 'volumeSub';
+                    break;
+            
+                case 'irChannel':
+                    if (!$Value) $data['command'] = 'volumeAdd';
+                    else $data['command'] = 'volumeSub';
+                    break;
+                
                 case 'setLock':
                     $data['command'] = 'unlock';
                     if ($Value) $data['command'] = 'lock';
