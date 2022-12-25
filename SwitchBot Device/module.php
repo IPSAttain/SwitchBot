@@ -155,6 +155,7 @@ declare(strict_types=1);
 
                 case 'setBrightness':
                 case 'setColorTemperature':
+                case 'setChannel':
                     $data['command'] = $Ident;
                     $data['parameter'] = strval($Value);
                     break;
