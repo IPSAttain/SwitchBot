@@ -145,8 +145,7 @@ declare(strict_types=1);
             switch ($Ident) {
                 case 'setState':
                 case 'setCurtain':
-                    $data['command'] = 'turnOff';
-                    if ($Value) $data['command'] = 'turnOn';
+                    $data['command'] = ($Value ? 'turnOn' : 'turnOff');
                     break;
 
                 case 'setColor':
@@ -166,23 +165,19 @@ declare(strict_types=1);
                     break;
 
                 case 'irBrightness':
-                    if (!$Value) $data['command'] = 'brightnessUp';
-                    else $data['command'] = 'brightnessDown';
+                    $data['command'] = ($Value ? 'brightnessDown' : 'brightnessUp');
                     break;
 
                 case 'irVolume':
-                    if (!$Value) $data['command'] = 'volumeAdd';
-                    else $data['command'] = 'volumeSub';
+                    $data['command'] = ($Value ? 'volumeSub' : 'volumeAdd');
                     break;
             
                 case 'irChannel':
-                    if (!$Value) $data['command'] = 'volumeAdd';
-                    else $data['command'] = 'volumeSub';
+                    $data['command'] = ($Value ? 'channelSub' : 'channelAdd');
                     break;
                 
                 case 'setLock':
-                    $data['command'] = 'unlock';
-                    if ($Value) $data['command'] = 'lock';
+                    $data['command'] = ($Value ? 'lock' : 'unlock');
                     break;
                 
                 case 'setShutterPosition':
