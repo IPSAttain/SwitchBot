@@ -26,48 +26,33 @@ declare(strict_types=1);
             //Never delete this line!
             parent::ApplyChanges();
 
+            $stateVariable = true;
             switch ($this->ReadPropertyString('deviceType')) {
-                case 'Bot':
                 case 'Plug':
-                    $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
-                    $this->EnableAction('setState');
                     $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
-                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', 0xFFFFFF);
+                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
                     $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('toggle');
                     break;
                     
                 case 'Lock':
+                    $stateVariable = false;
                     $this->RegisterVariableBoolean('setLock', $this->Translate('Lock'), '~Lock', 20);
                     $this->EnableAction('setLock');
                     break;
                 
                 case 'Curtain':
-                    $this->RegisterVariableBoolean('setState', $this->Translate('Curtain'), '~ShutterMove', 20);
-                    $this->EnableAction('setState');
+                    $stateVariable = false;
+                    $this->RegisterVariableBoolean('setCurtain', $this->Translate('Curtain'), '~ShutterMove', 20);
+                    $this->EnableAction('setCurtain');
                     $this->RegisterVariableInteger('setShutterPosition', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
                     $this->EnableAction('setShutterPosition');
                     break;
 
-                case 'Light':
-                    $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 20);
-                    $this->EnableAction('setState');
-
-                    $this->RegisterProfile('SwitchBot.setBrightnessUp', 'HollowArrowUp', '', '', 0, 0, 0, '' , 1);
-                    IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessUp', 0, $this->Translate('Brightness Up'), 'HollowArrowUp', 0xFFFFFF); 
-                    $this->RegisterVariableInteger('brightnessUp', $this->Translate('Brightness Up'), 'SwitchBot.setBrightnessUp', 31);
-                    $this->EnableAction('brightnessUp');
-
-                    $this->RegisterProfile('SwitchBot.setBrightnessDown', 'HollowArrowDown', '', '', 0, 0, 0, '', 1);
-                    IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessDown', 0, $this->Translate('Brightness Down'), 'HollowArrowDown', 0xFFFFFF);
-                    $this->RegisterVariableInteger('brightnessDown', $this->Translate('Brightness Down'), 'SwitchBot.setBrightnessDown', 32);
-                    $this->EnableAction('brightnessDown');
-                    break;
-                
                 case 'Color Bulb':
                 case 'Strip Light':
-                    $this->RegisterVariableBoolean('setState', $this->Translate('Light'), '~Switch', 20);
-                    $this->EnableAction('setState');
+                case 'Ceiling Light':
+                case 'Ceiling Light Pro':
                     $this->RegisterVariableInteger('setBrightness', $this->Translate('Brightness'), '~Intensity.100', 31);
                     $this->EnableAction('setBrightness');
                     $this->RegisterVariableInteger('setColor', $this->Translate('Color'), '~HexColor', 32);
@@ -75,11 +60,52 @@ declare(strict_types=1);
                     $this->RegisterVariableInteger('setColorTemperature', $this->Translate('Color Temperature'), '~TWColor', 33);
                     $this->EnableAction('setColorTemperature');
                     $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
-                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', 0xFFFFFF);
+                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
                     $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('toggle');
-
                     break;
+                
+                //  IR Devices
+                case 'Light':
+                    $this->RegisterProfile('SwitchBot.setBrightnessUp', 'HollowArrowUp', '', '', 0, 0, 0, '' , 1);
+                    IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessUp', 0, $this->Translate('Brightness Up'), 'HollowArrowUp', -1); 
+                    $this->RegisterVariableInteger('brightnessUp', $this->Translate('Brightness Up'), 'SwitchBot.setBrightnessUp', 31);
+                    $this->EnableAction('brightnessUp');
+                    $this->RegisterProfile('SwitchBot.setBrightnessDown', 'HollowArrowDown', '', '', 0, 0, 0, '', 1);
+                    IPS_SetVariableProfileAssociation('SwitchBot.setBrightnessDown', 0, $this->Translate('Brightness Down'), 'HollowArrowDown', -1);
+                    $this->RegisterVariableInteger('brightnessDown', $this->Translate('Brightness Down'), 'SwitchBot.setBrightnessDown', 32);
+                    $this->EnableAction('brightnessDown');
+                    break;
+
+                case 'TV':
+                case 'Set Top Box':
+                    $this->RegisterProfile('SwitchBot.setChannel', 'TV', '', '', 0, 255, 1, '' , 1);
+                    $this->RegisterVariableInteger('setChannel', $this->Translate('Channel'), 'SwitchBot.setChannel', 25);
+                    $this->EnableAction('setChannel');
+                    $this->RegisterVariableBoolean('setMute', $this->Translate('Mute'), '~Switch', 30);
+                    $this->EnableAction('setMute');
+                    break;
+
+                case 'DVD':
+                case 'Speaker':
+                    $this->RegisterProfile('SwitchBot.setPlayback', 'TV', '', '', 0, 6, 1, '' , 1);
+                        IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 0, $this->Translate('FastForward'), '', -1);
+                        IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 1, $this->Translate('Rewind'), '', -1);
+                        IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 2, $this->Translate('Next'), '', -1);
+                        IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 3, $this->Translate('Previous'), '', -1);
+                        IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 4, $this->Translate('Pause'), '', -1);
+                        IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 5, $this->Translate('Play'), '', -1);
+                        IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 6, $this->Translate('Stop'), '', -1);
+                    $this->RegisterVariableInteger('setPlayback', $this->Translate('Playback'), 'SwitchBot.setPlayback', 35);
+                    $this->EnableAction('setPlayback');
+                    break;
+
+                default:
+            }
+            if ($stateVariable) {
+                // most devices support the "turnOn" / "turnOff" command
+                $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 10);
+                $this->EnableAction('setState');
             }
         }
 
@@ -96,7 +122,7 @@ declare(strict_types=1);
                     $form = json_decode(file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json'), true);
                     break;
                 default:
-                $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+                    $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
             }
             return json_encode($form);
         }
@@ -113,6 +139,7 @@ declare(strict_types=1);
             $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command');
             switch ($Ident) {
                 case 'setState':
+                case 'setCurtain':
                     $data['command'] = 'turnOff';
                     if ($Value) $data['command'] = 'turnOn';
                     break;
@@ -144,14 +171,17 @@ declare(strict_types=1);
                     if ($this->ReadPropertyBoolean('deviceMode')) $data['parameter'] = '0,1,' . $Value;
                     else $data['parameter'] = '0,0,' . $Value;
 
+                case 'setPlayback':
+                    $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
+                    $data['command'] =$Playback[$Value];
                 default:
                     $data['command'] = 'unknown';
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
             $return = json_decode($this->SendData($data = json_encode($data)), true); // Send Command to Splitter
-            if ($return['message'] == 'success' && $Ident == 'setState') {
+            if ($return['message'] == 'success') {
                 $this->SetValue($Ident, $Value);
-                if ($this->ReadPropertyBoolean('deviceMode')) {
+                if (!$this->ReadPropertyBoolean('deviceMode')&& $Ident == 'setState') {
                     IPS_Sleep(1000);
                     $this->SetValue($Ident, false);
                 }
