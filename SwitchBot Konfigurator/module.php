@@ -49,7 +49,7 @@ declare(strict_types=1);
             foreach (IPS_GetInstanceListByModuleID($guid) as $instanceID) {
                 if (IPS_GetInstance($instanceID)['ConnectionID'] === IPS_GetInstance($this->InstanceID)['ConnectionID']) {
                     // Add the instance ID to a list for the given address. Even though addresses should be unique, users could break things by manually editing the settings
-                    $connectedInstanceIDs[IPS_GetProperty($instanceID, 'DeviceID')][] = $instanceID;
+                    $connectedInstanceIDs[IPS_GetProperty($instanceID, 'deviceID')][] = $instanceID;
                 }
             }
             
