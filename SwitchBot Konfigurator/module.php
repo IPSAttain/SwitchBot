@@ -44,6 +44,15 @@ declare(strict_types=1);
             $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
             $Instances = IPS_GetInstanceListByModuleID($guid);
             
+            // Get all the instances that are connected to the configurators I/O
+            $connectedInstanceIDs = [];
+            foreach (IPS_GetInstanceListByModuleID($guid) as $instanceID) {
+                if (IPS_GetInstance($instanceID)['ConnectionID'] === IPS_GetInstance($this->InstanceID)['ConnectionID']) {
+                    // Add the instance ID to a list for the given address. Even though addresses should be unique, users could break things by manually editing the settings
+                    $connectedInstanceIDs[IPS_GetProperty($instanceID, 'DeviceID')][] = $instanceID;
+                }
+            }
+            
             // Configurator
             
             foreach ($devices as $device) {
@@ -72,6 +81,20 @@ declare(strict_types=1);
                         'name'           => 'SwitchBot ' . $device['deviceType'] . ' (' . $device['deviceName'] . ')'
                     ]
                 ];
+            }
+            foreach ($connectedInstanceIDs as $address => $instanceIDs) {
+                foreach ($instanceIDs as $index => $instanceID) {
+                    // The first entry for each found address was already added as valid value
+                    if (($index === 0) && (!array_search($address,$devices))) {
+                        continue;
+                    }
+                    // However, if an address is not a found address or an address has multiple instances, they are erroneous
+                    $values[] = [
+                        'DeviceID' => $address,
+                        'name' => IPS_GetName($instanceID),
+                        'instanceID' => $instanceID
+                    ];
+                }
             }
             return json_encode($Values);
         }
