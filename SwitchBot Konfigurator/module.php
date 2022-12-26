@@ -86,6 +86,8 @@ declare(strict_types=1);
                 foreach ($instanceIDs as $index => $instanceID) {
                     // The first entry for each found address was already added as valid value
                     if (($index === 0) && (!array_search($address,$devices))) {
+                        $this->SendDebug("Index ", $index, 0);
+                        $this->SendDebug("Address ", $$address, 0);
                         continue;
                     }
                     // However, if an address is not a found address or an address has multiple instances, they are erroneous
