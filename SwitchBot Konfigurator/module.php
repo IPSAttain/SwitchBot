@@ -90,7 +90,7 @@ declare(strict_types=1);
                     }
                     // However, if an address is not a found address or an address has multiple instances, they are erroneous
                     $values[] = [
-                        'DeviceID' => $address,
+                        'deviceID' => $address,
                         'name' => IPS_GetName($instanceID),
                         'instanceID' => $instanceID
                     ];
