@@ -46,7 +46,7 @@ declare(strict_types=1);
             
             // Get all the instances that are connected to the configurators I/O
             $connectedInstanceIDs = [];
-            foreach (IPS_GetInstanceListByModuleID($guid) as $instanceID) {
+            foreach ($Instances as $instanceID) {
                 if (IPS_GetInstance($instanceID)['ConnectionID'] === IPS_GetInstance($this->InstanceID)['ConnectionID']) {
                     // Add the instance ID to a list for the given address. Even though addresses should be unique, users could break things by manually editing the settings
                     $connectedInstanceIDs[IPS_GetProperty($instanceID, 'deviceID')][] = $instanceID;
@@ -89,7 +89,7 @@ declare(strict_types=1);
                         continue;
                     }
                     // However, if an address is not a found address or an address has multiple instances, they are erroneous
-                    $values[] = [
+                    $Values[] = [
                         'deviceID' => $address,
                         'name' => IPS_GetName($instanceID),
                         'instanceID' => $instanceID
