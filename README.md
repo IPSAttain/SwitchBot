@@ -22,10 +22,13 @@
 * Lock
 * Plug
 * Strip Light
+* Ceiling Light / Ceiling Light Pro
 * Color Bulb
 
 ### IR Fernbedienung 
 * Light
+* TV / Set Top Box
+* DVD / Speaker
 
 ### 2. Voraussetzungen
 
@@ -37,7 +40,7 @@
 
 ### 3. Software-Installation
 
-* Über den Module Store das 'SwitchBot Splitter'-Modul installieren.
+* Über den Module Store das 'SwitchBot Konfigurator-Modul' installieren.
 * Alternativ über das Module Control folgende URL hinzufügen
 
 ### 4. Einrichten der Instanzen in IP-Symcon
@@ -54,11 +57,11 @@
 ### 5. Entwickler Keys
 
 Den nötigen Token Key und den Security Key müssen in der App generiert werden.
-* Öffne App
-* Gehe zum Profil
+* Öffne die App
+* Gehe zum Profil Menu
 * Einstellungen
 * Tippe 10 mal auf das App Versions Feld
-* Damit werden die Entwikler Optionen aktiviert und ein neuer Menu Eintrag wird angezeigt.
+* Damit werden die Entwickler Optionen aktiviert und ein neuer Menu Eintrag wird angezeigt.
 * Gehe zum Menu Entwickler Optionen
 * Generiere einen neuen Key
 
