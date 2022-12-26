@@ -49,8 +49,8 @@ declare(strict_types=1);
                     $stateVariable = false;
                     $this->RegisterVariableBoolean('setCurtain', $this->Translate('Curtain'), '~ShutterMove', 20);
                     $this->EnableAction('setCurtain');
-                    $this->RegisterVariableInteger('setShutterPosition', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
-                    $this->EnableAction('setShutterPosition');
+                    $this->RegisterVariableInteger('setPosition', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
+                    $this->EnableAction('setPosition');
                     break;
 
                 case 'Color Bulb':
@@ -141,7 +141,7 @@ declare(strict_types=1);
 
         public function RequestAction($Ident, $Value)
         {
-            $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command');
+            $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command', 'command' => $Ident);
             switch ($Ident) {
                 case 'setState':
                 case 'setCurtain':
@@ -149,20 +149,13 @@ declare(strict_types=1);
                     break;
 
                 case 'setColor':
-                    $data['command'] = $Ident;
                     $data['parameter'] = strval($Value >> 16 & 255) . ':' . strval($Value >> 8 & 255) . ':' . $Value & 255;
                     break;
 
                 case 'setBrightness':
                 case 'setColorTemperature':
                 case 'SetChannel':
-                    $data['command'] = $Ident;
                     $data['parameter'] = strval($Value);
-                    break;
-
-                case 'toggle':
-                case 'setMute':
-                    $data['command'] = $Ident;
                     break;
 
                 case 'irBrightness':
@@ -181,16 +174,13 @@ declare(strict_types=1);
                     $data['command'] = ($Value ? 'lock' : 'unlock');
                     break;
                 
-                case 'setShutterPosition':
-                    $data['command'] = 'setPosition';
+                case 'setPosition':
                     $data['parameter'] = ($this->ReadPropertyBoolean('deviceMode') ? '0,1,' . $Value : '0,0,' . $Value);
 
                 case 'setPlayback':
                     $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
-                    $data['command'] =$Playback[$Value];
+                    $data['command'] = $Playback[$Value];
 
-                default:
-                    $data['command'] = 'unknown';
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
             $return = json_decode($this->SendData($data = json_encode($data)), true); // Send Command to Splitter
