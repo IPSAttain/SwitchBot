@@ -86,10 +86,10 @@ declare(strict_types=1);
                 foreach ($instanceIDs as $index => $instanceID) {
                     // The first entry for each found address was already added as valid value
                     if (($index === 0) && (!array_search($address,$devices))) {
-                        var_dump('Found address ' . $address);
                         continue;
                     }
                     // However, if an address is not a found address or an address has multiple instances, they are erroneous
+                    $this->SendDebug("Unused Device", IPS_GetName($instanceID), 0);
                     $Values[] = [
                         'deviceID' => $address,
                         'name' => IPS_GetName($instanceID),
