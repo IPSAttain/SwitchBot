@@ -12,11 +12,22 @@
             "Color":"Licht Farbe",
             "Color Temperature":"Licht Temperatur",
             "Press":"Status",
+            "State":"Status",
             "Toggle":"Umschalten",
             "Light":"Licht",
             "Lock":"Schloss",
             "Curtain":"Vorhang",
-            "Battery":"Batterie"
+            "Battery":"Batterie",
+            "Playback":"Wiedergabe",
+            "FastForward":"Schnell Vorwärts",
+            "Rewind":"Schnell Zurück",
+            "Next":"Weiter",
+            "Previous":"Zurück",
+            "Pause":"Pause",
+            "Play":"Play",
+            "Stop":"Stop",
+            "Volume":"Lautstärke",
+            "Channel":"Kanal"
         }
     }
 }

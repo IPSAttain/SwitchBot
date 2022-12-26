@@ -18,40 +18,54 @@
 
 ### Das Modul unterstützt aktuell (24.12.2022) folgende Geräte.
 * SwitchBot Bot (Cloud Unterstützung muss aktiviert sein)
-* IR Fernbedienung - Light
+* Curtain
+* Lock
+* Plug
+* Strip Light
+* Ceiling Light / Ceiling Light Pro
+* Color Bulb
+
+### IR Fernbedienung 
+* Light
+* TV / Set Top Box
+* DVD / Speaker
 
 ### 2. Voraussetzungen
 
 * IP-Symcon ab Version 6.0
-* SwitchBot Hub Mini
+* SwitchBot Hub
 * SwitchBot App (IOS oder Android) 
-* Registrierten SwitchBot Account
+* Registrierter SwitchBot Account
 
 
 ### 3. Software-Installation
 
-* Über den Module Store das 'SwitchBot Splitter'-Modul installieren.
+* Über den Module Store das 'SwitchBot Konfigurator-Modul' installieren.
 * Alternativ über das Module Control folgende URL hinzufügen
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
 * SwitchBot Konfigurator installieren
 * Es wird automatisch eine Splitter Instanz hinzugefügt.
-* Im Splitter müssen  ein Token Key und ein Security Key eingegeben werden. Diesen findet Ihr in der SwitchBot App. 
+* Im Splitter müssen  ein Token Key und ein Security Key eingegeben werden. Diese beiden Keys findet Ihr in der SwitchBot App. 
+
+![Splitter](libs/SwitchBot2.png)
+
 * Weitere Infos im nächsten Kapitel
 * Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
 
 ### 5. Entwickler Keys
 
 Den nötigen Token Key und den Security Key müssen in der App generiert werden.
-* Öffne App
-* Gehe zum Profil
+* Öffne die App
+* Gehe zum Profil Menu
 * Einstellungen
 * Tippe 10 mal auf das App Versions Feld
-* Damit werden die Entwikler Optionen aktiviert und ein neuer Menu Eintrag wird angezeigt.
+* Damit werden die Entwickler Optionen aktiviert und ein neuer Menu Eintrag wird angezeigt.
 * Gehe zum Menu Entwickler Optionen
 * Generiere einen neuen Key
-![Keys](libs\SwitchBot1.jpg)
+
+![Keys](libs/SwitchBot1.jpg)
 
 
 ### 6. Instanz Dokumentation
