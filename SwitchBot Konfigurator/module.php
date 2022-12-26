@@ -34,46 +34,44 @@ declare(strict_types=1);
         private function GetFormData()
         {
             $data = array('deviceID' => '', 'command' => 'getDevices');
-            $devices = $this->SendData($data = json_encode($data));
+            $devicelist = $this->SendData($data = json_encode($data));
+            $devicelist = json_decode($devicelist, true);
             //print_r($devices);
-            $Values = array();
-            $devices = json_decode($devices, true);
-            if (isset($devices['body']['infraredRemoteList'])) $remotedevices = $devices['body']['infraredRemoteList'];
-            if (isset($devices['body']['deviceList'])) {
-                $devices = $devices['body']['deviceList'];
-                $devices = array_merge($remotedevices,$devices);
-                $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
-                $Instances = IPS_GetInstanceListByModuleID($guid);
-                
-                // Configurator
-                
-                foreach ($devices as $device) {
-                    $ID	= 0;
-                    if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
-                    foreach ($Instances as $Instance) {
-                        //$this->SendDebug("Created Instances", IPS_GetObject($Instance)['ObjectName'] , 0);
-                        if (IPS_GetProperty($Instance, 'deviceID')== $device['deviceId']) {
-                            $ID = $Instance;
-                        }
+            $Values =  array();
+            $devices = array();
+            if (isset($devicelist['body']['infraredRemoteList'])) $devices = $devicelist['body']['infraredRemoteList'];
+            if (isset($devicelist['body']['deviceList'])) $devices = array_merge($devices,$devicelist['body']['deviceList']);
+            $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
+            $Instances = IPS_GetInstanceListByModuleID($guid);
+            
+            // Configurator
+            
+            foreach ($devices as $device) {
+                $ID	= 0;
+                if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
+                foreach ($Instances as $Instance) {
+                    //$this->SendDebug("Created Instances", IPS_GetObject($Instance)['ObjectName'] , 0);
+                    if (IPS_GetProperty($Instance, 'deviceID')== $device['deviceId']) {
+                        $ID = $Instance;
                     }
-                    $Values[] = [
-                        'instanceID' => $ID,
-                        'deviceName' => $device['deviceName'],
-                        'deviceID'   => $device['deviceId'],
-                        'deviceType' => $device['deviceType'],
-                        'hubDeviceId'=> $device['hubDeviceId'],
-                        'create'	 =>
-                        [
-                            "moduleID"       => $guid,
-                            "configuration"  => [
-                                "deviceID"   => $device['deviceId'],
-                                "deviceName" => $device['deviceName'],
-                                "deviceType" => $device['deviceType']
-                            ],
-                            'name'           => 'SwitchBot ' . $device['deviceType'] . ' (' . $device['deviceName'] . ')'
-                        ]
-                    ];
                 }
+                $Values[] = [
+                    'instanceID' => $ID,
+                    'deviceName' => $device['deviceName'],
+                    'deviceID'   => $device['deviceId'],
+                    'deviceType' => $device['deviceType'],
+                    'hubDeviceId'=> $device['hubDeviceId'],
+                    'create'	 =>
+                    [
+                        "moduleID"       => $guid,
+                        "configuration"  => [
+                            "deviceID"   => $device['deviceId'],
+                            "deviceName" => $device['deviceName'],
+                            "deviceType" => $device['deviceType']
+                        ],
+                        'name'           => 'SwitchBot ' . $device['deviceType'] . ' (' . $device['deviceName'] . ')'
+                    ]
+                ];
             }
             return json_encode($Values);
         }

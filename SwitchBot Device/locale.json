@@ -3,8 +3,8 @@
         "de": {
             "Device Name": "Geräte Name",
             "Device Mode": "Geräte Modus",
-            "If On = Switchmode, If Off = Pressmode": "An = Schalter Modus | Aus = Drücken Modus",
-            "If On = Performance Mode, If Off = Silent Mode":"An = Performance Modus | Aus = Leise Modus",
+            "Off = Pressmode | On = Switchmode": "Aus = Drücken Modus | An = Schalter Modus",
+            "Off = Silent Mode | On = Performance Mode":" Aus = Leise Modus | An = Performance Modus",
             "Device Info": "Geräte Informationen",
             "Brightness": "Helligkeit",
             "Brightness Up":"Heller ",

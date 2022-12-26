@@ -30,11 +30,11 @@ declare(strict_types=1);
             $this->RegisterProfile('SwitchBot.UpDown', 'Bulb', '', '', 0, 1, 0, '' , 1);
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 0, '▲', '', -1); 
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 1, '▼', '', -1); 
+            $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
+            IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
 
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Plug':
-                    $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
-                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
                     $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('toggle');
                     break;
@@ -63,8 +63,6 @@ declare(strict_types=1);
                     $this->EnableAction('setColor');
                     $this->RegisterVariableInteger('setColorTemperature', $this->Translate('Color Temperature'), '~TWColor', 33);
                     $this->EnableAction('setColorTemperature');
-                    $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
-                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
                     $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('toggle');
                     break;
@@ -80,7 +78,6 @@ declare(strict_types=1);
                     $this->RegisterProfile('SwitchBot.setChannel', 'TV', '', '', 0, 9, 1, '' , 1);
                     $this->RegisterVariableInteger('SetChannel', $this->Translate('Channel'), 'SwitchBot.setChannel', 25);
                     $this->EnableAction('SetChannel');
-                    IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
                     $this->RegisterVariableInteger('setMute', $this->Translate('Mute'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('setMute');
                     $this->RegisterVariableInteger('irVolume', $this->Translate('Volume'), 'SwitchBot.UpDown', 30);
@@ -237,4 +234,3 @@ declare(strict_types=1);
             IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
         }
     }
-
