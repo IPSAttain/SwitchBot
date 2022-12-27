@@ -96,7 +96,7 @@ declare(strict_types=1);
                         $this->SendDebug("Unused Device", IPS_GetName($instanceID), 0);
                         $Values[] = [
                             'deviceID' => $address,
-                            'name' => IPS_GetName($instanceID),
+                            'deviceName' => IPS_GetName($instanceID),
                             'instanceID' => $instanceID
                         ];
                     }
