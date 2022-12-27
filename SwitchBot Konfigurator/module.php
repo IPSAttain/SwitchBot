@@ -86,7 +86,7 @@ declare(strict_types=1);
             foreach ($connectedInstanceIDs as $address => $instanceIDs) {
                 foreach ($instanceIDs as $index => $instanceID) {
                     // The first entry for each found address was already added as valid value
-                    if (($index === 0) && $stripos($deviceJsonList,$address)) {
+                    if (($index === 0) && stripos($deviceJsonList,$address)) {
                         $this->SendDebug("Active Device", $address, 0);
                     } else {
                         // However, if an address is not a found address or an address has multiple instances, they are erroneous
