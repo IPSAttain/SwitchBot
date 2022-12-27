@@ -41,7 +41,7 @@ declare(strict_types=1);
             $devices = array();
             if (isset($devicelist['body']['infraredRemoteList'])) $devices = $devicelist['body']['infraredRemoteList'];
             if (isset($devicelist['body']['deviceList'])) $devices = array_merge($devices,$devicelist['body']['deviceList']);
-            $this->SendDebug("Devices", json_encode($devices), 0);
+            $this->SendDebug("Devices", $deviceJsonList, 0);
             $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
             $Instances = IPS_GetInstanceListByModuleID($guid);
             
