@@ -34,8 +34,8 @@ declare(strict_types=1);
         private function GetFormData()
         {
             $data = array('deviceID' => '', 'command' => 'getDevices');
-            $devicelist = $this->SendData($data = json_encode($data));
-            $devicelist = json_decode($devicelist, true);
+            $deviceJsonList = $this->SendData($data = json_encode($data));
+            $devicelist = json_decode($deviceJsonList, true);
             //print_r($devices);
             $Values =  array();
             $devices = array();
@@ -86,7 +86,7 @@ declare(strict_types=1);
             foreach ($connectedInstanceIDs as $address => $instanceIDs) {
                 foreach ($instanceIDs as $index => $instanceID) {
                     // The first entry for each found address was already added as valid value
-                    if (($index === 0) && (!array_search($address,$devices))) {
+                    if (($index === 0) && (!stripos($address,$deviceJsonList))) {
                         $this->SendDebug("Index ", $index, 0);
                         $this->SendDebug("Address ", $address, 0);
                         continue;
