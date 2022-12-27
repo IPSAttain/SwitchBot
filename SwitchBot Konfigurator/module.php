@@ -86,7 +86,7 @@ declare(strict_types=1);
             foreach ($connectedInstanceIDs as $address => $instanceIDs) {
                 foreach ($instanceIDs as $index => $instanceID) {
                     // The first entry for each found address was already added as valid value
-                    if (($index === 0) && (!stripos($address,$deviceJsonList))) {
+                    if (($index === 0) && (stripos($address,$deviceJsonList) < 1)) {
                         $this->SendDebug("Index ", $index, 0);
                         $this->SendDebug("Address ", $address, 0);
                         continue;
