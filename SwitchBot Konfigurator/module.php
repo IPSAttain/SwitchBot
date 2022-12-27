@@ -90,7 +90,7 @@ declare(strict_types=1);
                         $this->SendDebug("Active Device", $address, 0);
                     } else {
                         // However, if an address is not a found address or an address has multiple instances, they are erroneous
-                        $this->SendDebug("Unused Device", IPS_GetName($instanceID), 0);
+                        $this->SendDebug("Unused Device", IPS_GetName($instanceID) . ' Type ' . IPS_GetProperty($instanceID, 'deviceType'), 0);
                         $Values[] = [
                             'deviceID' => $address,
                             'deviceName' => IPS_GetName($instanceID),
@@ -101,7 +101,6 @@ declare(strict_types=1);
                     }
                 }
             }
-            $this->SendDebug("Config Form", json_encode($Values), 0);
             return json_encode($Values);
         }
 
