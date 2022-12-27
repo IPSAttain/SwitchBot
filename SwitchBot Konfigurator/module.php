@@ -96,7 +96,7 @@ declare(strict_types=1);
                             'deviceName' => IPS_GetName($instanceID),
                             'instanceID' => $instanceID,
                             'hubDeviceId' => 'Not Connected',
-                            'deviceTyp' => IPS_GetProperty($instanceID, 'deviceType')
+                            'deviceType' => IPS_GetProperty($instanceID, 'deviceType')
                         ];
                     }
                 }
