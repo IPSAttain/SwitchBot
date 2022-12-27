@@ -91,15 +91,15 @@ declare(strict_types=1);
                     if (($index === 0) && !$stripos) {
                         $this->SendDebug("Index ", $index, 0);
                         $this->SendDebug("Address ", $address, 0);
-                        continue;
+                    } else {
+                        // However, if an address is not a found address or an address has multiple instances, they are erroneous
+                        $this->SendDebug("Unused Device", IPS_GetName($instanceID), 0);
+                        $Values[] = [
+                            'deviceID' => $address,
+                            'name' => IPS_GetName($instanceID),
+                            'instanceID' => $instanceID
+                        ];
                     }
-                    // However, if an address is not a found address or an address has multiple instances, they are erroneous
-                    $this->SendDebug("Unused Device", IPS_GetName($instanceID), 0);
-                    $Values[] = [
-                        'deviceID' => $address,
-                        'name' => IPS_GetName($instanceID),
-                        'instanceID' => $instanceID
-                    ];
                 }
             }
             $this->SendDebug("Config Form", json_encode($Values), 0);
