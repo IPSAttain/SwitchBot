@@ -100,6 +100,7 @@ declare(strict_types=1);
                     ];
                 }
             }
+            $this->SendDebug("Config Form", json_encode($Values), 0);
             return json_encode($Values);
         }
 
