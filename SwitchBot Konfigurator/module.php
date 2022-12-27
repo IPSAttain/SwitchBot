@@ -34,48 +34,70 @@ declare(strict_types=1);
         private function GetFormData()
         {
             $data = array('deviceID' => '', 'command' => 'getDevices');
-            $devices = $this->SendData($data = json_encode($data));
-            //print_r($devices);
-            $Values = array();
-            $devices = json_decode($devices, true);
-            if (isset($devices['body']['infraredRemoteList'])) $remotedevices = $devices['body']['infraredRemoteList'];
-            if (isset($devices['body']['deviceList'])) {
-                $devices = $devices['body']['deviceList'];
-                $devices = array_merge($remotedevices,$devices);
-                $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
-                $Instances = IPS_GetInstanceListByModuleID($guid);
-                
-                // Configurator
-                
-                foreach ($devices as $device) {
-                    $ID	= 0;
-                    if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
-                    foreach ($Instances as $Instance) {
-                        //$this->SendDebug("Created Instances", IPS_GetObject($Instance)['ObjectName'] , 0);
-                        if (IPS_GetProperty($Instance, 'deviceID')== $device['deviceId']) {
-                            $ID = $Instance;
-                        }
-                    }
-                    $Values[] = [
-                        'instanceID' => $ID,
-                        'deviceName' => $device['deviceName'],
-                        'deviceID'   => $device['deviceId'],
-                        'deviceType' => $device['deviceType'],
-                        'hubDeviceId'=> $device['hubDeviceId'],
-                        'create'	 =>
-                        [
-                            "moduleID"       => $guid,
-                            "configuration"  => [
-                                "deviceID"   => $device['deviceId'],
-                                "deviceName" => $device['deviceName'],
-                                "deviceType" => $device['deviceType']
-                            ],
-                            'name'           => 'SwitchBot ' . $device['deviceType'] . ' (' . $device['deviceName'] . ')'
-                        ]
-                    ];
+            $deviceJsonList = $this->SendData($data = json_encode($data));
+            $deviceArray = json_decode($deviceJsonList, true);
+            $values =  array();
+            $devices = array();
+            if (isset($deviceArray['body']['infraredRemoteList'])) $devices = $deviceArray['body']['infraredRemoteList'];
+            if (isset($deviceArray['body']['deviceList'])) $devices = array_merge($devices,$deviceArray['body']['deviceList']);
+            $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
+            $Instances = IPS_GetInstanceListByModuleID($guid);
+            
+            // Get all the instances that are connected to the configurators I/O
+            $connectedInstanceIDs = [];
+            foreach ($Instances as $instanceID) {
+                if (IPS_GetInstance($instanceID)['ConnectionID'] === IPS_GetInstance($this->InstanceID)['ConnectionID']) {
+                    // Add the instance ID to a list for the given address. Even though addresses should be unique, users could break things by manually editing the settings
+                    $connectedInstanceIDs[IPS_GetProperty($instanceID, 'deviceID')][] = $instanceID;
                 }
             }
-            return json_encode($Values);
+            
+            // Configurator
+            foreach ($devices as $device) {
+                $ID	= 0;
+                if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
+                foreach ($Instances as $Instance) {
+                    if (IPS_GetProperty($Instance, 'deviceID')== $device['deviceId']) {
+                        $ID = $Instance;
+                    }
+                }
+                $values[] = [
+                    'instanceID' => $ID,
+                    'deviceName' => $device['deviceName'],
+                    'deviceID'   => $device['deviceId'],
+                    'deviceType' => $device['deviceType'],
+                    'hubDeviceId'=> $device['hubDeviceId'],
+                    'create'	 =>
+                    [
+                        "moduleID"       => $guid,
+                        "configuration"  => [
+                            "deviceID"   => $device['deviceId'],
+                            "deviceName" => $device['deviceName'],
+                            "deviceType" => $device['deviceType']
+                        ],
+                        'name' => 'SwitchBot ' . $device['deviceType'] . ' (' . $device['deviceName'] . ')'
+                    ]
+                ];
+            }
+            foreach ($connectedInstanceIDs as $address => $instanceIDs) {
+                foreach ($instanceIDs as $index => $instanceID) {
+                    // The first entry for each found address was already added as valid value
+                    if (($index === 0) && stripos($deviceJsonList,$address)) {
+                        $this->SendDebug("Active Device", $address, 0);
+                    } else {
+                        // However, if an address is not a found address or an address has multiple instances, they are erroneous
+                        $this->SendDebug("Erroneous Device", IPS_GetName($instanceID) . ' Type ' . IPS_GetProperty($instanceID, 'deviceType'), 0);
+                        $values[] = [
+                            'deviceID' => $address,
+                            'deviceName' => IPS_GetName($instanceID),
+                            'instanceID' => $instanceID,
+                            'hubDeviceId' => 'Not Connected',
+                            'deviceType' => IPS_GetProperty($instanceID, 'deviceType')
+                        ];
+                    }
+                }
+            }
+            return json_encode($values);
         }
 
         protected function SendData($Buffer)

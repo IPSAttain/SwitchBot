@@ -41,7 +41,7 @@
 ### 3. Software-Installation
 
 * Über den Module Store das 'SwitchBot Konfigurator-Modul' installieren.
-* Alternativ über das Module Control folgende URL hinzufügen
+* Alternativ über das Module Control hinzufügen
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
@@ -56,7 +56,7 @@
 
 ### 5. Entwickler Keys
 
-Den nötigen Token Key und den Security Key müssen in der App generiert werden.
+Die nötigen Token- und Security Keys müssen in der App generiert werden.
 * Öffne die App
 * Gehe zum Profil Menu
 * Einstellungen
