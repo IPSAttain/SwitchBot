@@ -36,6 +36,8 @@ declare(strict_types=1);
             $data = array('deviceID' => '', 'command' => 'getDevices');
             $deviceJsonList = $this->SendData($data = json_encode($data));
             $deviceArray = json_decode($deviceJsonList, true);
+            $values =  array();
+            $devices = array();
             if (isset($deviceArray['body']['infraredRemoteList'])) $devices = $deviceArray['body']['infraredRemoteList'];
             if (isset($deviceArray['body']['deviceList'])) $devices = array_merge($devices,$deviceArray['body']['deviceList']);
             $guid = "{074E9906-6BB5-E403-3987-2C7E11EAF46C}";
@@ -43,8 +45,6 @@ declare(strict_types=1);
             
             // Get all the instances that are connected to the configurators I/O
             $connectedInstanceIDs = [];
-            $values =  array();
-            $devices = array();
             foreach ($Instances as $instanceID) {
                 if (IPS_GetInstance($instanceID)['ConnectionID'] === IPS_GetInstance($this->InstanceID)['ConnectionID']) {
                     // Add the instance ID to a list for the given address. Even though addresses should be unique, users could break things by manually editing the settings
