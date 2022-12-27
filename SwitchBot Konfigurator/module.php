@@ -88,7 +88,7 @@ declare(strict_types=1);
                     // The first entry for each found address was already added as valid value
                     $stripos = stripos($deviceJsonList,$address);
                     $this->SendDebug("StringPos ", $stripos, 0);
-                    if (($index === 0) && !$stripos) {
+                    if (($index === 0) && $stripos) {
                         $this->SendDebug("Index ", $index, 0);
                         $this->SendDebug("Address ", $address, 0);
                     } else {
