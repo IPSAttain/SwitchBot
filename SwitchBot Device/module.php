@@ -121,18 +121,7 @@ declare(strict_types=1);
         {
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
-                    $extend = '
-                    ,{ 
-                        "name": "deviceMode", 
-                        "type": "CheckBox", 
-                        "caption": "Device Mode"
-                    },
-                    { 
-                        "type": "Label",
-                        "caption": "Off = Pressmode | On = Switchmode" 
-                    }'; 
-                    $form = $this->GetFormData($extend);
-                    //$form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
+                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
                     break;
                 case 'Light':
                     $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
@@ -246,31 +235,5 @@ declare(strict_types=1);
             IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
             if ($Digits != '') IPS_SetVariableProfileDigits($Name, $Digits); //  Nachkommastellen
             IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
-        }
-
-        protected function GetFormData($extend = '') {
-            $form = '
-            {
-                "elements": [{ 
-                    "name": "deviceName", 
-                    "type": "ValidationTextBox", 
-                    "caption": "Device Name"
-                },
-                { 
-                    "name": "deviceType", 
-                    "type": "ValidationTextBox", 
-                    "caption": "DeviceType:"
-                },
-                { 
-                    "name": "deviceID", 
-                    "type": "ValidationTextBox", 
-                    "caption": "DeviceID:", 
-                    "enabled": false
-                }'. $extend . '
-            ],
-                "actions": [],
-                "status": []
-            }';
-            return $form;
         }
     }
