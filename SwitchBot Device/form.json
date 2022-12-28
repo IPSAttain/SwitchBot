@@ -1,29 +1,5 @@
 {
-    "elements": [
-        { 
-            "name": "deviceName", 
-            "type": "ValidationTextBox", 
-            "caption": "Device Name"
-        },
-        {
-            "type": "ExpansionPanel",
-            "caption": "Device Info",
-            "items": [
-                { 
-                    "name": "deviceID", 
-                    "type": "ValidationTextBox", 
-                    "caption": "DeviceID:", 
-                    "enabled": false
-                },
-                { 
-                    "name": "deviceType", 
-                    "type": "ValidationTextBox", 
-                    "caption": "DeviceType:", 
-                    "enabled": false
-                }
-            ]
-        }
-    ],
+    "elements": [],
     "actions": [],
     "status": []
 }
