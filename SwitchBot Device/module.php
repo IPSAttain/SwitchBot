@@ -121,7 +121,6 @@ declare(strict_types=1);
         {
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
-                    $this->SendDebug("Decode", json_encode($form), 0);
                     $form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
                     break;
                 case 'Light':
