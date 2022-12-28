@@ -121,7 +121,6 @@ declare(strict_types=1);
         {
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
-                    $icon = ' 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';
                     $extend = '
                     ,{ 
                         "name": "deviceMode", 
@@ -132,7 +131,7 @@ declare(strict_types=1);
                         "type": "Label",
                         "caption": "Off = Pressmode | On = Switchmode" 
                     }'; 
-                    $form = $this->GetFormData($icon, $extend);
+                    $form = $this->GetFormData($extend);
                     //$form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
                     break;
                 case 'Light':
@@ -249,12 +248,8 @@ declare(strict_types=1);
             IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
         }
 
-        protected function GetFormData($icon = '', $extend = '') {
+        protected function GetFormData($extend = '') {
             $form = '
-            {
-                "type": "Image",
-                "image": "data:image/png;base64,' . $icon . '"
-            },
             { 
                 "name": "deviceName", 
                 "type": "ValidationTextBox", 
