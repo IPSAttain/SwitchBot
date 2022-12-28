@@ -119,9 +119,14 @@ declare(strict_types=1);
 
         public function GetConfigurationForm()
         {
+            $values = json_decode($this->GetFormData());
+            $this->SendDebug("Elements", json_encode($Values), 0);
+            $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
-                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
+                    //$form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
+                    $form[] = '{ "elements": [ { "type": "Label", "label": "Off = Pressmode | On = Switchmode" },{ "name": "deviceMode", "type": "CheckBox", "caption": "Device Mode" } ] }';
+                    //$form[] = '{ "elements": [ { "name": "deviceMode", "type": "CheckBox", "caption": "Device Mode" } ] }';
                     break;
                 case 'Light':
                     $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
