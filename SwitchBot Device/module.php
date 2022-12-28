@@ -125,7 +125,6 @@ declare(strict_types=1);
                     break;
                 case 'Light':
                     $form = file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json');
-                    //$form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
                     break;
                 case 'Curtain':
                     $form = file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json');
@@ -133,7 +132,7 @@ declare(strict_types=1);
                 default:
                     $form = file_get_contents(__DIR__ . '/form.json');
             }
-            $this->SendDebug("Form ", $form, 0);
+            $this->SendDebug("Form ", json_encode(json_decode($form)), 0);
             return $form;
         }
 
