@@ -271,5 +271,6 @@ declare(strict_types=1);
                 "caption": "DeviceID:", 
                 "enabled": false
             }'. $extend ;
+            return $form;
         }
     }
