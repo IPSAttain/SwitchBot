@@ -250,22 +250,27 @@ declare(strict_types=1);
 
         protected function GetFormData($extend = '') {
             $form = '
-            { 
-                "name": "deviceName", 
-                "type": "ValidationTextBox", 
-                "caption": "Device Name"
-            },
-            { 
-                "name": "deviceType", 
-                "type": "ValidationTextBox", 
-                "caption": "DeviceType:"
-            },
-            { 
-                "name": "deviceID", 
-                "type": "ValidationTextBox", 
-                "caption": "DeviceID:", 
-                "enabled": false
-            }'. $extend ;
+            {
+                "elements": [{ 
+                    "name": "deviceName", 
+                    "type": "ValidationTextBox", 
+                    "caption": "Device Name"
+                },
+                { 
+                    "name": "deviceType", 
+                    "type": "ValidationTextBox", 
+                    "caption": "DeviceType:"
+                },
+                { 
+                    "name": "deviceID", 
+                    "type": "ValidationTextBox", 
+                    "caption": "DeviceID:", 
+                    "enabled": false
+                }'. $extend . '
+            ],
+                "actions": [],
+                "status": []
+            }';
             return $form;
         }
     }
