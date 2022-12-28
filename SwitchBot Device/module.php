@@ -104,9 +104,15 @@ declare(strict_types=1);
 
                 default:
             }
+            // most devices support the "turnOn" / "turnOff" command
             if ($stateVariable) {
-                // most devices support the "turnOn" / "turnOff" command
-                $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 10);
+                if ($this->ReadPropertyString('deviceType') == 'Bot' && !$this->ReadPropertyBoolean('deviceMode')) {
+                    // Press Mode
+                    $this->MaintainVariable('setState', $this->Translate('Press'), 1, 'SwitchBot.toggle', 10, true);
+                } else {
+                    // Switch Mode
+                    $this->MaintainVariable('setState', $this->Translate('State'), 0, '~Switch', 10, true);
+                }
                 $this->EnableAction('setState');
             }
         }
@@ -180,13 +186,16 @@ declare(strict_types=1);
 
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
-            $return = json_decode($this->SendData($data = json_encode($data)), true); // Send Command to Splitter
+            // Send Command to Splitter
+            $return = json_decode($this->SendData($data = json_encode($data)), true); 
             if ($return['message'] == 'success') {
                 $this->SetValue($Ident, $Value);
+                /*
                 if (!$this->ReadPropertyBoolean('deviceMode')&& $Ident == 'setState') {
                     IPS_Sleep(1000);
                     $this->SetValue($Ident, false);
                 }
+                */
             }
             $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
             if (isset($return['body']['items'][0]['status']['battery'])) {
@@ -214,7 +223,7 @@ declare(strict_types=1);
                 'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
                 'Buffer' => utf8_encode($Buffer),
             ]));
-            $this->SendDebug('Answer from API', $return, 0);
+            $this->SendDebug(__FUNCTION__,' Answer from API: ' . $return, 0);
             return $return;
         }
 
