@@ -132,7 +132,7 @@ declare(strict_types=1);
                         "type": "Label",
                         "caption": "Off = Pressmode | On = Switchmode" 
                     }'; 
-                    $form = GetFormData($icon, $extend);
+                    $form = $this->GetFormData($icon, $extend);
                     //$form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
                     break;
                 case 'Light':
