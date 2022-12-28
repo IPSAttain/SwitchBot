@@ -125,7 +125,7 @@ declare(strict_types=1);
                 case 'Bot':
                     $this->SendDebug("Decode", json_encode($form), 0);
                     //$form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
-                    $form[] = json_decode('{ "elements": [ { "type": "Label", "label": "Off = Pressmode | On = Switchmode" },{ "name": "deviceMode", "type": "CheckBox", "caption": "Device Mode" } ] }');
+                    $form['elements'] = json_decode(' { "type": "Label", "label": "Off = Pressmode | On = Switchmode" },{ "name": "deviceMode", "type": "CheckBox", "caption": "Device Mode" }');
                     //$form[] = '{ "elements": [ { "name": "deviceMode", "type": "CheckBox", "caption": "Device Mode" } ] }';
                     break;
                 case 'Light':
