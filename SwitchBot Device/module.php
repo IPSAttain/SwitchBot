@@ -121,19 +121,20 @@ declare(strict_types=1);
         {
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Bot':
-                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
+                    $form = file_get_contents(__DIR__ . '/../libs/formBotDevice.json');
                     break;
                 case 'Light':
-                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
+                    $form = file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json');
+                    //$form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
                     break;
                 case 'Curtain':
-                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json'), true);
+                    $form = file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json');
                     break;
                 default:
-                    $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+                    $form = file_get_contents(__DIR__ . '/form.json');
             }
-            $this->SendDebug("Form ", json_encode($form), 0);
-            return json_encode($form);
+            $this->SendDebug("Form ", $form, 0);
+            return $form;
         }
 
         public function ReceiveData($JSONString)
