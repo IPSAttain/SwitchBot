@@ -21,7 +21,8 @@
                     "caption": "DeviceType:", 
                     "enabled": false
                 }
-            ]
+            ],
+            "values": []
         }
     ],
     "actions": [],
