@@ -119,7 +119,6 @@ declare(strict_types=1);
 
         public function GetConfigurationForm()
         {
-            $values = json_decode($this->GetFormData());
             $this->SendDebug("Elements", json_encode($Values), 0);
             $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
             switch ($this->ReadPropertyString('deviceType')) {
