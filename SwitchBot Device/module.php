@@ -132,7 +132,7 @@ declare(strict_types=1);
                 default:
                     $form = file_get_contents(__DIR__ . '/form.json');
             }
-            $this->SendDebug("Form ", json_encode(json_decode($form)), 0);
+            $this->SendDebug("Form ", json_encode(json_decode($form,true)), 0);
             return $form;
         }
 
