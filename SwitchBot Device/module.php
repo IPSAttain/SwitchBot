@@ -30,8 +30,8 @@ declare(strict_types=1);
             $this->RegisterProfile('SwitchBot.UpDown', 'Bulb', '', '', 0, 1, 0, '' , 1);
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 0, '▲', '', -1); 
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 1, '▼', '', -1); 
-            $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
-            IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
+            $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 1, 1, 0, '', 1);
+            IPS_SetVariableProfileAssociation('SwitchBot.toggle', 1, $this->Translate('Toggle'), 'TurnLeft', -1);
 
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Plug':
@@ -107,10 +107,10 @@ declare(strict_types=1);
             // most devices support the "turnOn" / "turnOff" command
             if ($stateVariable) {
                 if ($this->ReadPropertyString('deviceType') == 'Bot' && !$this->ReadPropertyBoolean('deviceMode')) {
-                    // Press Mode
+                    // Press Mode for Bot
                     $this->MaintainVariable('setState', $this->Translate('Press'), 1, 'SwitchBot.toggle', 10, true);
                 } else {
-                    // Switch Mode
+                    // Switch Mode for all Devices
                     $this->MaintainVariable('setState', $this->Translate('State'), 0, '~Switch', 10, true);
                 }
                 $this->EnableAction('setState');
@@ -183,21 +183,14 @@ declare(strict_types=1);
                 case 'setPlayback':
                     $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
                     $data['command'] = $Playback[$Value];
-
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
             // Send Command to Splitter
             $return = json_decode($this->SendData($data = json_encode($data)), true); 
-            if ($return['message'] == 'success') {
-                $this->SetValue($Ident, $Value);
-                /*
-                if (!$this->ReadPropertyBoolean('deviceMode')&& $Ident == 'setState') {
-                    IPS_Sleep(1000);
-                    $this->SetValue($Ident, false);
-                }
-                */
-            }
+            // Set status var
+            if ($return['message'] == 'success') $this->SetValue($Ident, $Value);
             $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
+            // API sends the battery value only in response to the action request
             if (isset($return['body']['items'][0]['status']['battery'])) {
                 $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
                 $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
@@ -223,7 +216,7 @@ declare(strict_types=1);
                 'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
                 'Buffer' => utf8_encode($Buffer),
             ]));
-            $this->SendDebug(__FUNCTION__,' Answer from API: ' . $return, 0);
+            $this->SendDebug(__FUNCTION__,'Answer from API: ' . $return, 0);
             return $return;
         }
 
