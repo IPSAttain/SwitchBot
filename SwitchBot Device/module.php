@@ -132,7 +132,7 @@ declare(strict_types=1);
                 default:
                     $form = file_get_contents(__DIR__ . '/form.json');
             }
-            $this->SendDebug("Form ", json_encode(json_decode($form,true)), 0);
+            $this->SendDebug(__FUNCTION__ , json_encode(json_decode($form,true)), 0);
             return $form;
         }
 
@@ -141,7 +141,6 @@ declare(strict_types=1);
             $data = json_decode($JSONString);
             IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
         }
-
 
         public function RequestAction($Ident, $Value)
         {
