@@ -29,6 +29,8 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                     $return = $this->SetWebHook();
                     $this->SendDebug(__FUNCTION__, "WebHook response " . $return, 0);
                     $return = json_decode($return, true);
+                } else {
+                    $this->SendDebug(__FUNCTION__, "WebHook is not active", 0);
                 }
                 $this->SetStatus(IS_ACTIVE);
             } else {
