@@ -15,12 +15,13 @@
         { 
             "name": "directConnection", 
             "type": "CheckBox", 
-            "caption": "Don't use the Symcon Connect Service for Push Messages"
+            "caption": "Don't use the Symcon Connect Service for Push Messages",
+            "enabled":false
         },
         {
             "type": "ExpansionPanel",
             "caption": "Local Server Settings",
-            "visible":true,
+            "visible":false,
             "items": [
                 { 
                     "name": "IPAddress", 
