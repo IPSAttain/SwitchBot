@@ -104,6 +104,7 @@ declare(strict_types=1);
 
                 case 'Motion Sensor':
                 case 'Contact Sensor':
+                case 'Meter':
                     $stateVariable = false;
                     break;
 
@@ -165,9 +166,18 @@ declare(strict_types=1);
                     $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
                     $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
                     $this->SetValue('detectionState', $state);
-                    $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 10);
+                    $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 20);
                     $state = ($receivedData['context']['openState'] == 'open' ? true : false);
                     $this->SetValue('openState', $state);
+                    $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
+                    $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
+                    break;
+
+                case 'WoMeter':
+                    $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
+                    $this->SetValue('temperature', $receivedData['context']['temperature']);
+                    $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 10);
+                    $this->SetValue('humidity', $receivedData['context']['humidity']);
                     $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
                     $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
                     break;

@@ -31,6 +31,8 @@
             "Presence":"Anwesendheit",
             "Motion":"Bewegung",
             "Door":"Tür",
+            "Temperature":"Temperatur",
+            "Humidity":"Feuchtigkeit",
             "timeOfSample":"Aktualisierung"
         }
     }
