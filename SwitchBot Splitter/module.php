@@ -26,11 +26,11 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             if ($this->ReadPropertyString('Token') && $this->ReadPropertyString('Secret')) {
                 $cc_id = IPS_GetInstanceListByModuleID('{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}')[0];
                 if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
-                    $return = $this->SetWebHook();
+                    $return = $this->SetWebHook($cc_id);
                     $this->SendDebug(__FUNCTION__, "WebHook response " . $return, 0);
                     $return = json_decode($return, true);
                 } else {
-                    $this->SendDebug(__FUNCTION__, "WebHook is not active", 0);
+                    $this->SendDebug(__FUNCTION__, "Symcon Connect Service is not active", 0);
                 }
                 $this->SetStatus(IS_ACTIVE);
             } else {
@@ -117,7 +117,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             return $SwitchBotResponse;
         }
 
-        protected function SetWebHook()
+        protected function SetWebHook($cc_id)
         {
             $currentWebHookURL = $this->GetWebHook();
             $this->SendDebug(__FUNCTION__, "Current WebHook: " . $currentWebHookURL, 0);
@@ -132,7 +132,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
 
             $data = array(
                 'action' => 'setupWebhook',
-                'url' => $webHookurl,
+                'url' => $webHookURL,
                 'deviceList' => 'ALL'
             );
             $data = json_encode($data);
