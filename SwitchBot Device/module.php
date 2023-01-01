@@ -158,7 +158,7 @@ declare(strict_types=1);
                     $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
                     $this->SetValue('detectionState', $state);
                     $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
-                    $this->SetValue($key, $receivedData['context']['timeOfSample']);
+                    $this->SetValue('timeOfSample', $receivedData['context']['timeOfSample']/1000);
                     break;
                 
                 case 'WoContact':
@@ -168,13 +168,15 @@ declare(strict_types=1);
                     $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 10);
                     $state = ($receivedData['context']['openState'] == 'open' ? true : false);
                     $this->SetValue('openState', $state);
+                    $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
+                    $this->SetValue('timeOfSample', $receivedData['context']['timeOfSample']/1000);
                     break;
 
                 default:
                     foreach ($receivedData['context'] as $key => $state) {
                         if ($key == 'timeOfSample') {
                             $this->RegisterVariableInteger($key, $key, '~UnixTimestamp', 50);
-                            $this->SetValue($key, $state);
+                            $this->SetValue($key, $state/1000);
                             return;
                         }
                         $this->RegisterVariableString($key, $key, '', 10);
