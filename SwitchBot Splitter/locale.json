@@ -2,7 +2,8 @@
     "translations": {
         "de": {
             "Don't use the Symcon Connect Service for Push Messages": "Symcon Connect nicht für Push Nachrichten nutzen.",
-            "Local Server Settings": "Server Einstellungen"
+            "Local Server Settings": "Server Einstellungen",
+            "Server IP Address":"Server IP Adresse"
         }
     }
 }
