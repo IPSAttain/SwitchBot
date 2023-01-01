@@ -68,11 +68,11 @@ declare(strict_types=1);
 
         protected function ProcessHookData()
         {
-            $this->SendDebug('WebHook', 'Array POST: ' . print_r($_POST, true), 0);
+            $this->SendDebug(__FUNCTION__, 'Array POST: ' . print_r($_POST, true), 0);
+            $this->SendDebug(__FUNCTION__, 'Array  GET: ' . print_r($_GET, true),0);
+            $this->SendDebug(__FUNCTION__, 'Array  RAW: ' . file_get_contents("php://input"),0);
             $this->SendDebug(__FUNCTION__ , $_POST, 0);
-            foreach ($_POST as $key => $value) {
-                $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
-            }
+
         }
 
         public function ForwardData($JSONString)
@@ -114,7 +114,7 @@ declare(strict_types=1);
 
         protected function PostToDevice($deviceID, $command, $parameter, $commandType)
         {
-            $this->SendDebug(__FUNCTION__, $deviceID, 0);
+            $this->SendDebug(__FUNCTION__ . ' ' . $deviceID, 'Command: ' . $command . ' Parameter: ' . $parameter . ' Command Type: ' . $commandType, 0);
             $url = "https://api.switch-bot.com/v1.1/devices/" . $deviceID . "/commands";
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
