@@ -16,7 +16,7 @@
             "name": "directConnection", 
             "type": "CheckBox", 
             "caption": "Don't use the Symcon Connect Service for Push Messages",
-            "enabled":false
+            "enabled":true
         },
         {
             "type": "ExpansionPanel",
