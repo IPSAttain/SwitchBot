@@ -70,10 +70,14 @@ declare(strict_types=1);
         {
             $receivedData = file_get_contents("php://input");
             $this->SendDebug(__FUNCTION__,$receivedData,0);
+            /*
             $receivedData = json_decode($receivedData, true);
             foreach ($receivedData['context'] as $key => $value) {
                 $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
             }
+            */
+            $result = $this->SendDataToChildren(json_encode(Array("DataID" => "{96111B9D-5260-8CFD-A2C4-5393BFFA1EB4}", "Buffer" => $receivedData)));
+
         }
 
         public function ForwardData($JSONString)
