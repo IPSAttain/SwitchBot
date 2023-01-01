@@ -31,7 +31,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 $endpoint = 'queryWebhook';
                 $return = $this->ModifyWebHook($endpoint, $data);
                 $return = json_decode($return,true);
-                $currentWebHookURL = stripslashes($return['body']['urls']);
+                $currentWebHookURL = $return['body']['urls'][0];
                 $this->SendDebug(__FUNCTION__, "Current WebHook: " . $currentWebHookURL, 0);
                 $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
                 if ($currentWebHookURL == $webHookURL) {
