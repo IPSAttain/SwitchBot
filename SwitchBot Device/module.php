@@ -30,8 +30,8 @@ declare(strict_types=1);
             $this->RegisterProfile('SwitchBot.UpDown', 'Bulb', '', '', 0, 1, 0, '' , 1);
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 0, '▲', '', -1); 
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 1, '▼', '', -1); 
-            $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 0, 0, 0, '', 1);
-            IPS_SetVariableProfileAssociation('SwitchBot.toggle', 0, $this->Translate('Toggle'), 'TurnLeft', -1);
+            $this->RegisterProfile('SwitchBot.toggle', 'TurnLeft', '', '', 1, 1, 0, '', 1);
+            IPS_SetVariableProfileAssociation('SwitchBot.toggle', 1, $this->Translate('Toggle'), 'TurnLeft', -1);
 
             switch ($this->ReadPropertyString('deviceType')) {
                 case 'Plug':
@@ -102,39 +102,83 @@ declare(strict_types=1);
                     $this->EnableAction('setPlayback');
                     break;
 
+                case 'Motion Sensor':
+                case 'Contact Sensor':
+                case 'Meter':
+                case 'Meter Plus':
+                case 'Indoor Cam':
+                case 'Pan/Tilt Cam':
+                    $stateVariable = false;
+                    break;
+
                 default:
             }
+            // most devices support the "turnOn" / "turnOff" command
             if ($stateVariable) {
-                // most devices support the "turnOn" / "turnOff" command
-                $this->RegisterVariableBoolean('setState', $this->Translate('Press'), '~Switch', 10);
+                if ($this->ReadPropertyString('deviceType') == 'Bot' && !$this->ReadPropertyBoolean('deviceMode')) {
+                    // Press Mode for Bot
+                    $this->MaintainVariable('setState', $this->Translate('Press'), 1, 'SwitchBot.toggle', 10, true);
+                } else {
+                    // Switch Mode for all Devices
+                    $this->MaintainVariable('setState', $this->Translate('State'), 0, '~Switch', 10, true);
+                }
                 $this->EnableAction('setState');
             }
-        }
-
-        public function GetConfigurationForm()
-        {
-            switch ($this->ReadPropertyString('deviceType')) {
-                case 'Bot':
-                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formBotDevice.json'), true);
-                    break;
-                case 'Light':
-                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json'), true);
-                    break;
-                case 'Curtain':
-                    $form = json_decode(file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json'), true);
-                    break;
-                default:
-                    $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
-            }
-            return json_encode($form);
         }
 
         public function ReceiveData($JSONString)
         {
             $data = json_decode($JSONString);
-            IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
-        }
+            // $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
+            $receivedData = json_decode(utf8_decode($data->Buffer), true);
+            if ($receivedData['context']['deviceMac'] != $this->ReadPropertyString('deviceID')) return;
+            $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
+            $deviceType = $receivedData['context']['deviceType'];
+            $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
+            $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
+            switch ($deviceType) {
+                case 'WoPresence':
+                case 'WoCamera':
+                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
+                    $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
+                    $this->SetValue('detectionState', $state);
+                    break;
+                
+                case 'WoContact':
+                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
+                    $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
+                    $this->SetValue('detectionState', $state);
+                    $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 20);
+                    $state = ($receivedData['context']['openState'] == 'open' ? true : false);
+                    $this->SetValue('openState', $state);
+                    break;
 
+                case 'WoMeter':
+                    $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
+                    $this->SetValue('temperature', $receivedData['context']['temperature']);
+                    $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 20);
+                    $this->SetValue('humidity', $receivedData['context']['humidity']);
+                    break;
+
+                case 'Lock':
+                    $this->RegisterVariableString('lockState', $key, '', 10);
+                    $this->SetValue('lockState', $receivedData['context']['lockState']);
+
+                default:
+                    $i = 10;
+                    foreach ($receivedData['context'] as $key => $state) {
+                        $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $state, 0);
+                        if ($key == 'timeOfSample') {
+                            //already set
+                            return;
+                        }
+                        $this->RegisterVariableString($key, $key, '', $i);
+                        $this->SetValue($key, $state);
+                        $i += 10;
+                    }
+            }
+
+        }
 
         public function RequestAction($Ident, $Value)
         {
@@ -177,18 +221,14 @@ declare(strict_types=1);
                 case 'setPlayback':
                     $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
                     $data['command'] = $Playback[$Value];
-
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
-            $return = json_decode($this->SendData($data = json_encode($data)), true); // Send Command to Splitter
-            if ($return['message'] == 'success') {
-                $this->SetValue($Ident, $Value);
-                if (!$this->ReadPropertyBoolean('deviceMode')&& $Ident == 'setState') {
-                    IPS_Sleep(1000);
-                    $this->SetValue($Ident, false);
-                }
-            }
+            // Send Command to Splitter
+            $return = json_decode($this->SendData($data = json_encode($data)), true); 
+            // Set status var
+            if ($return['message'] == 'success') $this->SetValue($Ident, $Value);
             $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
+            // API sends the battery value only in response to the action request
             if (isset($return['body']['items'][0]['status']['battery'])) {
                 $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
                 $this->SetValue('battery',$return['body']['items'][0]['status']['battery']);
@@ -214,7 +254,7 @@ declare(strict_types=1);
                 'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
                 'Buffer' => utf8_encode($Buffer),
             ]));
-            $this->SendDebug('Answer from API', $return, 0);
+            $this->SendDebug(__FUNCTION__,'Answer from API: ' . $return, 0);
             return $return;
         }
 
@@ -232,5 +272,24 @@ declare(strict_types=1);
             IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
             if ($Digits != '') IPS_SetVariableProfileDigits($Name, $Digits); //  Nachkommastellen
             IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
+        }
+    
+        public function GetConfigurationForm()
+        {
+            switch ($this->ReadPropertyString('deviceType')) {
+                case 'Bot':
+                    $form = file_get_contents(__DIR__ . '/../libs/formBotDevice.json');
+                    break;
+                case 'Light':
+                    $form = file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json');
+                    break;
+                case 'Curtain':
+                    $form = file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json');
+                    break;
+                default:
+                    $form = file_get_contents(__DIR__ . '/form.json');
+            }
+            $this->SendDebug(__FUNCTION__ , json_encode(json_decode($form,true)), 0);
+            return $form;
         }
     }

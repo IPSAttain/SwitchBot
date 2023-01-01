@@ -11,7 +11,7 @@
             "Brightness Down":"Dunkler",
             "Color":"Licht Farbe",
             "Color Temperature":"Licht Temperatur",
-            "Press":"Status",
+            "Press":"Drücken",
             "State":"Status",
             "Toggle":"Umschalten",
             "Light":"Licht",
@@ -27,7 +27,13 @@
             "Play":"Play",
             "Stop":"Stop",
             "Volume":"Lautstärke",
-            "Channel":"Kanal"
+            "Channel":"Kanal",
+            "Presence":"Anwesendheit",
+            "Motion":"Bewegung",
+            "Door":"Tür",
+            "Temperature":"Temperatur",
+            "Humidity":"Feuchtigkeit",
+            "timeOfSample":"Aktualisierung"
         }
     }
 }

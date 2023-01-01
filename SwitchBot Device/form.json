@@ -13,7 +13,7 @@
                     "name": "deviceID", 
                     "type": "ValidationTextBox", 
                     "caption": "DeviceID:", 
-                    "enabled": false
+                    "enabled": true
                 },
                 { 
                     "name": "deviceType", 
