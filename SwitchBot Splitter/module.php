@@ -28,6 +28,11 @@ declare(strict_types=1);
 
             if ($this->ReadPropertyString('Token') && $this->ReadPropertyString('Secret')) {
                 $cc_id = IPS_GetInstanceListByModuleID('{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}')[0];
+                //Only call this in READY state. On startup the WebHook instance might not be available yet
+                if (IPS_GetKernelRunlevel() == KR_READY) {
+                    
+                    $this->RegisterHook('/hook/switchbot/' . $this->InstanceID);
+                }
                 // check webhook configuration
                 $data = array('action' => 'queryUrl');
                 $endpoint = 'queryWebhook';
@@ -50,11 +55,6 @@ declare(strict_types=1);
                     $endpoint ='setupWebhook';
                     $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
 
-                    //Only call this in READY state. On startup the WebHook instance might not be available yet
-                    if (IPS_GetKernelRunlevel() == KR_READY) {
-                        
-                        $this->RegisterHook('/hook/switchbot/' . $this->InstanceID);
-                    }
                 } else {
                     $this->SendDebug(__FUNCTION__, "Symcon Connect Service is not active", 0);
                 }
@@ -65,45 +65,13 @@ declare(strict_types=1);
             
         }
 
-        public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
-        {
-    
-            //Never delete this line!
-            parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
-    
-            if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
-                $this->RegisterHook('/hook/switchbot/' . $this->InstanceID);
-            }
-        }
-
-        private function RegisterHook($WebHook)
-        {
-            $ids = IPS_GetInstanceListByModuleID('{015A6EB8-D6E5-4B93-B496-0D3F77AE9FE1}');
-            if (count($ids) > 0) {
-                $hooks = json_decode(IPS_GetProperty($ids[0], 'Hooks'), true);
-                $found = false;
-                foreach ($hooks as $index => $hook) {
-                    if ($hook['Hook'] == $WebHook) {
-                        if ($hook['TargetID'] == $this->InstanceID) {
-                            return;
-                        }
-                        $hooks[$index]['TargetID'] = $this->InstanceID;
-                        $found = true;
-                    }
-                }
-                if (!$found) {
-                    $hooks[] = ['Hook' => $WebHook, 'TargetID' => $this->InstanceID];
-                }
-                IPS_SetProperty($ids[0], 'Hooks', json_encode($hooks));
-                IPS_ApplyChanges($ids[0]);
-            }
-        }
 
         protected function ProcessHookData()
         {
             $this->SendDebug('WebHook', 'Array POST: ' . print_r($_POST, true), 0);
+            $this->SendDebug(__FUNCTION__ , $_POST, 0);
         }
-        
+
         public function ForwardData($JSONString)
         {
             $data = json_decode($JSONString, true);
@@ -235,4 +203,39 @@ declare(strict_types=1);
             // Output the 36 character UUID.
             return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
         }
+
+        public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
+        {
+    
+            //Never delete this line!
+            parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
+    
+            if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
+                $this->RegisterHook('/hook/switchbot/' . $this->InstanceID);
+            }
+        }
+
+        private function RegisterHook($WebHook)
+        {
+            $ids = IPS_GetInstanceListByModuleID('{015A6EB8-D6E5-4B93-B496-0D3F77AE9FE1}');
+            if (count($ids) > 0) {
+                $hooks = json_decode(IPS_GetProperty($ids[0], 'Hooks'), true);
+                $found = false;
+                foreach ($hooks as $index => $hook) {
+                    if ($hook['Hook'] == $WebHook) {
+                        if ($hook['TargetID'] == $this->InstanceID) {
+                            return;
+                        }
+                        $hooks[$index]['TargetID'] = $this->InstanceID;
+                        $found = true;
+                    }
+                }
+                if (!$found) {
+                    $hooks[] = ['Hook' => $WebHook, 'TargetID' => $this->InstanceID];
+                }
+                IPS_SetProperty($ids[0], 'Hooks', json_encode($hooks));
+                IPS_ApplyChanges($ids[0]);
+            }
+        }
+
     }
