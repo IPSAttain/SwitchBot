@@ -144,7 +144,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
 
             $data = json_encode($data);
-            $this->SendDebug(__FUNCTION__ . " " . $endpoint, " API data: " . $data, 0);
+            $this->SendDebug(__FUNCTION__ . " => " . $endpoint, "API data: " . $data, 0);
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
             //for debug only!
@@ -152,7 +152,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             
             $SwitchBotResponse = curl_exec($curl);
-            $this->SendDebug(__FUNCTION__, "Return " . $SwitchBotResponse, 0);
+            $this->SendDebug(__FUNCTION__ . " => " . $endpoint, "Return " . $SwitchBotResponse, 0);
             curl_close($curl);
             return $SwitchBotResponse;
         }
