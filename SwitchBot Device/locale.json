@@ -29,6 +29,7 @@
             "Volume":"Lautstärke",
             "Channel":"Kanal",
             "Presence":"Anwesendheit",
+            "Motion":"Bewegung",
             "Door":"Tür",
             "timeOfSample":"Aktualisierung"
         }

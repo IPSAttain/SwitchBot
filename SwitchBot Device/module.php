@@ -154,29 +154,29 @@ declare(strict_types=1);
             $deviceType = $receivedData['context']['deviceType'];
             switch ($deviceType) {
                 case 'WoPresence':
-                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Presence'), '~Presence', 10);
+                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
                     $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
                     $this->SetValue('detectionState', $state);
                     $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
-                    $this->SetValue('timeOfSample', $receivedData['context']['timeOfSample']/1000);
+                    $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
                     break;
                 
                 case 'WoContact':
-                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Presence'), '~Presence', 10);
+                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
                     $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
                     $this->SetValue('detectionState', $state);
                     $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 10);
                     $state = ($receivedData['context']['openState'] == 'open' ? true : false);
                     $this->SetValue('openState', $state);
                     $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
-                    $this->SetValue('timeOfSample', $receivedData['context']['timeOfSample']/1000);
+                    $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
                     break;
 
                 default:
                     foreach ($receivedData['context'] as $key => $state) {
                         if ($key == 'timeOfSample') {
                             $this->RegisterVariableInteger($key, $key, '~UnixTimestamp', 50);
-                            $this->SetValue($key, $state/1000);
+                            $this->SetValue($key, intval($state/1000));
                             return;
                         }
                         $this->RegisterVariableString($key, $key, '', 10);
