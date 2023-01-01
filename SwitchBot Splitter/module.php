@@ -31,28 +31,23 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 $endpoint = 'queryWebhook';
                 $return = json_decode($this->ModifyWebHook($endpoint, $data),true);
                 $currentWebHookURL = $return['body']['urls'][0];
-                $this->SendDebug(__FUNCTION__, "Current WebHook: " . $currentWebHookURL, 0);
                 $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
                 if ($currentWebHookURL == $webHookURL) {
                     $this->SendDebug(__FUNCTION__, "WebHook match the current setting." , 0);
                     // configuration matches
                     return;
                 }
-                // remove the wrong entry
-                $data = array('action' => 'deleteWebhook', 'url' => $currentWebHookURL);
-                $endpoint = 'deleteWebhook';
-                $return = json_decode($this->ModifyWebHook($endpoint, $data),true);
 
                 if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
-                    $data = array(
-                        'action' => 'setupWebhook',
-                        'url' => $webHookURL,
-                        'deviceList' => 'ALL'
-                    );
+                    // remove the old entry
+                    $data = array('action' => 'deleteWebhook', 'url' => $currentWebHookURL);
+                    $endpoint = 'deleteWebhook';
+                    $return = json_decode($this->ModifyWebHook($endpoint, $data),true); 
+                    // update the webhook to the current setting
+                    $data = array('action' => 'setupWebhook','url' => $webHookURL,'deviceList' => 'ALL');
                     $endpoint ='setupWebhook';
-                    $return = $this->ModifyWebHook($endpoint, $data);
-                    $this->SendDebug(__FUNCTION__, "WebHook response " . $return, 0);
-                    $return = json_decode($return, true);
+                    $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
+
                 } else {
                     $this->SendDebug(__FUNCTION__, "Symcon Connect Service is not active", 0);
                 }
@@ -141,34 +136,6 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             return $SwitchBotResponse;
         }
 
-        protected function SetWebHook($webHookURL)
-        {
-
-            $this->SendDebug(__FUNCTION__, "WebHook URL: " . $webHookURL, 0);
-            $url = "https://api.switch-bot.com/v1.1/webhook/setupWebhook";
-            $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
-
-            $data = array(
-                'action' => 'setupWebhook',
-                'url' => $webHookURL,
-                'deviceList' => 'ALL'
-            );
-            $data = json_encode($data);
-            $this->SendDebug(__FUNCTION__, "API data " . $data, 0);
-
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            //for debug only!
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            
-            $SwitchBotResponse = curl_exec($curl);
-            curl_close($curl);
-            return $SwitchBotResponse;
-        }
-
         protected function ModifyWebHook($endpoint, $data) {
             $url = 'https://api.switch-bot.com/v1.1/webhook/' . $endpoint;
             $curl = curl_init($url);
@@ -177,7 +144,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
 
             $data = json_encode($data);
-            $this->SendDebug(__FUNCTION__, "API data " . $data, 0);
+            $this->SendDebug(__FUNCTION__ . " " . $endpoint, " API data: " . $data, 0);
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
             //for debug only!
@@ -198,7 +165,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $data = utf8_encode($token . $t . $nonce);
             $sign = hash_hmac('sha256', $data, $secret,true);
             $sign = strtoupper(base64_encode($sign));
-            $this->SendDebug(__FUNCTION__ , 'NONCE: '. $nonce . ' TIME: ' . $t . ' SIGN: ' . $sign, 0);
+            //$this->SendDebug(__FUNCTION__ , 'NONCE: '. $nonce . ' TIME: ' . $t . ' SIGN: ' . $sign, 0);
 
             $headers = array(
                 "Content-Type:application/json",
