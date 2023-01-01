@@ -105,6 +105,9 @@ declare(strict_types=1);
                 case 'Motion Sensor':
                 case 'Contact Sensor':
                 case 'Meter':
+                case 'Meter Plus':
+                case 'Indoor Cam':
+                case 'Pan/Tilt Cam':
                     $stateVariable = false;
                     break;
 
@@ -123,25 +126,6 @@ declare(strict_types=1);
             }
         }
 
-        public function GetConfigurationForm()
-        {
-            switch ($this->ReadPropertyString('deviceType')) {
-                case 'Bot':
-                    $form = file_get_contents(__DIR__ . '/../libs/formBotDevice.json');
-                    break;
-                case 'Light':
-                    $form = file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json');
-                    break;
-                case 'Curtain':
-                    $form = file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json');
-                    break;
-                default:
-                    $form = file_get_contents(__DIR__ . '/form.json');
-            }
-            $this->SendDebug(__FUNCTION__ , json_encode(json_decode($form,true)), 0);
-            return $form;
-        }
-
         public function ReceiveData($JSONString)
         {
             $data = json_decode($JSONString);
@@ -149,17 +133,15 @@ declare(strict_types=1);
             $receivedData = json_decode(utf8_decode($data->Buffer), true);
             if ($receivedData['context']['deviceMac'] != $this->ReadPropertyString('deviceID')) return;
             $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
-            foreach ($receivedData['context'] as $key => $value) {
-                $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
-            }
             $deviceType = $receivedData['context']['deviceType'];
+            $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
+            $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
             switch ($deviceType) {
                 case 'WoPresence':
+                case 'WoCamera':
                     $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
                     $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
                     $this->SetValue('detectionState', $state);
-                    $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
-                    $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
                     break;
                 
                 case 'WoContact':
@@ -169,29 +151,30 @@ declare(strict_types=1);
                     $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 20);
                     $state = ($receivedData['context']['openState'] == 'open' ? true : false);
                     $this->SetValue('openState', $state);
-                    $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
-                    $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
                     break;
 
                 case 'WoMeter':
                     $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
                     $this->SetValue('temperature', $receivedData['context']['temperature']);
-                    $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 10);
+                    $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 20);
                     $this->SetValue('humidity', $receivedData['context']['humidity']);
-                    $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
-                    $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample']/1000));
                     break;
 
+                case 'Lock':
+                    $this->RegisterVariableString('lockState', $key, '', 10);
+                    $this->SetValue('lockState', $receivedData['context']['lockState']);
+
                 default:
+                    $i = 10;
                     foreach ($receivedData['context'] as $key => $state) {
+                        $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $state, 0);
                         if ($key == 'timeOfSample') {
-                            $this->RegisterVariableInteger($key, $key, '~UnixTimestamp', 50);
-                            $this->SetValue($key, intval($state/1000));
+                            //already set
                             return;
                         }
-                        $this->RegisterVariableString($key, $key, '', 10);
+                        $this->RegisterVariableString($key, $key, '', $i);
                         $this->SetValue($key, $state);
-                        $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
+                        $i += 10;
                     }
             }
 
@@ -289,5 +272,24 @@ declare(strict_types=1);
             IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
             if ($Digits != '') IPS_SetVariableProfileDigits($Name, $Digits); //  Nachkommastellen
             IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
+        }
+    
+        public function GetConfigurationForm()
+        {
+            switch ($this->ReadPropertyString('deviceType')) {
+                case 'Bot':
+                    $form = file_get_contents(__DIR__ . '/../libs/formBotDevice.json');
+                    break;
+                case 'Light':
+                    $form = file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json');
+                    break;
+                case 'Curtain':
+                    $form = file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json');
+                    break;
+                default:
+                    $form = file_get_contents(__DIR__ . '/form.json');
+            }
+            $this->SendDebug(__FUNCTION__ , json_encode(json_decode($form,true)), 0);
+            return $form;
         }
     }
