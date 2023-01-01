@@ -102,6 +102,10 @@ declare(strict_types=1);
                     $this->EnableAction('setPlayback');
                     break;
 
+                case 'Motion Sensor':
+                    $stateVariable = false;
+                    break;
+
                 default:
             }
             // most devices support the "turnOn" / "turnOff" command
@@ -139,12 +143,23 @@ declare(strict_types=1);
         public function ReceiveData($JSONString)
         {
             $data = json_decode($JSONString);
-            $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
+            // $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
             $receivedData = json_decode(utf8_decode($data->Buffer), true);
             if ($receivedData['context']['deviceMac'] != $this->ReadPropertyString('deviceID')) return;
+            $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
             foreach ($receivedData['context'] as $key => $value) {
                 $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
             }
+            $Ident = $receivedData['context']['deviceType'];
+            switch ($Ident) {
+                case 'WoPresense':
+                    $this->RegisterVariableBoolean($Ident, $this->Translate('Presense'), '~Presense', 10);
+                    $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
+                    $this->SetValue($Ident, $state);
+                    break;
+                
+            }
+
         }
 
         public function RequestAction($Ident, $Value)

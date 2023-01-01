@@ -55,15 +55,9 @@ declare(strict_types=1);
             
             // Configurator
             foreach ($devices as $device) {
-                /*if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
-                foreach ($instances as $instance) {
-                    // find out if instance already exist.
-                    $ID = (IPS_GetProperty($instance, 'deviceID') == $device['deviceId'] ? $instance : 0);
-                }
-                */
                 $ID	= 0;
                 if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
-                                    // find out if instance already exist.
+                // find out if instance already exist.
                 foreach ($instances as $Instance) {
                     if (IPS_GetProperty($Instance, 'deviceID')== $device['deviceId']) {
                         $ID = $Instance;
