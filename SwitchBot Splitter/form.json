@@ -19,7 +19,7 @@
         },
         {
             "type": "ExpansionPanel",
-            "caption": "Device Info",
+            "caption": "Local Server Settings",
             "visible":true,
             "items": [
                 { 

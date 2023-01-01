@@ -2,7 +2,7 @@
     "translations": {
         "de": {
             "Don't use the Symcon Connect Service for Push Messages": "Symcon Connect nicht für Push Nachrichten nutzen.",
-            "Translation 2": "Übersetzung 2"
+            "Local Server Settings": "Server Einstellungen"
         }
     }
 }
