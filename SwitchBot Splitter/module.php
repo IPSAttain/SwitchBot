@@ -70,6 +70,9 @@ declare(strict_types=1);
         {
             $this->SendDebug('WebHook', 'Array POST: ' . print_r($_POST, true), 0);
             $this->SendDebug(__FUNCTION__ , $_POST, 0);
+            foreach ($_POST as $key => $value) {
+                $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
+            }
         }
 
         public function ForwardData($JSONString)
