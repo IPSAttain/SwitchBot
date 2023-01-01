@@ -42,7 +42,7 @@ declare(strict_types=1);
                 $return = json_decode($this->ModifyWebHook($endpoint, $data),true);
                 $currentWebHookURL = $return['body']['urls'][0];
                 if ($this->ReadPropertyBoolean('directConnection')) {
-                    $webHookURL = $this->ReadPropertyString('IPAddress') . '/hook/switchbot/' . $this->InstanceID;
+                    $webHookURL = utf8_encode($this->ReadPropertyString('IPAddress')) . '/hook/switchbot/' . $this->InstanceID;
                 } else {
                     $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
                     if (IPS_GetInstance($cc_id)['InstanceStatus'] != IS_ACTIVE) {
