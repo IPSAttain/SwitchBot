@@ -71,7 +71,7 @@ declare(strict_types=1);
             $receivedData = file_get_contents("php://input");
             $this->SendDebug(__FUNCTION__,$receivedData,0);
             $receivedData = json_decode($receivedData, true);
-            foreach ($receivedData as $key => $value) {
+            foreach ($receivedData['context'] as $key => $value) {
                 $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
             }
         }
