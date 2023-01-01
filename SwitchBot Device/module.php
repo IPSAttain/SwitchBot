@@ -141,6 +141,7 @@ declare(strict_types=1);
             $data = json_decode($JSONString);
             $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
             $receivedData = json_decode(utf8_decode($data->Buffer), true);
+            if ($receivedData['context']['deviceMac'] != $this->ReadPropertyString('deviceID')) return;
             foreach ($receivedData['context'] as $key => $value) {
                 $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
             }
