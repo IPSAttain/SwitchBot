@@ -31,7 +31,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 $endpoint = 'queryWebhook';
                 $return = $this->ModifyWebHook($endpoint, $data);
                 $return = json_decode($return,true);
-                $currentWebHookURL = json_encode($return['body']['urls']);
+                $currentWebHookURL = stripslashes($return['body']['urls']);
                 $this->SendDebug(__FUNCTION__, "Current WebHook: " . $currentWebHookURL, 0);
                 $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
                 if ($currentWebHookURL == $webHookURL) {
@@ -180,6 +180,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             
             $SwitchBotResponse = curl_exec($curl);
+            $this->SendDebug(__FUNCTION__, "Return " . $SwitchBotResponse, 0);
             curl_close($curl);
             return $SwitchBotResponse;
         }
@@ -192,10 +193,8 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $data = utf8_encode($token . $t . $nonce);
             $sign = hash_hmac('sha256', $data, $secret,true);
             $sign = strtoupper(base64_encode($sign));
-            $this->SendDebug(__FUNCTION__ . ' nonce ', $nonce, 0);
-            $this->SendDebug(__FUNCTION__ . ' T ', $t, 0);
-            $this->SendDebug(__FUNCTION__ . ' Data ', $data, 0);
-            $this->SendDebug(__FUNCTION__ . ' SIGN ', $sign, 0);
+            $this->SendDebug(__FUNCTION__ , ' nonce: '. $nonce . ' T: ' . $t . ' SIGN: ' . $sign, 0);
+
             $headers = array(
                 "Content-Type:application/json",
                 "Authorization:" . $token,
