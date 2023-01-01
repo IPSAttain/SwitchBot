@@ -79,6 +79,7 @@ declare(strict_types=1);
         {
             $receivedData = file_get_contents("php://input");
             $this->SendDebug(__FUNCTION__,$receivedData,0);
+            $this->SendDebug('Get',print_r($_GET, true),0);
             $result = $this->SendDataToChildren(json_encode(Array("DataID" => "{96111B9D-5260-8CFD-A2C4-5393BFFA1EB4}", "Buffer" => $receivedData)));
 
         }
