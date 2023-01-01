@@ -103,6 +103,7 @@ declare(strict_types=1);
                     break;
 
                 case 'Motion Sensor':
+                case 'Contact Sensor':
                     $stateVariable = false;
                     break;
 
@@ -150,14 +151,36 @@ declare(strict_types=1);
             foreach ($receivedData['context'] as $key => $value) {
                 $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
             }
-            $Ident = $receivedData['context']['deviceType'];
-            switch ($Ident) {
+            $deviceType = $receivedData['context']['deviceType'];
+            switch ($deviceType) {
                 case 'WoPresence':
-                    $this->RegisterVariableBoolean($Ident, $this->Translate('Presence'), '~Presence', 10);
+                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Presence'), '~Presence', 10);
                     $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
-                    $this->SetValue($Ident, $state);
+                    $this->SetValue('detectionState', $state);
+                    $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 50);
+                    $this->SetValue($key, $receivedData['context']['timeOfSample']);
                     break;
                 
+                case 'WoContact':
+                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Presence'), '~Presence', 10);
+                    $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
+                    $this->SetValue('detectionState', $state);
+                    $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 10);
+                    $state = ($receivedData['context']['openState'] == 'open' ? true : false);
+                    $this->SetValue('openState', $state);
+                    break;
+
+                default:
+                    foreach ($receivedData['context'] as $key => $state) {
+                        if ($key == 'timeOfSample') {
+                            $this->RegisterVariableInteger($key, $key, '~UnixTimestamp', 50);
+                            $this->SetValue($key, $state);
+                            return;
+                        }
+                        $this->RegisterVariableString($key, $key, '', 10);
+                        $this->SetValue($key, $state);
+                        $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
+                    }
             }
 
         }

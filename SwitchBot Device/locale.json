@@ -28,7 +28,9 @@
             "Stop":"Stop",
             "Volume":"Lautstärke",
             "Channel":"Kanal",
-            "Presence":"Anwesendheit"
+            "Presence":"Anwesendheit",
+            "Door":"Tür",
+            "timeOfSample":"Aktualisierung"
         }
     }
 }
