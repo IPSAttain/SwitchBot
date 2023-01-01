@@ -27,7 +27,8 @@
             "Play":"Play",
             "Stop":"Stop",
             "Volume":"Lautstärke",
-            "Channel":"Kanal"
+            "Channel":"Kanal",
+            "Presence":"Anwesendheit"
         }
     }
 }

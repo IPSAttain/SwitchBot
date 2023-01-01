@@ -152,8 +152,8 @@ declare(strict_types=1);
             }
             $Ident = $receivedData['context']['deviceType'];
             switch ($Ident) {
-                case 'WoPresense':
-                    $this->RegisterVariableBoolean($Ident, $this->Translate('Presense'), '~Presense', 10);
+                case 'WoPresence':
+                    $this->RegisterVariableBoolean($Ident, $this->Translate('Presence'), '~Presence', 10);
                     $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
                     $this->SetValue($Ident, $state);
                     break;
