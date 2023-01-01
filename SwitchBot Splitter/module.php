@@ -34,7 +34,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
                 if ($currentWebHookURL == $webHookURL) {
                     $this->SendDebug(__FUNCTION__, "WebHook match the current setting." , 0);
-                    // configuration matches
+                    // no further action
                     return;
                 }
 
