@@ -23,10 +23,27 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
         {
             //Never delete this line!
             parent::ApplyChanges();
+
             if ($this->ReadPropertyString('Token') && $this->ReadPropertyString('Secret')) {
                 $cc_id = IPS_GetInstanceListByModuleID('{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}')[0];
+                // check webhook configuration
+                $data = array('action' => 'queryUrl');
+                $endpoint = 'queryWebhook';
+                $currentWebHookURL = $this->ModifyWebHook($endpoint, $data);
+                $this->SendDebug(__FUNCTION__, "Current WebHook: " . $currentWebHookURL, 0);
+                $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
+                if ($currentWebHookURL == $webHookURL) {
+                    $this->SendDebug(__FUNCTION__, "WebHook match the current setting." , 0);
+                    // configuration matches
+                    return;
+                }
+                // remove the wrong entry
+                $data = array('action' => 'deleteWebhook', 'url' => $currentWebHookURL);
+                $endpoint = 'deleteWebhook';
+                $return = $this->ModifyWebHook($endpoint, $data);
+
                 if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
-                    $return = $this->SetWebHook($cc_id);
+                    $return = $this->SetWebHook($webHookURL);
                     $this->SendDebug(__FUNCTION__, "WebHook response " . $return, 0);
                     $return = json_decode($return, true);
                 } else {
@@ -117,12 +134,9 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             return $SwitchBotResponse;
         }
 
-        protected function SetWebHook($cc_id)
+        protected function SetWebHook($webHookURL)
         {
-            $currentWebHookURL = $this->GetWebHook();
-            $this->SendDebug(__FUNCTION__, "Current WebHook: " . $currentWebHookURL, 0);
 
-            $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
             $this->SendDebug(__FUNCTION__, "WebHook URL: " . $webHookURL, 0);
             $url = "https://api.switch-bot.com/v1.1/webhook/setupWebhook";
             $curl = curl_init($url);
@@ -148,16 +162,13 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             return $SwitchBotResponse;
         }
 
-        protected function GetWebHook() {
-            $url = 'https://api.switch-bot.com/v1.1/webhook/queryWebhook';
+        protected function ModifyWebHook($endpoint, $data) {
+            $url = 'https://api.switch-bot.com/v1.1/webhook/' . $endpoint;
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
 
-            $data = array(
-                'action' => 'queryUrl'
-            );
             $data = json_encode($data);
             $this->SendDebug(__FUNCTION__, "API data " . $data, 0);
 
