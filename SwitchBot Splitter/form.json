@@ -3,14 +3,36 @@
         {
             "type": "ValidationTextBox",
             "name": "Token",
-            "caption": "Switchbot Token",
+            "caption": "SwitchBot Token",
             "enabled": true 
         },
         {
-            "type": "ValidationTextBox",
+            "type": "PasswordTextBox",
             "name": "Secret",
-            "caption": "Switchbot Secret",
+            "caption": "SwitchBot Secret",
             "enabled": true 
+        },
+        { 
+            "name": "directConnection", 
+            "type": "CheckBox", 
+            "caption": "Don't use the Symcon Connect Service for Push Messages"
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Device Info",
+            "visible":true,
+            "items": [
+                { 
+                    "name": "IPAddress", 
+                    "type": "ValidationTextBox", 
+                    "caption": "Server IP Address"
+                },
+                { 
+                    "name": "Port", 
+                    "type": "ValidationTextBox", 
+                    "caption": "Port"
+                }
+            ]
         }
     ],
     "actions": [],

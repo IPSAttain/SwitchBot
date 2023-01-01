@@ -11,6 +11,9 @@ declare(strict_types=1);
 
             $this->RegisterPropertyString('Token', '');
             $this->RegisterPropertyString('Secret', '');
+            $this->RegisterPropertyBoolean('directConnection',false);
+            $this->RegisterPropertyString('IPAddress','127.0.0.1');
+            $this->RegisterPropertyString('Port','3777');
             //We need to call the RegisterHook function on Kernel READY
            $this->RegisterMessage(0, IPS_KERNELMESSAGE);
         }
@@ -38,28 +41,34 @@ declare(strict_types=1);
                 $endpoint = 'queryWebhook';
                 $return = json_decode($this->ModifyWebHook($endpoint, $data),true);
                 $currentWebHookURL = $return['body']['urls'][0];
-                $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
+                if ($this->ReadPropertyBoolean('directConnection')) {
+                    $webHookURL = $this->ReadPropertyString('IPAddress') . ':' . $this->ReadPropertyString('Port') . '/hook/switchbot/' . $this->InstanceID;
+                } else {
+                    $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
+                    if (IPS_GetInstance($cc_id)['InstanceStatus'] != IS_ACTIVE) {
+                        $this->SendDebug(__FUNCTION__, 'Symcon Connect Service is not active', 0);
+                        $this->SetStatus(IS_INACTIVE);
+                        return;
+                    }
+                }
                 if ($currentWebHookURL == $webHookURL) {
-                    $this->SendDebug(__FUNCTION__, "WebHook match the current setting." , 0);
+                    $this->SendDebug(__FUNCTION__, 'WebHook match the current setting.' , 0);
+                    $this->SetStatus(IS_ACTIVE);
                     // no further action
                     return;
                 }
-
-                if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
-                    // remove the old entry
-                    $data = array('action' => 'deleteWebhook', 'url' => $currentWebHookURL);
-                    $endpoint = 'deleteWebhook';
-                    $return = json_decode($this->ModifyWebHook($endpoint, $data),true); 
-                    // update the webhook to the current setting
-                    $data = array('action' => 'setupWebhook','url' => $webHookURL,'deviceList' => 'ALL');
-                    $endpoint ='setupWebhook';
-                    $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
-
-                } else {
-                    $this->SendDebug(__FUNCTION__, "Symcon Connect Service is not active", 0);
-                }
+                // remove the old entry
+                $data = array('action' => 'deleteWebhook', 'url' => $currentWebHookURL);
+                $endpoint = 'deleteWebhook';
+                $return = json_decode($this->ModifyWebHook($endpoint, $data),true); 
+                // update the webhook to the current setting
+                $this->SendDebug(__FUNCTION__, 'WebHook Url: ' . $webHookURL , 0);
+                $data = array('action' => 'setupWebhook','url' => $webHookURL,'deviceList' => 'ALL');
+                $endpoint ='setupWebhook';
+                $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
                 $this->SetStatus(IS_ACTIVE);
             } else {
+                // no credentials
                 $this->SetStatus(IS_INACTIVE);
             }
             
@@ -70,12 +79,6 @@ declare(strict_types=1);
         {
             $receivedData = file_get_contents("php://input");
             $this->SendDebug(__FUNCTION__,$receivedData,0);
-            /*
-            $receivedData = json_decode($receivedData, true);
-            foreach ($receivedData['context'] as $key => $value) {
-                $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
-            }
-            */
             $result = $this->SendDataToChildren(json_encode(Array("DataID" => "{96111B9D-5260-8CFD-A2C4-5393BFFA1EB4}", "Buffer" => $receivedData)));
 
         }

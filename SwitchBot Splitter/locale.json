@@ -1,7 +1,7 @@
 {
     "translations": {
         "de": {
-            "Translation 1": "Übersetzung 1",
+            "Don't use the Symcon Connect Service for Push Messages": "Symcon Connect nicht für Push Nachrichten nutzen.",
             "Translation 2": "Übersetzung 2"
         }
     }
