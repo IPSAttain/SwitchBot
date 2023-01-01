@@ -25,7 +25,7 @@ declare(strict_types=1);
         public function GetConfigurationForm()
         {
             $values = json_decode($this->GetFormData());
-            $this->SendDebug("Elements", json_encode($Values), 0);
+            $this->SendDebug("Elements", json_encode($values), 0);
             $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
             $form['actions'][0]['values'] = $values;
             return json_encode($form);
