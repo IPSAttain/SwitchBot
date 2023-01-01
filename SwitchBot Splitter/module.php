@@ -68,11 +68,12 @@ declare(strict_types=1);
 
         protected function ProcessHookData()
         {
-            $this->SendDebug(__FUNCTION__, 'Array POST: ' . print_r($_POST, true), 0);
-            $this->SendDebug(__FUNCTION__, 'Array  GET: ' . print_r($_GET, true),0);
-            $this->SendDebug(__FUNCTION__, 'Array  RAW: ' . file_get_contents("php://input"),0);
-            $this->SendDebug(__FUNCTION__ , $_POST, 0);
-
+            $receivedData = file_get_contents("php://input");
+            $this->SendDebug(__FUNCTION__,$receivedData,0);
+            $receivedData = json_decode($receivedData, true);
+            foreach ($receivedData as $key => $value) {
+                $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
+            }
         }
 
         public function ForwardData($JSONString)
