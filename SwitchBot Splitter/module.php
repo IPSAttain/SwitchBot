@@ -29,8 +29,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 // check webhook configuration
                 $data = array('action' => 'queryUrl');
                 $endpoint = 'queryWebhook';
-                $return = $this->ModifyWebHook($endpoint, $data);
-                $return = json_decode($return,true);
+                $return = json_decode($this->ModifyWebHook($endpoint, $data),true);
                 $currentWebHookURL = $return['body']['urls'][0];
                 $this->SendDebug(__FUNCTION__, "Current WebHook: " . $currentWebHookURL, 0);
                 $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
@@ -42,10 +41,16 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
                 // remove the wrong entry
                 $data = array('action' => 'deleteWebhook', 'url' => $currentWebHookURL);
                 $endpoint = 'deleteWebhook';
-                $return = $this->ModifyWebHook($endpoint, $data);
+                $return = json_decode($this->ModifyWebHook($endpoint, $data),true);
 
                 if (IPS_GetInstance($cc_id)['InstanceStatus'] == IS_ACTIVE) {
-                    $return = $this->SetWebHook($webHookURL);
+                    $data = array(
+                        'action' => 'setupWebhook',
+                        'url' => $webHookURL,
+                        'deviceList' => 'ALL'
+                    );
+                    $endpoint ='setupWebhook';
+                    $return = $this->ModifyWebHook($endpoint, $data);
                     $this->SendDebug(__FUNCTION__, "WebHook response " . $return, 0);
                     $return = json_decode($return, true);
                 } else {
@@ -193,7 +198,7 @@ include_once __DIR__ . '/../libs/WebHookModule.php';
             $data = utf8_encode($token . $t . $nonce);
             $sign = hash_hmac('sha256', $data, $secret,true);
             $sign = strtoupper(base64_encode($sign));
-            $this->SendDebug(__FUNCTION__ , ' nonce: '. $nonce . ' T: ' . $t . ' SIGN: ' . $sign, 0);
+            $this->SendDebug(__FUNCTION__ , 'NONCE: '. $nonce . ' TIME: ' . $t . ' SIGN: ' . $sign, 0);
 
             $headers = array(
                 "Content-Type:application/json",
