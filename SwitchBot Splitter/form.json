@@ -21,7 +21,7 @@
         {
             "type": "ExpansionPanel",
             "caption": "Local Server Settings",
-            "visible":false,
+            "visible":true,
             "items": [
                 { 
                     "name": "IPAddress", 
