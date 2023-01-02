@@ -26,7 +26,7 @@ declare(strict_types=1);
             //Never delete this line!
             parent::ApplyChanges();
 
-            $this->SetReceiveDataFilter($this->ReadPropertyString('deviceID'));
+            $this->SetReceiveDataFilter('.*' . $this->ReadPropertyString('deviceID') . '.*');
             $stateVariable = true;
             $this->RegisterProfile('SwitchBot.UpDown', 'Bulb', '', '', 0, 1, 0, '' , 1);
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 0, '▲', '', -1); 
