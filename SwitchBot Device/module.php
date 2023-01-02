@@ -26,6 +26,7 @@ declare(strict_types=1);
             //Never delete this line!
             parent::ApplyChanges();
 
+            $this->SetReceiveDataFilter($this->ReadPropertyString('deviceID'));
             $stateVariable = true;
             $this->RegisterProfile('SwitchBot.UpDown', 'Bulb', '', '', 0, 1, 0, '' , 1);
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 0, '▲', '', -1); 
@@ -131,7 +132,7 @@ declare(strict_types=1);
             $data = json_decode($JSONString);
             // $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
             $receivedData = json_decode(utf8_decode($data->Buffer), true);
-            if ($receivedData['context']['deviceMac'] != $this->ReadPropertyString('deviceID')) return;
+            //if ($receivedData['context']['deviceMac'] != $this->ReadPropertyString('deviceID')) return;
             $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
             $deviceType = $receivedData['context']['deviceType'];
             $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
