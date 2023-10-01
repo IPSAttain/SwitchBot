@@ -228,15 +228,18 @@ declare(strict_types=1);
                 
                 case 'setPosition':
                     $data['parameter'] = ($this->ReadPropertyBoolean('deviceMode') ? '0,1,' . $Value : '0,0,' . $Value);
+                    break;
                 
                 case 'setPositionBlind':
                     $data['command'] = 'setPosition';
                     //Value must set to a multiple of 2
                     $data['parameter'] = 'up;'.(intval($Value/2))*2;
+                    break;
 
                 case 'setPlayback':
                     $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
                     $data['command'] = $Playback[$Value];
+                    break;
             }
             $this->SendDebug(__FUNCTION__, $data['command'], 0);
             // Send Command to Splitter
