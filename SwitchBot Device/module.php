@@ -53,6 +53,12 @@ declare(strict_types=1);
                     $this->RegisterVariableInteger('setPosition', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
                     $this->EnableAction('setPosition');
                     break;
+                
+                case 'Blind Tilt':
+                    $stateVariable = false;
+                    $this->RegisterVariableInteger('setPositionBlind', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
+                    $this->EnableAction('setPositionBlind');
+                    break;
 
                 case 'Color Bulb':
                 case 'Strip Light':
@@ -153,6 +159,7 @@ declare(strict_types=1);
                     break;
 
                 case 'WoMeter':
+                case 'Hub 2':
                     $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
                     $this->SetValue('temperature', $receivedData['context']['temperature']);
                     $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 20);
@@ -162,6 +169,11 @@ declare(strict_types=1);
                 case 'Lock':
                     $this->RegisterVariableString('lockState', $key, '', 10);
                     $this->SetValue('lockState', $receivedData['context']['lockState']);
+                    break;
+
+                case 'Blind Tilt':
+                    $this->SetValue('setPositionBlind', $receivedData['context']['slidePosition']);
+                    break;
 
                 default:
                     $i = 10;
@@ -216,6 +228,11 @@ declare(strict_types=1);
                 
                 case 'setPosition':
                     $data['parameter'] = ($this->ReadPropertyBoolean('deviceMode') ? '0,1,' . $Value : '0,0,' . $Value);
+                
+                case 'setPositionBlind':
+                    $data['command'] = 'setPosition';
+                    //Value must set to a multiple of 2
+                    $data['parameter'] = 'up;'.(intval($Value/2))*2;
 
                 case 'setPlayback':
                     $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
