@@ -241,7 +241,7 @@ declare(strict_types=1);
                     $data['command'] = $Playback[$Value];
                     break;
             }
-            $this->SendDebug(__FUNCTION__, $data['command'], 0);
+            $this->SendDebug(__FUNCTION__, $data['command'] . ' ' .$data['parameter'], 0);
             // Send Command to Splitter
             $return = json_decode($this->SendData($data = json_encode($data)), true); 
             // Set status var
