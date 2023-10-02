@@ -14,7 +14,7 @@
 
 
 ### 1. Functional scope
-### the modul currently supports the following devices (24.12.2022).
+### the modul currently supports the following devices (02.10.2023).
 
 - SwitchBot Bot (Cloud support must be enabled)
 - Curtain
@@ -23,6 +23,7 @@
 - Strip Light
 - Ceiling Light / Ceiling Light Pro
 - Color Bulb
+- Blind Tilt
 
 ### Remote Control
 
@@ -33,7 +34,7 @@
 ### 2. Requirements
 
 - IP-Symcon from version 6.0
-- SwitchBot Hub
+- SwitchBot Hub / Hub 2
 - SwitchBot App (IOS or Android)
 - Registered SwitchBot account
 

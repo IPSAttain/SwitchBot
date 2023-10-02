@@ -26,6 +26,7 @@ declare(strict_types=1);
             //Never delete this line!
             parent::ApplyChanges();
 
+            $this->SetReceiveDataFilter('.*' . $this->ReadPropertyString('deviceID') . '.*');
             $stateVariable = true;
             $this->RegisterProfile('SwitchBot.UpDown', 'Bulb', '', '', 0, 1, 0, '' , 1);
             IPS_SetVariableProfileAssociation('SwitchBot.UpDown', 0, '▲', '', -1); 
@@ -51,6 +52,12 @@ declare(strict_types=1);
                     $this->EnableAction('setCurtain');
                     $this->RegisterVariableInteger('setPosition', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
                     $this->EnableAction('setPosition');
+                    break;
+                
+                case 'Blind Tilt':
+                    $stateVariable = false;
+                    $this->RegisterVariableInteger('setPositionBlind', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
+                    $this->EnableAction('setPositionBlind');
                     break;
 
                 case 'Color Bulb':
@@ -129,9 +136,7 @@ declare(strict_types=1);
         public function ReceiveData($JSONString)
         {
             $data = json_decode($JSONString);
-            // $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
             $receivedData = json_decode(utf8_decode($data->Buffer), true);
-            if ($receivedData['context']['deviceMac'] != $this->ReadPropertyString('deviceID')) return;
             $this->SendDebug(__FUNCTION__ , utf8_decode($data->Buffer),0);
             $deviceType = $receivedData['context']['deviceType'];
             $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
@@ -154,6 +159,7 @@ declare(strict_types=1);
                     break;
 
                 case 'WoMeter':
+                case 'Hub 2':
                     $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
                     $this->SetValue('temperature', $receivedData['context']['temperature']);
                     $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 20);
@@ -163,6 +169,11 @@ declare(strict_types=1);
                 case 'Lock':
                     $this->RegisterVariableString('lockState', $key, '', 10);
                     $this->SetValue('lockState', $receivedData['context']['lockState']);
+                    break;
+
+                case 'Blind Tilt':
+                    $this->SetValue('setPositionBlind', $receivedData['context']['position']);
+                    break;
 
                 default:
                     $i = 10;
@@ -217,12 +228,31 @@ declare(strict_types=1);
                 
                 case 'setPosition':
                     $data['parameter'] = ($this->ReadPropertyBoolean('deviceMode') ? '0,1,' . $Value : '0,0,' . $Value);
+                    break;
+                
+                case 'setPositionBlind':
+                    switch ($Value) {
+                        case 0:
+                            $data['command'] = 'closeUp';
+                            break;
+                        
+                        case 100:
+                            $data['command'] = 'closeDown';
+                            break;
+
+                        default:
+                            $data['command'] = 'setPosition';
+                            //Value must set to a multiple of 2
+                            $data['parameter'] = 'up;'.(intval($Value))*2;
+                    }
+                    break;
 
                 case 'setPlayback':
                     $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
                     $data['command'] = $Playback[$Value];
+                    break;
             }
-            $this->SendDebug(__FUNCTION__, $data['command'], 0);
+            $this->SendDebug(__FUNCTION__, $data['command'] . ' ' .$data['parameter'], 0);
             // Send Command to Splitter
             $return = json_decode($this->SendData($data = json_encode($data)), true); 
             // Set status var
@@ -271,7 +301,7 @@ declare(strict_types=1);
             IPS_SetVariableProfileIcon($Name, $Icon);
             IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
             if ($Digits != '') IPS_SetVariableProfileDigits($Name, $Digits); //  Nachkommastellen
-            IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
+            if ($Vartype != 0) IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
         }
     
         public function GetConfigurationForm()
@@ -289,7 +319,7 @@ declare(strict_types=1);
                 default:
                     $form = file_get_contents(__DIR__ . '/form.json');
             }
-            $this->SendDebug(__FUNCTION__ , json_encode(json_decode($form,true)), 0);
+            //$this->SendDebug(__FUNCTION__ , json_encode(json_decode($form,true)), 0);
             return $form;
         }
     }

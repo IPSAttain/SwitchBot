@@ -33,7 +33,9 @@
             "Door":"Tür",
             "Temperature":"Temperatur",
             "Humidity":"Feuchtigkeit",
-            "timeOfSample":"Aktualisierung"
+            "timeOfSample":"Aktualisierung",
+            "Close Up":"Schließen Oben",
+            "Close Down":"Schließen Unten"
         }
     }
 }

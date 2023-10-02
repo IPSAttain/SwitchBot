@@ -16,7 +16,7 @@
 ### 1. Funktionsumfang
 
 
-### Das Modul unterstützt aktuell (24.12.2022) folgende Geräte.
+### Das Modul unterstützt aktuell (02.10.2023) folgende Geräte.
 * SwitchBot Bot (Cloud Unterstützung muss aktiviert sein)
 * Curtain
 * Lock
@@ -24,6 +24,7 @@
 * Strip Light
 * Ceiling Light / Ceiling Light Pro
 * Color Bulb
+* Blind Tilt
 
 ### IR Fernbedienung 
 * Light
@@ -33,7 +34,7 @@
 ### 2. Voraussetzungen
 
 * IP-Symcon ab Version 6.0
-* SwitchBot Hub
+* SwitchBot Hub/Hub 2
 * SwitchBot App (IOS oder Android) 
 * Registrierter SwitchBot Account
 

@@ -8,12 +8,11 @@ Beschreibung des Moduls.
 3. [Software-Installation](#3-software-installation)
 4. [Einrichten der Instanzen in IP-Symcon](#4-einrichten-der-instanzen-in-ip-symcon)
 5. [Statusvariablen und Profile](#5-statusvariablen-und-profile)
-6. [WebFront](#6-webfront)
-7. [PHP-Befehlsreferenz](#7-php-befehlsreferenz)
+
 
 ### 1. Funktionsumfang
 
-*
+* Händelt die Kommunikation zwischen Symcon und der SwitchBot Cloud
 
 ### 2. Voraussetzungen
 
@@ -26,42 +25,10 @@ Beschreibung des Moduls.
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
- Unter 'Instanz hinzufügen' kann das 'SwitchBot Splitter'-Modul mithilfe des Schnellfilters gefunden werden.  
-	- Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
+Im Splitter müssen ein Token Key und ein Security Key eingegeben werden. Diese beiden Keys findet Ihr in der SwitchBot App. 
 
-__Konfigurationsseite__:
-
-Name     | Beschreibung
--------- | ------------------
-         |
-         |
+![Splitter](../libs/SwitchBot2.png)
 
 ### 5. Statusvariablen und Profile
 
-Die Statusvariablen/Kategorien werden automatisch angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
-
-#### Statusvariablen
-
-Name   | Typ     | Beschreibung
------- | ------- | ------------
-       |         |
-       |         |
-
-#### Profile
-
-Name   | Typ
------- | -------
-       |
-       |
-
-### 6. WebFront
-
-Die Funktionalität, die das Modul im WebFront bietet.
-
-### 7. PHP-Befehlsreferenz
-
-`boolean SWB_BeispielFunktion(integer $InstanzID);`
-Erklärung der Funktion.
-
-Beispiel:
-`SWB_BeispielFunktion(12345);`
+Es gibt keine Statusvariablen.
