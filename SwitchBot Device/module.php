@@ -58,10 +58,10 @@ declare(strict_types=1);
                     $stateVariable = false;
                     $this->RegisterVariableInteger('setPositionBlind', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
                     $this->EnableAction('setPositionBlind');
-                    $this->RegisterProfile('SwitchBot.Blind', 'Shutter','','','','','','',0);
-                        IPS_SetVariableProfileAssociation('SwitchBot.Blind', 0, $this->Translate('Close Down'), '', -1);
-                        IPS_SetVariableProfileAssociation('SwitchBot.Blind', 1, $this->Translate('Close Up'), '', -1);
-                    $this->RegisterVariableBoolean('setBlind', $this->Translate('State'), 'SwitchBot.Blind', 10);
+                    //$this->RegisterProfile('SwitchBot.Blind', 'Shutter','','','','','','',0);
+                    //    IPS_SetVariableProfileAssociation('SwitchBot.Blind', 0, $this->Translate('Close Down'), '', -1);
+                    //    IPS_SetVariableProfileAssociation('SwitchBot.Blind', 1, $this->Translate('Close Up'), '', -1);
+                    $this->RegisterVariableBoolean('setBlind', $this->Translate('State'), '~Switch', 10);
                     $this->EnableAction('setBlind');
                     break;
 
