@@ -246,10 +246,11 @@ declare(strict_types=1);
                             break;
 
                         default:
-                        $data['command'] = 'setPosition';
-                        //Value must set to a multiple of 2
-                        $data['parameter'] = 'up;'.(intval($Value))*2;
+                            $data['command'] = 'setPosition';
+                            //Value must set to a multiple of 2
+                            $data['parameter'] = 'up;'.(intval($Value))*2;
                     }
+                    break;
 
                 case 'setBlind':
                     $data['command'] = ($Value ? 'closeUp' : 'closeDown');
