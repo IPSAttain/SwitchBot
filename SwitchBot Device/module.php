@@ -58,10 +58,10 @@ declare(strict_types=1);
                     $stateVariable = false;
                     $this->RegisterVariableInteger('setPositionBlind', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
                     $this->EnableAction('setPositionBlind');
-                    //$this->RegisterProfile('SwitchBot.Blind', 'Shutter','','','','','','',0);
-                    //    IPS_SetVariableProfileAssociation('SwitchBot.Blind', 0, $this->Translate('Close Down'), '', -1);
-                    //    IPS_SetVariableProfileAssociation('SwitchBot.Blind', 1, $this->Translate('Close Up'), '', -1);
-                    $this->RegisterVariableBoolean('setBlind', $this->Translate('State'), '~Switch', 10);
+                    $this->RegisterProfile('SwitchBot.Blind', 'Shutter','','','','','','',0);
+                        IPS_SetVariableProfileAssociation('SwitchBot.Blind', 0, $this->Translate('Close Down'), '', -1);
+                        IPS_SetVariableProfileAssociation('SwitchBot.Blind', 1, $this->Translate('Close Up'), '', -1);
+                    $this->RegisterVariableBoolean('setBlind', $this->Translate('State'), 'SwitchBot.Blind', 10);
                     $this->EnableAction('setBlind');
                     break;
 
@@ -177,7 +177,7 @@ declare(strict_types=1);
                     break;
 
                 case 'Blind Tilt':
-                    $this->SetValue('setPositionBlind', $receivedData['context']['slidePosition']);
+                    $this->SetValue('setPositionBlind', $receivedData['context']['position']);
                     break;
 
                 default:
@@ -236,10 +236,20 @@ declare(strict_types=1);
                     break;
                 
                 case 'setPositionBlind':
-                    $data['command'] = 'setPosition';
-                    //Value must set to a multiple of 2
-                    $data['parameter'] = 'up;'.(intval($Value/2))*2;
-                    break;
+                    switch ($Value) {
+                        case 0:
+                            $data['command'] = 'closeUp';
+                            break;
+                        
+                        case 100:
+                            $data['command'] = 'closeDown';
+                            break;
+
+                        default:
+                        $data['command'] = 'setPosition';
+                        //Value must set to a multiple of 2
+                        $data['parameter'] = 'up;'.(intval($Value))*2;
+                    }
 
                 case 'setBlind':
                     $data['command'] = ($Value ? 'closeUp' : 'closeDown');
@@ -299,7 +309,7 @@ declare(strict_types=1);
             IPS_SetVariableProfileIcon($Name, $Icon);
             IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
             if ($Digits != '') IPS_SetVariableProfileDigits($Name, $Digits); //  Nachkommastellen
-            IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
+            if ($Vartype != 0) IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize); // string $ProfilName, float $Minimalwert, float $Maximalwert, float $Schrittweite
         }
     
         public function GetConfigurationForm()
