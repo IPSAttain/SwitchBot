@@ -58,11 +58,6 @@ declare(strict_types=1);
                     $stateVariable = false;
                     $this->RegisterVariableInteger('setPositionBlind', $this->Translate('Curtain'),'~ShutterPosition.100', 21);
                     $this->EnableAction('setPositionBlind');
-                    $this->RegisterProfile('SwitchBot.Blind', 'Shutter','','','','','','',0);
-                        IPS_SetVariableProfileAssociation('SwitchBot.Blind', 0, $this->Translate('Close Down'), '', -1);
-                        IPS_SetVariableProfileAssociation('SwitchBot.Blind', 1, $this->Translate('Close Up'), '', -1);
-                    $this->RegisterVariableBoolean('setBlind', $this->Translate('State'), 'SwitchBot.Blind', 10);
-                    $this->EnableAction('setBlind');
                     break;
 
                 case 'Color Bulb':
@@ -250,10 +245,6 @@ declare(strict_types=1);
                             //Value must set to a multiple of 2
                             $data['parameter'] = 'up;'.(intval($Value))*2;
                     }
-                    break;
-
-                case 'setBlind':
-                    $data['command'] = ($Value ? 'closeUp' : 'closeDown');
                     break;
 
                 case 'setPlayback':
