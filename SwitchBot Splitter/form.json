@@ -1,11 +1,6 @@
 {
     "elements": [
         {
-            "type": "Label",
-            "name": "ReturnMessage",
-            "caption": ""
-        },
-        {
             "type": "ValidationTextBox",
             "name": "Token",
             "caption": "SwitchBot Token",
@@ -42,5 +37,9 @@
         }
     ],
     "actions": [],
-    "status": []
+    "status": [
+        { "code": 102, "icon": "active", "caption": "Login information valid" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credentials set" }
+    ]
 }

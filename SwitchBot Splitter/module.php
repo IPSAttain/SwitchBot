@@ -14,7 +14,6 @@ class SwitchBotSplitter extends IPSModule
         $this->RegisterPropertyBoolean('directConnection', false);
         $this->RegisterPropertyString('IPAddress', '127.0.0.1');
         $this->RegisterPropertyString('Port', '3777');
-        $this->RegisterAttributeString("ReturnMessage","");
         //We need to call the RegisterHook function on Kernel READY
         $this->RegisterMessage(0, IPS_KERNELMESSAGE);
     }
@@ -41,8 +40,6 @@ class SwitchBotSplitter extends IPSModule
             $data = array('action' => 'queryUrl');
             $endpoint = 'queryWebhook';
             $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
-            $this->WriteAttributeString("ReturnMessage", $return['message']);
-            $this->UpdateFormField("ReturnMessage", "caption", $this->translate('Answer from Switchbot Cloud: ') . $return['message']);
             if ($return['message'] == 'success') {
                 $currentWebHookURL = $return['body']['urls'][0];
                 if ($this->ReadPropertyBoolean('directConnection')) {
@@ -73,12 +70,12 @@ class SwitchBotSplitter extends IPSModule
                 $this->SetStatus(IS_ACTIVE);
             } else {
                 //no success
-                $this->SetStatus(IS_INACTIVE);
+                $this->SetStatus(201);
                 
             }
         } else {
             // no credentials
-            $this->SetStatus(IS_INACTIVE);
+            $this->SetStatus(202);
         }
 
     }

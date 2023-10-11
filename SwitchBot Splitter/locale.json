@@ -3,8 +3,7 @@
         "de": {
             "Don't use the Symcon Connect Service for Push Messages": "Symcon Connect nicht für Push Nachrichten nutzen.",
             "Local Server Settings": "Server Einstellungen",
-            "Server IP Address":"Server IP Adresse",
-            "Answer from Switchbot Cloud: ":"Antwort von der SwitchBot Cloud:  "
+            "Server IP Address":"Server IP Adresse"
         }
     }
 }
