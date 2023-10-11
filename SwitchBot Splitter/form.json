@@ -1,36 +1,41 @@
 {
     "elements": [
         {
+            "type": "Label",
+            "name": "ReturnMessage",
+            "caption": ""
+        },
+        {
             "type": "ValidationTextBox",
             "name": "Token",
             "caption": "SwitchBot Token",
-            "enabled": true 
+            "enabled": true
         },
         {
             "type": "PasswordTextBox",
             "name": "Secret",
             "caption": "SwitchBot Secret",
-            "enabled": true 
+            "enabled": true
         },
-        { 
-            "name": "directConnection", 
-            "type": "CheckBox", 
+        {
+            "name": "directConnection",
+            "type": "CheckBox",
             "caption": "Don't use the Symcon Connect Service for Push Messages",
-            "enabled":true
+            "enabled": true
         },
         {
             "type": "ExpansionPanel",
             "caption": "Local Server Settings",
-            "visible":true,
+            "visible": true,
             "items": [
-                { 
-                    "name": "IPAddress", 
-                    "type": "ValidationTextBox", 
+                {
+                    "name": "IPAddress",
+                    "type": "ValidationTextBox",
                     "caption": "Server IP Address"
                 },
-                { 
-                    "name": "Port", 
-                    "type": "ValidationTextBox", 
+                {
+                    "name": "Port",
+                    "type": "ValidationTextBox",
                     "caption": "Port"
                 }
             ]
