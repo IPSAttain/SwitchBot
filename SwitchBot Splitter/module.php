@@ -41,7 +41,7 @@ class SwitchBotSplitter extends IPSModule
             $data = array('action' => 'queryUrl');
             $endpoint = 'queryWebhook';
             $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
-            $this->UpdateFormField("ReturnMessage", "caption", this->translate('Answer from Switchbot Cloud: ') . $return['message']);
+            $this->UpdateFormField("ReturnMessage", "caption", $this->translate('Answer from Switchbot Cloud: ') . $return['message']);
             if ($return['message'] == 'success') {
                 $currentWebHookURL = $return['body']['urls'][0];
                 if ($this->ReadPropertyBoolean('directConnection')) {
