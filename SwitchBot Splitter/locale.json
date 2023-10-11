@@ -3,7 +3,10 @@
         "de": {
             "Don't use the Symcon Connect Service for Push Messages": "Symcon Connect nicht für Push Nachrichten nutzen.",
             "Local Server Settings": "Server Einstellungen",
-            "Server IP Address":"Server IP Adresse"
+            "Server IP Address":"Server IP Adresse",
+            "Login information valid":"Zugangsdaten sind gültig",
+            "Authentication failed":"Zugangsdaten fehlerhaft",
+            "No credentials set":"Keine Zugangsdaten eingegeben"
         }
     }
 }
