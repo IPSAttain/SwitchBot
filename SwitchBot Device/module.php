@@ -35,6 +35,10 @@ declare(strict_types=1);
             IPS_SetVariableProfileAssociation('SwitchBot.toggle', 1, $this->Translate('Toggle'), 'TurnLeft', -1);
 
             switch ($this->ReadPropertyString('deviceType')) {
+                case 'Bot':
+                    $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
+                    break;
+                    
                 case 'Plug':
                     $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
                     $this->EnableAction('toggle');
@@ -179,6 +183,10 @@ declare(strict_types=1);
                 case 'Blind Tilt':
                     $this->SetValue('setPositionBlind', $receivedData['context']['position']);
                     break;
+                
+                case 'WoHand': // Bot
+                     $this->SetValue('battery',$receivedData['context']['battery']);
+                     break;
 
                 default:
                     $i = 10;
