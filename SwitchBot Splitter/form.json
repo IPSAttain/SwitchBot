@@ -40,6 +40,7 @@
     "status": [
         { "code": 102, "icon": "active", "caption": "Login information valid" },
         { "code": 201, "icon": "error", "caption": "Authentication failed" },
-        { "code": 202, "icon": "error", "caption": "No credentials set" }
+        { "code": 202, "icon": "error", "caption": "No credentials set" },
+        { "code": 203, "icon": "error", "caption": "Symcon Connect Service is not active" }
     ]
 }

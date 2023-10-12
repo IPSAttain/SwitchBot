@@ -48,7 +48,7 @@ class SwitchBotSplitter extends IPSModule
                     $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
                     if (IPS_GetInstance($cc_id)['InstanceStatus'] != IS_ACTIVE) {
                         $this->SendDebug(__FUNCTION__, 'Symcon Connect Service is not active', 0);
-                        $this->SetStatus(IS_INACTIVE);
+                        $this->SetStatus(203);
                         return;
                     }
                 }

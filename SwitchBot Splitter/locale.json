@@ -6,7 +6,8 @@
             "Server IP Address":"Server IP Adresse",
             "Login information valid":"Zugangsdaten sind gültig",
             "Authentication failed":"Zugangsdaten fehlerhaft",
-            "No credentials set":"Keine Zugangsdaten eingegeben"
+            "No credentials set":"Keine Zugangsdaten eingegeben",
+            "Symcon Connect Service is not active":"Symcon Connect Service ist nicht aktiv"
         }
     }
 }
