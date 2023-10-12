@@ -13,6 +13,10 @@
             "enabled": true
         },
         {
+"type":"Label",
+"caption":"For Sensors, SwitchBot can push state changes direct to Symcon. This requiers the Symcon Connect Service. If you don't use this service and you can reach the Symcon server in another way, such as reverse proxy, toggle the button below and set the IP and Port manualy."
+        },
+        {
             "name": "directConnection",
             "type": "CheckBox",
             "caption": "Don't use the Symcon Connect Service for Push Messages",
