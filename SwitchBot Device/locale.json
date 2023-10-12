@@ -35,7 +35,8 @@
             "Humidity":"Feuchtigkeit",
             "timeOfSample":"Aktualisierung",
             "Close Up":"Schließen Oben",
-            "Close Down":"Schließen Unten"
+            "Close Down":"Schließen Unten",
+            "Lightlevel":"Lichtstärke"
         }
     }
 }

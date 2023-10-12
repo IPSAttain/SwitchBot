@@ -159,11 +159,16 @@ declare(strict_types=1);
                     break;
 
                 case 'WoMeter':
-                case 'Hub 2':
+                case 'WoMeterPlus':
+                case 'WoHub2':
                     $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
                     $this->SetValue('temperature', $receivedData['context']['temperature']);
                     $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 20);
                     $this->SetValue('humidity', $receivedData['context']['humidity']);
+                    if (isset($receivedData['context']['lightLevel'])){
+                        $this->RegisterVariableInteger('lightLevel', $this->Translate('Lightlevel'), '~UVIndex', 30);
+                        $this->SetValue('lightLevel', $receivedData['context']['lightLevel']);
+                    }
                     break;
 
                 case 'Lock':
