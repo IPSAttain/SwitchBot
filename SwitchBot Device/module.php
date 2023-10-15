@@ -135,6 +135,7 @@ class SwitchBotDevice extends IPSModule
             }
             $this->EnableAction('setState');
         }
+        $this->DeviceStatus();
     }
 
     public function ReceiveData($JSONString)
@@ -149,16 +150,16 @@ class SwitchBotDevice extends IPSModule
             case 'WoPresence':
             case 'WoCamera':
                 $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
-                $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
+                $state = ($receivedData['context']['detectionState'] == 'DETECTED'); // true or false
                 $this->SetValue('detectionState', $state);
                 break;
 
             case 'WoContact':
                 $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
-                $state = ($receivedData['context']['detectionState'] == 'DETECTED' ? true : false);
+                $state = ($receivedData['context']['detectionState'] == 'DETECTED'); // true or false
                 $this->SetValue('detectionState', $state);
                 $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 20);
-                $state = ($receivedData['context']['openState'] == 'open' ? true : false);
+                $state = ($receivedData['context']['openState'] == 'open'); // true or false
                 $this->SetValue('openState', $state);
                 break;
 
@@ -271,7 +272,8 @@ class SwitchBotDevice extends IPSModule
         // Set status var
         if ($return['message'] == 'success') {
             $this->SetValue($Ident, $Value);
-        }$this->ProcessReturnData($return);
+        }
+        $this->ProcessReturnData($return);
         $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
         // API sends the battery value only in response to the action request
         $this->ProcessReturnData($return);
@@ -294,44 +296,48 @@ class SwitchBotDevice extends IPSModule
     protected function ProcessReturnData($returnData)
     {
         if (isset($returnData['body']['deviceId'])) {
-            $i = 100;
-            foreach ($returnData['body'] as $key => $value) {
-                switch ($key) {
-                    case 'battery':
-                        $this->RegisterVariableInteger($key, $this->Translate('Battery'), '~Battery.100', 30);
-                        $this->SetValue($key, $value);
-                        break;
-                    case 'position':
-                    case 'slideposition':
-                        if ($returnData['body']['deviceType'] == 'Blind Tilt') {
-                            $this->SetValue('setPositionBlind', $value);
-                        } else {
-                            $this->SetValue('setPosition', $value);
-                        }
-                        break;
-                    case 'power':
-                        $this->RegisterVariableBoolean($key, 'Power', '~Switch', 40);
-                        $this->SetValue($key, ($value == 'on'));
-                        break;
-                    case 'calibrate':
-                    case 'isCalibrate':
-                        $this->RegisterVariableBoolean('isCalibrate', $this->Translate('Is Calibrate'), '~Switch', 50);
-                        $this->SetValue('isCalibrate', ($value == 'true'));
-                        break;
-                    case 'isStuck':
-                        $this->RegisterVariableBoolean('isStuck', $this->Translate('Is Stuck'), '~Switch', 60);
-                        $this->SetValue('isStuck', ($value == 'true'));
-                        break;
+            $returnArray = $returnData['body'];
+        } else {
+            $returnArray = $returnData['body']['items'][0]['status'];
+        }
+        $i = 100;
+        foreach ($returnArray as $key => $value) {
+            switch ($key) {
+                case 'battery':
+                    $this->RegisterVariableInteger($key, $this->Translate('Battery'), '~Battery.100', 30);
+                    $this->SetValue($key, $value);
+                    break;
+                case 'position':
+                case 'slideposition':
+                    if ($returnData['body']['deviceType'] == 'Blind Tilt') {
+                        $this->SetValue('setPositionBlind', $value);
+                    } else {
+                        $this->SetValue('setPosition', $value);
+                    }
+                    break;
+                case 'power':
+                    $this->RegisterVariableBoolean($key, 'Power', '~Switch', 40);
+                    $this->SetValue($key, ($value == 'on'));
+                    break;
+                case 'calibrate':
+                case 'isCalibrate':
+                    $this->RegisterVariableBoolean('isCalibrate', $this->Translate('Is Calibrate'), '~Switch', 50);
+                    $this->SetValue('isCalibrate', ($value == 'true'));
+                    break;
+                case 'isStuck':
+                    $this->RegisterVariableBoolean('isStuck', $this->Translate('Is Stuck'), '~Switch', 60);
+                    $this->SetValue('isStuck', ($value == 'true'));
+                    break;
 
-                    default:
-                        $this->RegisterVariableString($key, $key, '', $i);
-                        $this->SetValue($key, $value);
-                        $i += 10;
-                }
-                $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
+                default:
+                    $this->RegisterVariableString($key, $key, '', $i);
+                    $this->SetValue($key, $value);
+                    $i += 10;
             }
+            $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
         }
     }
+
     protected function SendData($Buffer)
     {
         $return = $this->SendDataToParent(json_encode([
