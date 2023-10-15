@@ -135,7 +135,7 @@ class SwitchBotDevice extends IPSModule
             }
             $this->EnableAction('setState');
         }
-        $this->DeviceStatus();
+        //$this->DeviceStatus();
     }
 
     public function ReceiveData($JSONString)
