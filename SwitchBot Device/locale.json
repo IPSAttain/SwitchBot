@@ -38,7 +38,11 @@
             "Close Down":"Schließen Unten",
             "Lightlevel":"Lichtstärke",
             "Is Calibrate":"Kalibriert",
-            "Is Stuck":"Blockiert"
+            "Is Stuck":"Blockiert",
+            "Up":"Oben",
+            "Down":"Unten",
+            "Open":"Offen",
+            "Blind":"Jalousie"
         }
     }
 }

@@ -59,8 +59,14 @@ class SwitchBotDevice extends IPSModule
                 break;
 
             case 'Blind Tilt':
+                $this->RegisterProfile('SwitchBot.blindTilt', 'Shutter', '', '', 0, 100, 25, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.blindTilt', 0, $this->Translate('Up'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.blindTilt', 25, '25 %%', '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.blindTilt', 50, $this->Translate('Open'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.blindTilt', 75, '75 %%', '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.blindTilt', 100, $this->Translate('Down'), '', -1);
                 $stateVariable = false;
-                $this->RegisterVariableInteger('setPositionBlind', $this->Translate('Curtain'), '~ShutterPosition.100', 21);
+                $this->RegisterVariableInteger('setPositionBlind', $this->Translate('Blind'), 'SwitchBot.blindTilt', 21);
                 $this->EnableAction('setPositionBlind');
                 break;
 
