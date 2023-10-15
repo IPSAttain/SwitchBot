@@ -288,7 +288,7 @@ class SwitchBotDevice extends IPSModule
         $return = $this->SendData($data = json_encode($data));
         $return = json_decode($return, true);
         $this->SendDebug(__FUNCTION__, $return['message'], 0);
-
+        $this->ProcessReturnData($return);
     }
 
     protected function ProcessReturnData($returnData)
