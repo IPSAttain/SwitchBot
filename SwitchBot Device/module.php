@@ -328,6 +328,9 @@ class SwitchBotDevice extends IPSModule
                     $this->RegisterVariableBoolean('isStuck', $this->Translate('Is Stuck'), '~Switch', 60);
                     $this->SetValue('isStuck', ($value == 'true'));
                     break;
+                case 'hubDeviceId':
+                case 'deviceId':
+                    break;
 
                 default:
                     $this->RegisterVariableString($key, $key, '', $i);
