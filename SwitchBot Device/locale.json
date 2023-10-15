@@ -36,7 +36,9 @@
             "timeOfSample":"Aktualisierung",
             "Close Up":"Schließen Oben",
             "Close Down":"Schließen Unten",
-            "Lightlevel":"Lichtstärke"
+            "Lightlevel":"Lichtstärke",
+            "Is Calibrate":"Kalibriert",
+            "Is Stuck":"Blockiert"
         }
     }
 }

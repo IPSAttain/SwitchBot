@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-//include_once __DIR__ . '/../libs/WebHookModule.php';
 class SwitchBotSplitter extends IPSModule
 {
     public function Create()
