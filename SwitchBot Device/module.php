@@ -294,6 +294,7 @@ class SwitchBotDevice extends IPSModule
     protected function ProcessReturnData($returnData)
     {
         if (isset($returnData['body']['deviceId'])) {
+            $i = 100;
             foreach ($returnData['body'] as $key => $value) {
                 switch ($key) {
                     case 'battery':
@@ -325,6 +326,7 @@ class SwitchBotDevice extends IPSModule
                     default:
                         $this->RegisterVariableString($key, $key, '', $i);
                         $this->SetValue($key, $value);
+                        $i += 10;
                 }
                 $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
             }
