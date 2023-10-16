@@ -193,6 +193,7 @@ class SwitchBotDevice extends IPSModule
 
             case 'WoHand': // Bot
                 $this->SetValue('battery', $receivedData['context']['battery']);
+                //$this->SetValue('deviceMode',$receivedData['context']['deviceMode']);
                 break;
 
             default:
@@ -252,11 +253,11 @@ class SwitchBotDevice extends IPSModule
 
             case 'setPositionBlind':
                 switch ($Value) {
-                    case 0:
+                    case ($Value <= 0):
                         $data['command'] = 'closeUp';
                         break;
 
-                    case 100:
+                    case ($Value >= 100):
                         $data['command'] = 'closeDown';
                         break;
 
@@ -279,11 +280,8 @@ class SwitchBotDevice extends IPSModule
         if ($return['message'] == 'success') {
             $this->SetValue($Ident, $Value);
         }
-        $this->ProcessReturnData($return);
+        $this->ProcessReturnData($return['body']['items'][0]['status']);
         $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
-        // API sends the battery value only in response to the action request
-        $this->ProcessReturnData($return);
-
         return $return;
     }
 
@@ -296,16 +294,18 @@ class SwitchBotDevice extends IPSModule
         $return = $this->SendData($data = json_encode($data));
         $return = json_decode($return, true);
         $this->SendDebug(__FUNCTION__, $return['message'], 0);
-        $this->ProcessReturnData($return);
+        $this->ProcessReturnData($return['body']);
     }
 
     protected function ProcessReturnData($returnData)
     {
-        if (isset($returnData['body']['deviceId'])) {
+        /*
+        if ($calledFunction == 'DeviceStatus') {
             $returnArray = $returnData['body'];
         } else {
             $returnArray = $returnData['body']['items'][0]['status'];
         }
+        */
         $i = 100;
         foreach ($returnArray as $key => $value) {
             switch ($key) {
@@ -314,10 +314,8 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue($key, $value);
                     break;
                 case 'position':
-                    $this->SetValue('setPositionBlind', $value);
-                    break;
                 case 'slidePosition':
-                    if ($returnData['body']['deviceType'] == 'Blind Tilt') {
+                    if ($this->ReadPropertyString('deviceID') == 'Blind Tilt') {
                         $this->SetValue('setPositionBlind', $value);
                     } else {
                         $this->SetValue('setPosition', $value);
@@ -355,7 +353,7 @@ class SwitchBotDevice extends IPSModule
             'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
             'Buffer' => utf8_encode($Buffer),
         ]));
-        $this->SendDebug(__FUNCTION__, 'Answer from API: ' . $return, 0);
+        $this->SendDebug(__FUNCTION__, $return, 0);
         return $return;
     }
 
