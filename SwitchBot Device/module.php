@@ -307,7 +307,7 @@ class SwitchBotDevice extends IPSModule
         }
         */
         $i = 100;
-        foreach ($returnArray as $key => $value) {
+        foreach ($returnData as $key => $value) {
             switch ($key) {
                 case 'battery':
                     $this->RegisterVariableInteger($key, $this->Translate('Battery'), '~Battery.100', 30);
