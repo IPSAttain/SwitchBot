@@ -200,7 +200,7 @@ class SwitchBotDevice extends IPSModule
                 $i = 10;
                 foreach ($receivedData['context'] as $key => $state) {
                     $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $state, 0);
-                    if ($key == 'timeOfSample') {
+                    if ($key == 'timeOfSample' || $key == 'deviceMac') {
                         //already set
                         return;
                     }
