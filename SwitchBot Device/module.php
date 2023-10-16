@@ -280,8 +280,8 @@ class SwitchBotDevice extends IPSModule
         if ($return['message'] == 'success') {
             $this->SetValue($Ident, $Value);
         }
+        $this->SendDebug(__FUNCTION__, $return['message'], 0);
         $this->ProcessReturnData($return['body']['items'][0]['status']);
-        $this->SendDebug(__FUNCTION__, 'ReturnMessage: ' . $return['message'], 0);
         return $return;
     }
 
@@ -299,14 +299,8 @@ class SwitchBotDevice extends IPSModule
 
     protected function ProcessReturnData($returnData)
     {
-        /*
-        if ($calledFunction == 'DeviceStatus') {
-            $returnArray = $returnData['body'];
-        } else {
-            $returnArray = $returnData['body']['items'][0]['status'];
-        }
-        */
         $i = 100;
+        $this->SendDebug(__FUNCTION__, $returnData, 0);
         foreach ($returnData as $key => $value) {
             switch ($key) {
                 case 'battery':
@@ -343,7 +337,6 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue($key, $value);
                     $i += 10;
             }
-            $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $value, 0);
         }
     }
 
