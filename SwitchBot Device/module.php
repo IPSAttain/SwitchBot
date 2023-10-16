@@ -329,6 +329,7 @@ class SwitchBotDevice extends IPSModule
                     break;
                 case 'hubDeviceId':
                 case 'deviceId':
+                case 'deviceMac':
                     break;
 
                 default:
