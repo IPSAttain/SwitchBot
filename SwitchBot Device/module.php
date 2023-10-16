@@ -300,7 +300,7 @@ class SwitchBotDevice extends IPSModule
     protected function ProcessReturnData($returnData)
     {
         $i = 100;
-        $this->SendDebug(__FUNCTION__, $returnData, 0);
+        $this->SendDebug(__FUNCTION__, $returnData, 1);
         foreach ($returnData as $key => $value) {
             switch ($key) {
                 case 'battery':
