@@ -35,7 +35,14 @@
             "Humidity":"Feuchtigkeit",
             "timeOfSample":"Aktualisierung",
             "Close Up":"Schließen Oben",
-            "Close Down":"Schließen Unten"
+            "Close Down":"Schließen Unten",
+            "Lightlevel":"Lichtstärke",
+            "Is Calibrate":"Kalibriert",
+            "Is Stuck":"Blockiert",
+            "Up":"Oben",
+            "Down":"Unten",
+            "Open":"Offen",
+            "Blind":"Jalousie"
         }
     }
 }

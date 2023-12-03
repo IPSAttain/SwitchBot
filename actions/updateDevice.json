@@ -1,0 +1,21 @@
+{
+    "id": "{126FBB91-21F8-4639-DC06-57344D1EA857}",
+    "caption": "Update Data",
+    "form": [],
+    "action": "SWB_DeviceStatus($_IPS['TARGET']);",
+    "restrictions": {
+        "objectType": [ 1 ],
+        "moduleID": "{074E9906-6BB5-E403-3987-2C7E11EAF46C}"
+    },
+    "priority": 0,
+    "category":"target",
+    "locale": {
+        "de": {
+            "Update Device Data": "Gerätedaten aktualisieren",
+            "Update Data": "Daten aktualisieren",
+            "Retrieve information from the device": "Informationen vom Gerät abrufen"
+        }
+    },
+    "format": "Update Device Data",
+    "description": "Retrieve information from the device"
+}

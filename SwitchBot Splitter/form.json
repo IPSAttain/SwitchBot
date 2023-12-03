@@ -4,38 +4,47 @@
             "type": "ValidationTextBox",
             "name": "Token",
             "caption": "SwitchBot Token",
-            "enabled": true 
+            "enabled": true
         },
         {
             "type": "PasswordTextBox",
             "name": "Secret",
             "caption": "SwitchBot Secret",
-            "enabled": true 
+            "enabled": true
         },
-        { 
-            "name": "directConnection", 
-            "type": "CheckBox", 
+        {
+"type":"Label",
+"caption":"For Sensors, SwitchBot can push state changes direct to Symcon. This requiers the Symcon Connect Service. If you don't use this service and you can reach the Symcon server in another way, such as reverse proxy, toggle the button below and set the IP and Port manualy."
+        },
+        {
+            "name": "directConnection",
+            "type": "CheckBox",
             "caption": "Don't use the Symcon Connect Service for Push Messages",
-            "enabled":true
+            "enabled": true
         },
         {
             "type": "ExpansionPanel",
             "caption": "Local Server Settings",
-            "visible":true,
+            "visible": true,
             "items": [
-                { 
-                    "name": "IPAddress", 
-                    "type": "ValidationTextBox", 
+                {
+                    "name": "IPAddress",
+                    "type": "ValidationTextBox",
                     "caption": "Server IP Address"
                 },
-                { 
-                    "name": "Port", 
-                    "type": "ValidationTextBox", 
+                {
+                    "name": "Port",
+                    "type": "ValidationTextBox",
                     "caption": "Port"
                 }
             ]
         }
     ],
     "actions": [],
-    "status": []
+    "status": [
+        { "code": 102, "icon": "active", "caption": "Login information valid" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credentials set" },
+        { "code": 203, "icon": "error", "caption": "Symcon Connect Service is not active" }
+    ]
 }

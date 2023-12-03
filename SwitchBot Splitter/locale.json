@@ -3,7 +3,12 @@
         "de": {
             "Don't use the Symcon Connect Service for Push Messages": "Symcon Connect nicht für Push Nachrichten nutzen.",
             "Local Server Settings": "Server Einstellungen",
-            "Server IP Address":"Server IP Adresse"
+            "Server IP Address":"Server IP Adresse",
+            "Login information valid":"Zugangsdaten sind gültig",
+            "Authentication failed":"Zugangsdaten fehlerhaft",
+            "No credentials set":"Keine Zugangsdaten eingegeben",
+            "Symcon Connect Service is not active":"Symcon Connect Service ist nicht aktiv",
+            "For Sensors, SwitchBot can push state changes direct to Symcon. This requiers the Symcon Connect Service. If you don't use this service and you can reach the Symcon server in another way, such as reverse proxy, toggle the button below and set the IP and Port manualy.":"Bei Sensoren kann SwitchBot Zustandsänderungen direkt an Symcon übertragen. Hierzu ist der Symcon Connect Service erforderlich. Wenn Sie diesen Dienst nicht nutzen und den Symcon-Server auf andere Weise erreichen können, beispielsweise über einen Reverse-Proxy, schalten Sie unten um und legen Sie die IP-Adresse und den Port manuell fest."
         }
     }
 }
