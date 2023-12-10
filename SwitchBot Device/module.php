@@ -98,10 +98,8 @@ class SwitchBotDevice extends IPSModule
                 $this->RegisterVariableInteger('setMute', $this->Translate('Mute'), 'SwitchBot.toggle', 32);
                 $this->EnableAction('setMute');
                 $this->RegisterVariableInteger('irVolume', $this->Translate('Volume'), 'SwitchBot.UpDown', 30);
-                IPS_SetIcon($this->GetIDForIdent("irVolume"), 'TV');
                 $this->EnableAction('irVolume');
                 $this->RegisterVariableInteger('irChannel', $this->Translate('Channel'), 'SwitchBot.UpDown', 31);
-                IPS_SetIcon($this->GetIDForIdent("irChannel"), 'TV');
                 $this->EnableAction('irChannel');
                 break;
 
@@ -193,7 +191,6 @@ class SwitchBotDevice extends IPSModule
 
             case 'WoHand': // Bot
                 $this->SetValue('battery', $receivedData['context']['battery']);
-                //$this->SetValue('deviceMode',$receivedData['context']['deviceMode']);
                 break;
 
             default:
@@ -212,65 +209,65 @@ class SwitchBotDevice extends IPSModule
 
     }
 
-    public function RequestAction($Ident, $Value)
+    public function RequestAction($Ident, $value)
     {
         $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command', 'command' => $Ident);
         switch ($Ident) {
             case 'setState':
             case 'setCurtain':
-                $data['command'] = ($Value ? 'turnOn' : 'turnOff');
+                $data['command'] = ($value ? 'turnOn' : 'turnOff');
                 break;
 
             case 'setColor':
-                $data['parameter'] = strval($Value >> 16 & 255) . ':' . strval($Value >> 8 & 255) . ':' . $Value & 255;
+                $data['parameter'] = strval($value >> 16 & 255) . ':' . strval($value >> 8 & 255) . ':' . $value & 255;
                 break;
 
             case 'setBrightness':
             case 'setColorTemperature':
             case 'SetChannel':
-                $data['parameter'] = strval($Value);
+                $data['parameter'] = strval($value);
                 break;
 
             case 'irBrightness':
-                $data['command'] = ($Value ? 'brightnessDown' : 'brightnessUp');
+                $data['command'] = ($value ? 'brightnessDown' : 'brightnessUp');
                 break;
 
             case 'irVolume':
-                $data['command'] = ($Value ? 'volumeSub' : 'volumeAdd');
+                $data['command'] = ($value ? 'volumeSub' : 'volumeAdd');
                 break;
 
             case 'irChannel':
-                $data['command'] = ($Value ? 'channelSub' : 'channelAdd');
+                $data['command'] = ($value ? 'channelSub' : 'channelAdd');
                 break;
 
             case 'setLock':
-                $data['command'] = ($Value ? 'lock' : 'unlock');
+                $data['command'] = ($value ? 'lock' : 'unlock');
                 break;
 
             case 'setPosition':
-                $data['parameter'] = ($this->ReadPropertyBoolean('deviceMode') ? '0,1,' . $Value : '0,0,' . $Value);
+                $data['parameter'] = ($this->ReadPropertyBoolean('deviceMode') ? '0,1,' . $value : '0,0,' . $value);
                 break;
 
             case 'setPositionBlind':
-                switch ($Value) {
-                    case ($Value <= 0):
+                switch ($value) {
+                    case ($value <= 0):
                         $data['command'] = 'closeUp';
                         break;
 
-                    case ($Value >= 100):
+                    case ($value >= 100):
                         $data['command'] = 'closeDown';
                         break;
 
                     default:
                         $data['command'] = 'setPosition';
                         //Value must set to a multiple of 2
-                        $data['parameter'] = 'up;' . (intval($Value)) * 2;
+                        $data['parameter'] = 'up;' . (intval($value)) * 2;
                 }
                 break;
 
             case 'setPlayback':
                 $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
-                $data['command'] = $Playback[$Value];
+                $data['command'] = $Playback[$value];
                 break;
         }
         $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
@@ -278,7 +275,7 @@ class SwitchBotDevice extends IPSModule
         $return = json_decode($this->SendData($data = json_encode($data)), true);
         // Set status var
         if ($return['message'] == 'success') {
-            $this->SetValue($Ident, $Value);
+            $this->SetValue($Ident, $value);
         }
         $this->SendDebug(__FUNCTION__, $return['message'], 0);
         $this->ProcessReturnData($return['body']['items'][0]['status']);
