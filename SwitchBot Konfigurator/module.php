@@ -57,6 +57,7 @@ declare(strict_types=1);
             foreach ($devices as $device) {
                 $ID	= 0;
                 if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
+                if (!isset($device['deviceType'])) $device['deviceType'] = 'Unknown';
                 // find out if instance already exist.
                 foreach ($instances as $Instance) {
                     if (IPS_GetProperty($Instance, 'deviceID')== $device['deviceId']) {
