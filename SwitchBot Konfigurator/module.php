@@ -57,6 +57,9 @@ declare(strict_types=1);
             foreach ($devices as $device) {
                 $ID	= 0;
                 if (isset($device['remoteType'])) $device['deviceType'] = $device['remoteType'];
+                // Curtain 3 does not submit the deviceType key, try to guess it
+                // https://github.com/OpenWonderLabs/SwitchBotAPI/issues/241
+                if (!isset($device['deviceType']) && isset($device['curtainDevicesIds'])) $device['deviceType'] = 'Curtain';
                 if (!isset($device['deviceType'])) $device['deviceType'] = 'Unknown';
                 // find out if instance already exist.
                 foreach ($instances as $Instance) {
