@@ -305,7 +305,7 @@ class SwitchBotDevice extends IPSModule
                     break;
                 case 'position':
                 case 'slidePosition':
-                    if ($this->ReadPropertyString('deviceID') == 'Blind Tilt') {
+                    if ($this->ReadPropertyString('deviceType') == 'Blind Tilt') {
                         $this->SetValue('setPositionBlind', $value);
                     } else {
                         $this->SetValue('setPosition', $value);
