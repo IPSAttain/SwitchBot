@@ -86,6 +86,7 @@ class SwitchBotDevice extends IPSModule
 
                 //  IR Devices
             case 'Light':
+            case 'DIY Light':
                 $this->RegisterVariableInteger('irBrightness', $this->Translate('Brightness'), 'SwitchBot.UpDown', 31);
                 $this->EnableAction('irBrightness');
                 break;
