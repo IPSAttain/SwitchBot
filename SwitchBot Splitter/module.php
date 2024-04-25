@@ -42,7 +42,7 @@ class SwitchBotSplitter extends IPSModule
             switch ($return['message']) {
                 case 'Unauthorized':
                 case 'unauthorized':
-                    $this->SetStatus(202); // wrong credentials
+                    $this->SetStatus(201); // wrong credentials
                     break;
                 
                 case 'success':
