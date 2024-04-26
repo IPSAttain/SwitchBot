@@ -122,6 +122,7 @@ class SwitchBotDevice extends IPSModule
             case 'Contact Sensor':
             case 'Meter':
             case 'Meter Plus':
+            case 'WoIOSensor'
             case 'Indoor Cam':
             case 'Pan/Tilt Cam':
                 $stateVariable = false;
@@ -169,7 +170,7 @@ class SwitchBotDevice extends IPSModule
                 break;
 
             case 'WoMeter':
-            case 'WiIOWoIOSensor':
+            case 'WoIOSensor':
             case 'WoMeterPlus':
             case 'WoHub2':
                 $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
