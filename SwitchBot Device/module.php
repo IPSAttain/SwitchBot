@@ -169,6 +169,7 @@ class SwitchBotDevice extends IPSModule
                 break;
 
             case 'WoMeter':
+            case 'WiIOWoIOSensor':
             case 'WoMeterPlus':
             case 'WoHub2':
                 $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
