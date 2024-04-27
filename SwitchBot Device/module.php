@@ -122,7 +122,7 @@ class SwitchBotDevice extends IPSModule
             case 'Contact Sensor':
             case 'Meter':
             case 'Meter Plus':
-            case 'WoIOSensor'
+            case 'WoIOSensor':
             case 'Indoor Cam':
             case 'Pan/Tilt Cam':
                 $stateVariable = false;
