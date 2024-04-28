@@ -39,42 +39,54 @@ class SwitchBotSplitter extends IPSModule
             $data = array('action' => 'queryUrl');
             $endpoint = 'queryWebhook';
             $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
-            if ($return['message'] == 'success') {
-                $currentWebHookURL = $return['body']['urls'][0];
-                if ($this->ReadPropertyBoolean('directConnection')) {
-                    $webHookURL = utf8_encode($this->ReadPropertyString('IPAddress')) . '/hook/switchbot/' . $this->InstanceID;
-                } else {
-                    $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
-                    if (IPS_GetInstance($cc_id)['InstanceStatus'] != IS_ACTIVE) {
-                        $this->SendDebug(__FUNCTION__, 'Symcon Connect Service is not active', 0);
-                        $this->SetStatus(203);
+            switch ($return['message']) {
+                case 'Unauthorized':
+                case 'unauthorized':
+                    $this->SetStatus(201); // wrong credentials
+                    break;
+                
+                case 'success':
+                case '':
+                    $currentWebHookURL = "";
+                    if (isset($return['body']['urls'][0])) $currentWebHookURL = $return['body']['urls'][0];
+                    if ($this->ReadPropertyBoolean('directConnection')) {
+                        $webHookURL = utf8_encode($this->ReadPropertyString('IPAddress')) . '/hook/switchbot/' . $this->InstanceID;
+                    } else {
+                        $webHookURL = CC_GetConnectURL($cc_id) . '/hook/switchbot/' . $this->InstanceID;
+                        if (IPS_GetInstance($cc_id)['InstanceStatus'] != IS_ACTIVE) {
+                            $this->SendDebug(__FUNCTION__, 'Symcon Connect Service is not active', 0);
+                            $this->SetStatus(203);
+                            return;
+                        }
+                    }
+                    if ($currentWebHookURL == $webHookURL) {
+                        $this->SendDebug(__FUNCTION__, 'WebHook match the current setting.', 0);
+                        $this->SetStatus(IS_ACTIVE);
+                        // no further action
                         return;
                     }
-                }
-                if ($currentWebHookURL == $webHookURL) {
-                    $this->SendDebug(__FUNCTION__, 'WebHook match the current setting.', 0);
+                    // remove the old entry
+                    $data = array('action' => 'deleteWebhook', 'url' => $currentWebHookURL);
+                    $endpoint = 'deleteWebhook';
+                    $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
+                    // update the webhook to the current setting
+                    $this->SendDebug(__FUNCTION__, 'WebHook Url: ' . $webHookURL, 0);
+                    $data = array('action' => 'setupWebhook','url' => $webHookURL,'deviceList' => 'ALL');
+                    $endpoint = 'setupWebhook';
+                    $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
                     $this->SetStatus(IS_ACTIVE);
-                    // no further action
-                    return;
-                }
-                // remove the old entry
-                $data = array('action' => 'deleteWebhook', 'url' => $currentWebHookURL);
-                $endpoint = 'deleteWebhook';
-                $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
-                // update the webhook to the current setting
-                $this->SendDebug(__FUNCTION__, 'WebHook Url: ' . $webHookURL, 0);
-                $data = array('action' => 'setupWebhook','url' => $webHookURL,'deviceList' => 'ALL');
-                $endpoint = 'setupWebhook';
-                $return = json_decode($this->ModifyWebHook($endpoint, $data), true);
-                $this->SetStatus(IS_ACTIVE);
-            } else {
-                //no success
-                $this->SetStatus(201);
-                
-            }
+                    break;
+
+                default:
+                    $this->SetStatus(204); // unknown
+                    $this->SendDebug(__FUNCTION__, 'Unknown Return Message: -> ' . $return['message'], 0);
+                    break;
+
+            } 
         } else {
             // no credentials
             $this->SetStatus(202);
+            $this->SendDebug(__FUNCTION__, 'No Credetials set', 0);
         }
 
     }
