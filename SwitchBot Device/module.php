@@ -332,7 +332,7 @@ class SwitchBotDevice extends IPSModule
                     break;
                 case 'lockState':
                     $state = ($value == 'locked');
-                    $this->SetValue('lockState', $state);
+                    $this->SetValue('setLock', $state);
                     break;
                 case 'isStuck':
                     $this->RegisterVariableBoolean('isStuck', $this->Translate('Is Stuck'), '~Switch', 60);
