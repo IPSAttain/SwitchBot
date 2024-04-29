@@ -45,6 +45,7 @@ class SwitchBotDevice extends IPSModule
                 break;
 
             case 'Lock':
+            case 'Smart Lock Pro':
                 $stateVariable = false;
                 $this->RegisterVariableBoolean('setLock', $this->Translate('Lock'), '~Lock', 20);
                 $this->EnableAction('setLock');
@@ -184,8 +185,9 @@ class SwitchBotDevice extends IPSModule
                 break;
 
             case 'Lock':
-                $this->RegisterVariableString('lockState', $key, '', 10);
-                $this->SetValue('lockState', $receivedData['context']['lockState']);
+            case 'Smart Lock Pro':
+                $state = ($receivedData['context']['lockState'] == 'locked');
+                $this->SetValue('setLock', $state);
                 break;
 
             case 'Blind Tilt':
@@ -322,6 +324,11 @@ class SwitchBotDevice extends IPSModule
                 case 'isCalibrate':
                     $this->RegisterVariableBoolean('isCalibrate', $this->Translate('Is Calibrate'), '~Switch', 50);
                     $this->SetValue('isCalibrate', ($value == 'true'));
+                    break;
+                case 'doorState':
+                    $this->RegisterVariableBoolean('doorState', $this->Translate('Door'), '~Door', 21);
+                    $state = ($receivedData['context']['doorState'] == 'opened');
+                    $this->SetValue('doorState', $state);
                     break;
                 case 'isStuck':
                     $this->RegisterVariableBoolean('isStuck', $this->Translate('Is Stuck'), '~Switch', 60);
