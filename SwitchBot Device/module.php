@@ -52,7 +52,8 @@ class SwitchBotDevice extends IPSModule
                 break;
 
             case 'Curtain':
-                $stateVariable = false;
+            case 'Curtain 3':
+            $stateVariable = false;
                 $this->RegisterVariableBoolean('setCurtain', $this->Translate('Curtain'), '~ShutterMove', 20);
                 $this->EnableAction('setCurtain');
                 $this->RegisterVariableInteger('setPosition', $this->Translate('Curtain'), '~ShutterPosition.100', 21);
@@ -387,6 +388,7 @@ class SwitchBotDevice extends IPSModule
                 $form = file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json');
                 break;
             case 'Curtain':
+            case 'Curtain 3':
                 $form = file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json');
                 break;
             default:
