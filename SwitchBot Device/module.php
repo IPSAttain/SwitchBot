@@ -328,8 +328,12 @@ class SwitchBotDevice extends IPSModule
                     break;
                 case 'doorState':
                     $this->RegisterVariableBoolean('doorState', $this->Translate('Door'), '~Door', 21);
-                    $state = ($receivedData['context']['doorState'] == 'opened');
+                    $state = ($value == 'opened');
                     $this->SetValue('doorState', $state);
+                    break;
+                case 'lockState':
+                    $state = ($value == 'locked');
+                    $this->SetValue('setLock', $state);
                     break;
                 case 'isStuck':
                     $this->RegisterVariableBoolean('isStuck', $this->Translate('Is Stuck'), '~Switch', 60);
