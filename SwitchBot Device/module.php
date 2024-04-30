@@ -53,7 +53,7 @@ class SwitchBotDevice extends IPSModule
 
             case 'Curtain':
             case 'Curtain 3':
-            $stateVariable = false;
+                $stateVariable = false;
                 $this->RegisterVariableBoolean('setCurtain', $this->Translate('Curtain'), '~ShutterMove', 20);
                 $this->EnableAction('setCurtain');
                 $this->RegisterVariableInteger('setPosition', $this->Translate('Curtain'), '~ShutterPosition.100', 21);
@@ -151,7 +151,11 @@ class SwitchBotDevice extends IPSModule
         $data = json_decode($JSONString);
         $receivedData = json_decode(utf8_decode($data->Buffer), true);
         $this->SendDebug(__FUNCTION__, utf8_decode($data->Buffer), 0);
-        $deviceType = $receivedData['context']['deviceType'];
+        if(!isset($receivedData['context']['deviceType']) && ($this->ReadPropertyString('deviceType') == 'Smart Lock Pro')) {
+            $deviceType = 'WoLockPro';
+        } else {
+            $deviceType = $receivedData['context']['deviceType'];
+        }
         $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
         $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample'] / 1000));
         switch ($deviceType) {
@@ -185,9 +189,9 @@ class SwitchBotDevice extends IPSModule
                 }
                 break;
 
-            case 'Lock':
-            case 'Smart Lock Pro':
-                $state = ($receivedData['context']['lockState'] == 'locked');
+            case 'WoLock':
+            case 'WoLockPro':
+                $state = ($receivedData['context']['lockState'] == 'LOCKED');
                 $this->SetValue('setLock', $state);
                 break;
 
