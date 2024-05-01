@@ -42,6 +42,29 @@
             "type": "Button",
             "caption": "getStatus",
             "onClick": "SWB_DeviceStatus($id);"
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Test Center",
+            "items": [
+                { 
+                    "name": "command", 
+                    "type": "ValidationTextBox", 
+                    "caption": "Command:", 
+                    "enabled": true
+                },
+                { 
+                    "name": "parameter", 
+                    "type": "ValidationTextBox", 
+                    "caption": "Parameter", 
+                    "enabled": true
+                },
+                {
+                    "type": "Button",
+                    "caption": "SendCommand",
+                    "onClick": "SWB_SendCommand($id);"
+                }
+            ]
         }
     ],
     "status": []
