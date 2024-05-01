@@ -12,8 +12,8 @@ class SwitchBotDevice extends IPSModule
         $this->RegisterPropertyString('deviceID', "");
         $this->RegisterPropertyString('deviceName', "");
         $this->RegisterPropertyString('deviceType', "");
-        $this->RegisterPropertyString('command', "");
-        $this->RegisterPropertyString('parameter', "");
+        $this->RegisterPropertyString('command', "turnOn");
+        $this->RegisterPropertyString('parameter', "dafault");
         $this->RegisterPropertyBoolean('deviceMode', true);
     }
 
@@ -262,7 +262,7 @@ class SwitchBotDevice extends IPSModule
         foreach ($returnData as $key => $value) {
             // sometimes the value is in capital letters sometimes in lower case
             // unifi all to lower case
-            $value = strtolower($value);
+            if (is_string($value)) $value = strtolower($value);
             switch ($key) {
                 case 'temperature':
                     $this->RegisterVariableFloat($key, $this->Translate('Temperature'), '~Temperature', 10);

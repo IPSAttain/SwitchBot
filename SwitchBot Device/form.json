@@ -22,13 +22,6 @@
                     "enabled": false
                 }
             ]
-        }
-    ],
-    "actions": [
-        {
-            "type": "Button",
-            "caption": "getStatus",
-            "onClick": "SWB_DeviceStatus($id);"
         },
         {
             "type": "ExpansionPanel",
@@ -52,6 +45,13 @@
                     "onClick": "SWB_SendCommand($id);"
                 }
             ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "getStatus",
+            "onClick": "SWB_DeviceStatus($id);"
         }
     ],
     "status": []
