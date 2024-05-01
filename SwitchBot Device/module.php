@@ -250,6 +250,7 @@ class SwitchBotDevice extends IPSModule
         $data['deviceID']  = $this->ReadPropertyString('deviceID');
         $data['command']   = $this->ReadPropertyString('command');
         $data['parameter'] = $this->ReadPropertyString('parameter');
+        $data['commandType'] = 'command';
         $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
         // Send Command to Splitter
         $return = json_decode($this->SendData($data = json_encode($data)), true);
