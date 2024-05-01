@@ -148,16 +148,6 @@ class SwitchBotDevice extends IPSModule
         //$this->DeviceStatus();
     }
 
-    public function ReceiveData($JSONString)
-    // all returns from WebHook
-    // Cloud -> WebHook -> Splitter -> Device
-    {
-        $data = json_decode($JSONString);
-        $receivedData = json_decode(utf8_decode($data->Buffer), true);
-        $this->SendDebug(__FUNCTION__, utf8_decode($data->Buffer), 0);
-        $this->ProcessReturnData($receivedData['context']);
-    }
-
     public function RequestAction($Ident, $value)
     {
         $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command', 'command' => $Ident);
@@ -221,7 +211,7 @@ class SwitchBotDevice extends IPSModule
         }
         $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
         // Send Command to Splitter
-        $return = json_decode($this->SendData($data = json_encode($data)), true);
+        $return = json_decode($this->SendDataToSplitter($data = json_encode($data)), true);
         // Set status var
         if ($return['message'] == 'success') {
             $this->SetValue($Ident, $value);
@@ -231,39 +221,15 @@ class SwitchBotDevice extends IPSModule
         return $return;
     }
 
-    public function DeviceStatus()
-    {
-        $data = array();
-        $data['deviceID'] = $this->ReadPropertyString('deviceID');
-        $data['command'] = 'getStatus';
-        $this->SendDebug(__FUNCTION__, $data['command'], 0);
-        $return = $this->SendData($data = json_encode($data));
-        $return = json_decode($return, true);
-        $this->SendDebug(__FUNCTION__, $return['message'], 0);
-        $this->ProcessReturnData($return['body']);
-    }
-
-    public function SendCommand()
-    // testcenter in the configuration form
-    {
-        $data = array();
-        $data['deviceID']  = $this->ReadPropertyString('deviceID');
-        $data['command']   = $this->ReadPropertyString('command');
-        $data['parameter'] = $this->ReadPropertyString('parameter');
-        $data['commandType'] = 'command';
-        $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
-        // Send Command to Splitter
-        $return = json_decode($this->SendData($data = json_encode($data)), true);
-        $this->ProcessReturnData($return['body']['items'][0]['status']);
-    }
-
     protected function ProcessReturnData($returnData)
     {
         $i = 100;
         foreach ($returnData as $key => $value) {
-            // sometimes the value is in capital letters sometimes in lower case
+            // sometimes the value is in capital letters sometimes as lower case
             // unifi all to lower case
-            if (is_string($value)) $value = strtolower($value);
+            if (is_string($value)) {
+                $value = strtolower($value);
+            }
             switch ($key) {
                 case 'temperature':
                     $this->RegisterVariableFloat($key, $this->Translate('Temperature'), '~Temperature', 10);
@@ -281,10 +247,14 @@ class SwitchBotDevice extends IPSModule
                     $this->RegisterVariableInteger($kex, $this->Translate('Lightlevel'), '~UVIndex', 40);
                     $this->SetValue($key, $value);
                     break;
+                case 'moveDetected':
+                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 50);
+                    $this->SetValue('detectionState', ($value == 'true'));
+                    break;
                 case 'detectionState':
                     $this->RegisterVariableBoolean($key, $this->Translate('Motion'), '~Motion', 50);
                     $this->SetValue($key, ($value == 'detected'));
-                    // no break
+                    break;
                 case 'position':
                 case 'slidePosition':
                     if ($this->ReadPropertyString('deviceType') == 'Blind Tilt') {
@@ -325,6 +295,7 @@ class SwitchBotDevice extends IPSModule
                 case 'hubDeviceId':
                 case 'deviceId':
                 case 'deviceMac':
+                case 'deviceType':
                     // not to save in Symcon variables
                     break;
                 default:
@@ -335,7 +306,45 @@ class SwitchBotDevice extends IPSModule
         }
     }
 
-    protected function SendData($Buffer)
+    public function ReceiveData($JSONString)
+    // all returns from WebHook
+    // Cloud -> WebHook -> Splitter -> Device
+    {
+        $data = json_decode($JSONString);
+        $receivedData = json_decode(utf8_decode($data->Buffer), true);
+        $this->SendDebug(__FUNCTION__, utf8_decode($data->Buffer), 0);
+        $this->ProcessReturnData($receivedData['context']);
+    }
+
+    public function DeviceStatus()
+    // Retrieve information from the device
+    {
+        $data = array();
+        $data['deviceID'] = $this->ReadPropertyString('deviceID');
+        $data['command'] = 'getStatus';
+        $this->SendDebug(__FUNCTION__, $data['command'], 0);
+        $return = $this->SendDataToSplitter($data = json_encode($data));
+        $return = json_decode($return, true);
+        $this->SendDebug(__FUNCTION__, $return['message'], 0);
+        $this->ProcessReturnData($return['body']);
+    }
+
+    public function SendCommand()
+    // test center in the configuration form
+    {
+        $data = array();
+        $data['deviceID']  = $this->ReadPropertyString('deviceID');
+        $data['command']   = $this->ReadPropertyString('command');
+        $data['parameter'] = $this->ReadPropertyString('parameter');
+        $data['commandType'] = 'command';
+        $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
+        // Send Command to Splitter
+        $return = json_decode($this->SendDataToSplitter($data = json_encode($data)), true);
+        $this->ProcessReturnData($return['body']['items'][0]['status']);
+    }
+
+    protected function SendDataToSplitter($Buffer)
+    // forward to the Splitter
     {
         $return = $this->SendDataToParent(json_encode([
             'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
