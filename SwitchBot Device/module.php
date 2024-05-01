@@ -12,6 +12,8 @@ class SwitchBotDevice extends IPSModule
         $this->RegisterPropertyString('deviceID', "");
         $this->RegisterPropertyString('deviceName', "");
         $this->RegisterPropertyString('deviceType', "");
+        $this->RegisterPropertyString('command', "");
+        $this->RegisterPropertyString('parameter', "");
         $this->RegisterPropertyBoolean('deviceMode', true);
     }
 
@@ -47,7 +49,7 @@ class SwitchBotDevice extends IPSModule
             case 'Lock':
             case 'Smart Lock Pro':
                 $stateVariable = false;
-                $this->RegisterVariableBoolean('setLock', $this->Translate('Lock'), '~Lock', 20);
+                $this->RegisterVariableBoolean('lockState', $this->Translate('Lock'), '~Lock', 20);
                 $this->EnableAction('setLock');
                 break;
 
@@ -147,76 +149,13 @@ class SwitchBotDevice extends IPSModule
     }
 
     public function ReceiveData($JSONString)
+    // all returns from WebHook
+    // Cloud -> WebHook -> Splitter -> Device
     {
         $data = json_decode($JSONString);
         $receivedData = json_decode(utf8_decode($data->Buffer), true);
         $this->SendDebug(__FUNCTION__, utf8_decode($data->Buffer), 0);
-        if(!isset($receivedData['context']['deviceType']) && ($this->ReadPropertyString('deviceType') == 'Smart Lock Pro')) {
-            $deviceType = 'WoLockPro';
-        } else {
-            $deviceType = $receivedData['context']['deviceType'];
-        }
-        $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
-        $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample'] / 1000));
-        switch ($deviceType) {
-            case 'WoPresence':
-            case 'WoCamera':
-                $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
-                $state = ($receivedData['context']['detectionState'] == 'DETECTED'); // true or false
-                $this->SetValue('detectionState', $state);
-                break;
-
-            case 'WoContact':
-                $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
-                $state = ($receivedData['context']['detectionState'] == 'DETECTED'); // true or false
-                $this->SetValue('detectionState', $state);
-                $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 20);
-                $state = ($receivedData['context']['openState'] == 'open'); // true or false
-                $this->SetValue('openState', $state);
-                break;
-
-            case 'WoMeter':
-            case 'WoIOSensor':
-            case 'WoMeterPlus':
-            case 'WoHub2':
-                $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
-                $this->SetValue('temperature', $receivedData['context']['temperature']);
-                $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 20);
-                $this->SetValue('humidity', $receivedData['context']['humidity']);
-                if (isset($receivedData['context']['lightLevel'])) {
-                    $this->RegisterVariableInteger('lightLevel', $this->Translate('Lightlevel'), '~UVIndex', 30);
-                    $this->SetValue('lightLevel', $receivedData['context']['lightLevel']);
-                }
-                break;
-
-            case 'WoLock':
-            case 'WoLockPro':
-                $state = ($receivedData['context']['lockState'] == 'LOCKED');
-                $this->SetValue('setLock', $state);
-                break;
-
-            case 'Blind Tilt':
-                $this->SetValue('setPositionBlind', $receivedData['context']['position']);
-                break;
-
-            case 'WoHand': // Bot
-                $this->SetValue('battery', $receivedData['context']['battery']);
-                break;
-
-            default:
-                $i = 10;
-                foreach ($receivedData['context'] as $key => $state) {
-                    $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $state, 0);
-                    if ($key == 'timeOfSample' || $key == 'deviceMac') {
-                        //already set
-                        return;
-                    }
-                    $this->RegisterVariableString($key, $key, '', $i);
-                    $this->SetValue($key, $state);
-                    $i += 10;
-                }
-        }
-
+        $this->ProcessReturnData($receivedData['context']);
     }
 
     public function RequestAction($Ident, $value)
@@ -304,15 +243,47 @@ class SwitchBotDevice extends IPSModule
         $this->ProcessReturnData($return['body']);
     }
 
+    public function SendCommand()
+    // testcenter in the configuration form
+    {
+        $data = array();
+        $data['deviceID']  = $this->ReadPropertyString('deviceID');
+        $data['command']   = $this->ReadPropertyString('command');
+        $data['parameter'] = $this->ReadPropertyString('parameter');
+        $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
+        // Send Command to Splitter
+        $return = json_decode($this->SendData($data = json_encode($data)), true);
+        $this->ProcessReturnData($return['body']['items'][0]['status']);
+    }
+
     protected function ProcessReturnData($returnData)
     {
         $i = 100;
         foreach ($returnData as $key => $value) {
+            // sometimes the value is in capital letters sometimes in lower case
+            // unifi all to lower case
+            $value = strtolower($value);
             switch ($key) {
+                case 'temperature':
+                    $this->RegisterVariableFloat($key, $this->Translate('Temperature'), '~Temperature', 10);
+                    $this->SetValue($key, $value);
+                    break;
+                case 'humidity':
+                    $this->RegisterVariableInteger($key, $this->Translate('Humidity'), '~Humidity', 20);
+                    $this->SetValue($key, $value);
+                    break;
                 case 'battery':
                     $this->RegisterVariableInteger($key, $this->Translate('Battery'), '~Battery.100', 30);
                     $this->SetValue($key, $value);
                     break;
+                case 'lightLevel':
+                    $this->RegisterVariableInteger($kex, $this->Translate('Lightlevel'), '~UVIndex', 40);
+                    $this->SetValue($key, $value);
+                    break;
+                case 'detectionState':
+                    $this->RegisterVariableBoolean($key, $this->Translate('Motion'), '~Motion', 50);
+                    $this->SetValue($key, ($value == 'detected'));
+                    // no break
                 case 'position':
                 case 'slidePosition':
                     if ($this->ReadPropertyString('deviceType') == 'Blind Tilt') {
@@ -331,23 +302,30 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue('isCalibrate', ($value == 'true'));
                     break;
                 case 'doorState':
-                    $this->RegisterVariableBoolean('doorState', $this->Translate('Door'), '~Door', 21);
-                    $state = ($value == 'opened');
-                    $this->SetValue('doorState', $state);
+                    $this->RegisterVariableBoolean($key, $this->Translate('Door'), '~Door', 60);
+                    $this->SetValue($key, ($value == 'opened'));
+                    break;
+                case 'openState':
+                    $this->RegisterVariableBoolean($key, $this->Translate('Door'), '~Door', 65);
+                    $this->SetValue($key, ($value == 'open'));
                     break;
                 case 'lockState':
-                    $state = ($value == 'locked');
-                    $this->SetValue('setLock', $state);
+                    $this->SetValue($key, ($value == 'locked'));
                     break;
                 case 'isStuck':
-                    $this->RegisterVariableBoolean('isStuck', $this->Translate('Is Stuck'), '~Switch', 60);
-                    $this->SetValue('isStuck', ($value == 'true'));
+                    $this->RegisterVariableBoolean($key, $this->Translate('Is Stuck'), '~Switch', 60);
+                    $this->SetValue($key, ($value == 'true'));
                     break;
+                case 'timeOfSample':
+                    $this->RegisterVariableInteger($key, $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
+                    $this->SetValue($key, intval($value / 1000));
+                    break;
+
                 case 'hubDeviceId':
                 case 'deviceId':
                 case 'deviceMac':
+                    // not to save in Symcon variables
                     break;
-
                 default:
                     $this->RegisterVariableString($key, $key, '', $i);
                     $this->SetValue($key, $value);
