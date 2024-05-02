@@ -246,7 +246,7 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue($key, $value);
                     break;
                 case 'lightLevel':
-                    $this->RegisterVariableInteger($kex, $this->Translate('Lightlevel'), '~UVIndex', 40);
+                    $this->RegisterVariableInteger($key, $this->Translate('Lightlevel'), '~UVIndex', 40);
                     $this->SetValue($key, $value);
                     break;
                 case 'moveDetected':
@@ -301,7 +301,7 @@ class SwitchBotDevice extends IPSModule
                     // not to save in Symcon variables
                     break;
                 default:
-                    if (!is_array($value)) {
+                    if (is_string($value)) {
                         $this->RegisterVariableString($key, $key, '', $i);
                         $this->SetValue($key, $value);
                         $i += 10;
