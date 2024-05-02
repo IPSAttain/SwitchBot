@@ -50,7 +50,7 @@ class SwitchBotDevice extends IPSModule
             case 'Smart Lock Pro':
                 $stateVariable = false;
                 $this->RegisterVariableBoolean('lockState', $this->Translate('Lock'), '~Lock', 20);
-                $this->EnableAction('setLock');
+                $this->EnableAction('lockState');
                 break;
 
             case 'Curtain':
@@ -179,7 +179,7 @@ class SwitchBotDevice extends IPSModule
                 $data['command'] = ($value ? 'channelSub' : 'channelAdd');
                 break;
 
-            case 'setLock':
+            case 'lockState':
                 $data['command'] = ($value ? 'lock' : 'unlock');
                 break;
 
