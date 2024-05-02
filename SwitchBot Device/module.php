@@ -13,7 +13,7 @@ class SwitchBotDevice extends IPSModule
         $this->RegisterPropertyString('deviceName', "");
         $this->RegisterPropertyString('deviceType', "");
         $this->RegisterPropertyString('command', "turnOn");
-        $this->RegisterPropertyString('parameter', "dafault");
+        $this->RegisterPropertyString('parameter', "default");
         $this->RegisterPropertyBoolean('deviceMode', true);
     }
 
@@ -212,12 +212,14 @@ class SwitchBotDevice extends IPSModule
         $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
         // Send Command to Splitter
         $return = json_decode($this->SendDataToSplitter($data = json_encode($data)), true);
-        // Set status var
-        if ($return['message'] == 'success') {
-            $this->SetValue($Ident, $value);
-        }
         $this->SendDebug(__FUNCTION__, $return['message'], 0);
-        $this->ProcessReturnData($return['body']['items'][0]['status']);
+        // Set status var
+        if ($return['message'] == 'success' || $return['message'] == 'success!') {
+            $this->SetValue($Ident, $value);
+            $this->ProcessReturnData($return['body']['items'][0]['status']);
+        } else {
+            $this->LogMessage('Response from Switchbot Cloud: ' . $return['message'], KL_WARNING);
+        }
         return $return;
     }
 
@@ -299,9 +301,11 @@ class SwitchBotDevice extends IPSModule
                     // not to save in Symcon variables
                     break;
                 default:
-                    $this->RegisterVariableString($key, $key, '', $i);
-                    $this->SetValue($key, $value);
-                    $i += 10;
+                    if (!is_array($value)) {
+                        $this->RegisterVariableString($key, $key, '', $i);
+                        $this->SetValue($key, $value);
+                        $i += 10;
+                    }
             }
         }
     }
