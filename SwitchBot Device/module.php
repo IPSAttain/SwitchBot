@@ -121,6 +121,15 @@ class SwitchBotDevice extends IPSModule
                 $this->RegisterVariableInteger('setPlayback', $this->Translate('Playback'), 'SwitchBot.setPlayback', 35);
                 $this->EnableAction('setPlayback');
                 break;
+            case 'Robot Vacuum Cleaner S1':
+            case 'Robot Vacuum Cleaner S1 Plus':
+                $this->RegisterProfile('SwitchBot.setSuctionLevel', 'Intensity', '', '', 0, 3, 1, '', 1);
+                $stateVariable = false;
+                $this->RegisterVariableInteger('setVacuuming', $this->Translate('Vacuum'), '~Playback', 10);
+                $this->EnableAction('setVacuuming');
+                $this->RegisterVariableInteger('setSuctionLevel', $this->Translate('Suction Level'), 'SwitchBot.setSuctionLevel', 11);
+                $this->EnableAction('setSuctionLevel');
+                break;
 
             case 'Motion Sensor':
             case 'Contact Sensor':
@@ -207,6 +216,26 @@ class SwitchBotDevice extends IPSModule
             case 'setPlayback':
                 $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
                 $data['command'] = $Playback[$value];
+                break;
+
+            case 'setVacuuming':
+                switch ($value) {
+                    case 1:
+                        $data['command'] = 'stop';
+                        break;
+
+                    case 2:
+                        $data['command'] = 'start';
+                        break;
+
+                    default:
+                        $data['command'] = 'dock';
+                }
+                break;
+
+            case 'setSuctionLevel':
+                $data['parameter'] = strval($value);
+                $data['command'] = 'PowLevel';
                 break;
         }
         $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
