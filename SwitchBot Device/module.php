@@ -245,7 +245,9 @@ class SwitchBotDevice extends IPSModule
         // Set status var
         if ($return['message'] == 'success' || $return['message'] == 'success!') {
             $this->SetValue($Ident, $value);
-            $this->ProcessReturnData($return['body']['items'][0]['status']);
+            if isset($return['body']['items']) {
+                $this->ProcessReturnData($return['body']['items'][0]['status']);
+            }
         } else {
             $this->LogMessage('Response from Switchbot Cloud: ' . $return['message'], KL_WARNING);
         }
