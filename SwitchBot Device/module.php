@@ -48,6 +48,7 @@ class SwitchBotDevice extends IPSModule
 
             case 'Lock':
             case 'Smart Lock Pro':
+            case 'Smart Lock Ultra':
                 $stateVariable = false;
                 $this->RegisterVariableBoolean('lockState', $this->Translate('Lock'), '~Lock', 20);
                 $this->EnableAction('lockState');
@@ -314,7 +315,8 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue($key, ($value == 'open'));
                     break;
                 case 'lockState':
-                    $this->SetValue($key, ($value == 'locked'));
+                    $isLocked = in_array($value, ['locked', 'latchboltlocked']);
+                    $this->SetValue($key, $isLocked);
                     break;
                 case 'isStuck':
                     $this->RegisterVariableBoolean($key, $this->Translate('Is Stuck'), '~Switch', 60);
