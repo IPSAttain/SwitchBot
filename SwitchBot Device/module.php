@@ -12,6 +12,8 @@ class SwitchBotDevice extends IPSModule
         $this->RegisterPropertyString('deviceID', "");
         $this->RegisterPropertyString('deviceName', "");
         $this->RegisterPropertyString('deviceType', "");
+        $this->RegisterPropertyString('command', "turnOn");
+        $this->RegisterPropertyString('parameter', "default");
         $this->RegisterPropertyBoolean('deviceMode', true);
     }
 
@@ -45,12 +47,15 @@ class SwitchBotDevice extends IPSModule
                 break;
 
             case 'Lock':
+            case 'Smart Lock Pro':
+            case 'Smart Lock Ultra':
                 $stateVariable = false;
-                $this->RegisterVariableBoolean('setLock', $this->Translate('Lock'), '~Lock', 20);
-                $this->EnableAction('setLock');
+                $this->RegisterVariableBoolean('lockState', $this->Translate('Lock'), '~Lock', 20);
+                $this->EnableAction('lockState');
                 break;
 
             case 'Curtain':
+            case 'Curtain 3':
                 $stateVariable = false;
                 $this->RegisterVariableBoolean('setCurtain', $this->Translate('Curtain'), '~ShutterMove', 20);
                 $this->EnableAction('setCurtain');
@@ -117,6 +122,15 @@ class SwitchBotDevice extends IPSModule
                 $this->RegisterVariableInteger('setPlayback', $this->Translate('Playback'), 'SwitchBot.setPlayback', 35);
                 $this->EnableAction('setPlayback');
                 break;
+            case 'Robot Vacuum Cleaner S1':
+            case 'Robot Vacuum Cleaner S1 Plus':
+                $this->RegisterProfile('SwitchBot.setSuctionLevel', 'Intensity', '', '', 0, 3, 1, '', 1);
+                $stateVariable = false;
+                $this->RegisterVariableInteger('setVacuuming', $this->Translate('Vacuum'), '~Playback', 10);
+                $this->EnableAction('setVacuuming');
+                $this->RegisterVariableInteger('setSuctionLevel', $this->Translate('Suction Level'), 'SwitchBot.setSuctionLevel', 11);
+                $this->EnableAction('setSuctionLevel');
+                break;
 
             case 'Motion Sensor':
             case 'Contact Sensor':
@@ -142,74 +156,6 @@ class SwitchBotDevice extends IPSModule
             $this->EnableAction('setState');
         }
         //$this->DeviceStatus();
-    }
-
-    public function ReceiveData($JSONString)
-    {
-        $data = json_decode($JSONString);
-        $receivedData = json_decode(utf8_decode($data->Buffer), true);
-        $this->SendDebug(__FUNCTION__, utf8_decode($data->Buffer), 0);
-        $deviceType = $receivedData['context']['deviceType'];
-        $this->RegisterVariableInteger('timeOfSample', $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
-        $this->SetValue('timeOfSample', intval($receivedData['context']['timeOfSample'] / 1000));
-        switch ($deviceType) {
-            case 'WoPresence':
-            case 'WoCamera':
-                $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
-                $state = ($receivedData['context']['detectionState'] == 'DETECTED'); // true or false
-                $this->SetValue('detectionState', $state);
-                break;
-
-            case 'WoContact':
-                $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 10);
-                $state = ($receivedData['context']['detectionState'] == 'DETECTED'); // true or false
-                $this->SetValue('detectionState', $state);
-                $this->RegisterVariableBoolean('openState', $this->Translate('Door'), '~Door', 20);
-                $state = ($receivedData['context']['openState'] == 'open'); // true or false
-                $this->SetValue('openState', $state);
-                break;
-
-            case 'WoMeter':
-            case 'WoIOSensor':
-            case 'WoMeterPlus':
-            case 'WoHub2':
-                $this->RegisterVariableFloat('temperature', $this->Translate('Temperature'), '~Temperature', 10);
-                $this->SetValue('temperature', $receivedData['context']['temperature']);
-                $this->RegisterVariableInteger('humidity', $this->Translate('Humidity'), '~Humidity', 20);
-                $this->SetValue('humidity', $receivedData['context']['humidity']);
-                if (isset($receivedData['context']['lightLevel'])) {
-                    $this->RegisterVariableInteger('lightLevel', $this->Translate('Lightlevel'), '~UVIndex', 30);
-                    $this->SetValue('lightLevel', $receivedData['context']['lightLevel']);
-                }
-                break;
-
-            case 'Lock':
-                $this->RegisterVariableString('lockState', $key, '', 10);
-                $this->SetValue('lockState', $receivedData['context']['lockState']);
-                break;
-
-            case 'Blind Tilt':
-                $this->SetValue('setPositionBlind', $receivedData['context']['position']);
-                break;
-
-            case 'WoHand': // Bot
-                $this->SetValue('battery', $receivedData['context']['battery']);
-                break;
-
-            default:
-                $i = 10;
-                foreach ($receivedData['context'] as $key => $state) {
-                    $this->SendDebug(__FUNCTION__, "Key: " . $key . " Value: " . $state, 0);
-                    if ($key == 'timeOfSample' || $key == 'deviceMac') {
-                        //already set
-                        return;
-                    }
-                    $this->RegisterVariableString($key, $key, '', $i);
-                    $this->SetValue($key, $state);
-                    $i += 10;
-                }
-        }
-
     }
 
     public function RequestAction($Ident, $value)
@@ -243,7 +189,7 @@ class SwitchBotDevice extends IPSModule
                 $data['command'] = ($value ? 'channelSub' : 'channelAdd');
                 break;
 
-            case 'setLock':
+            case 'lockState':
                 $data['command'] = ($value ? 'lock' : 'unlock');
                 break;
 
@@ -272,39 +218,76 @@ class SwitchBotDevice extends IPSModule
                 $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
                 $data['command'] = $Playback[$value];
                 break;
+
+            case 'setVacuuming':
+                switch ($value) {
+                    case 1:
+                        $data['command'] = 'stop';
+                        break;
+
+                    case 2:
+                        $data['command'] = 'start';
+                        break;
+
+                    default:
+                        $data['command'] = 'dock';
+                }
+                break;
+
+            case 'setSuctionLevel':
+                $data['parameter'] = strval($value);
+                $data['command'] = 'PowLevel';
+                break;
         }
         $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
         // Send Command to Splitter
-        $return = json_decode($this->SendData($data = json_encode($data)), true);
+        $return = json_decode($this->SendDataToSplitter($data = json_encode($data)), true);
+        $this->SendDebug(__FUNCTION__, $return['message'], 0);
         // Set status var
-        if ($return['message'] == 'success') {
+        if ($return['message'] == 'success' || $return['message'] == 'success!') {
             $this->SetValue($Ident, $value);
+            if (isset($return['body']['items'])) {
+                $this->ProcessReturnData($return['body']['items'][0]['status']);
+            }
+        } else {
+            $this->LogMessage('Response from Switchbot Cloud: ' . $return['message'], KL_WARNING);
         }
-        $this->SendDebug(__FUNCTION__, $return['message'], 0);
-        $this->ProcessReturnData($return['body']['items'][0]['status']);
         return $return;
-    }
-
-    public function DeviceStatus()
-    {
-        $data = array();
-        $data['deviceID'] = $this->ReadPropertyString('deviceID');
-        $data['command'] = 'getStatus';
-        $this->SendDebug(__FUNCTION__, $data['command'], 0);
-        $return = $this->SendData($data = json_encode($data));
-        $return = json_decode($return, true);
-        $this->SendDebug(__FUNCTION__, $return['message'], 0);
-        $this->ProcessReturnData($return['body']);
     }
 
     protected function ProcessReturnData($returnData)
     {
         $i = 100;
         foreach ($returnData as $key => $value) {
+            // sometimes the value is in capital letters sometimes as lower case
+            // unifi all to lower case
+            if (is_string($value)) {
+                $value = strtolower($value);
+            }
             switch ($key) {
+                case 'temperature':
+                    $this->RegisterVariableFloat($key, $this->Translate('Temperature'), '~Temperature', 10);
+                    $this->SetValue($key, $value);
+                    break;
+                case 'humidity':
+                    $this->RegisterVariableInteger($key, $this->Translate('Humidity'), '~Humidity', 20);
+                    $this->SetValue($key, $value);
+                    break;
                 case 'battery':
                     $this->RegisterVariableInteger($key, $this->Translate('Battery'), '~Battery.100', 30);
                     $this->SetValue($key, $value);
+                    break;
+                case 'lightLevel':
+                    $this->RegisterVariableInteger($key, $this->Translate('Lightlevel'), '~UVIndex', 40);
+                    $this->SetValue($key, $value);
+                    break;
+                case 'moveDetected':
+                    $this->RegisterVariableBoolean('detectionState', $this->Translate('Motion'), '~Motion', 50);
+                    $this->SetValue('detectionState', ($value == 'true'));
+                    break;
+                case 'detectionState':
+                    $this->RegisterVariableBoolean($key, $this->Translate('Motion'), '~Motion', 50);
+                    $this->SetValue($key, ($value == 'detected'));
                     break;
                 case 'position':
                 case 'slidePosition':
@@ -323,24 +306,82 @@ class SwitchBotDevice extends IPSModule
                     $this->RegisterVariableBoolean('isCalibrate', $this->Translate('Is Calibrate'), '~Switch', 50);
                     $this->SetValue('isCalibrate', ($value == 'true'));
                     break;
-                case 'isStuck':
-                    $this->RegisterVariableBoolean('isStuck', $this->Translate('Is Stuck'), '~Switch', 60);
-                    $this->SetValue('isStuck', ($value == 'true'));
+                case 'doorState':
+                    $this->RegisterVariableBoolean($key, $this->Translate('Door'), '~Door', 60);
+                    $this->SetValue($key, ($value == 'opened'));
                     break;
+                case 'openState':
+                    $this->RegisterVariableBoolean($key, $this->Translate('Door'), '~Door', 65);
+                    $this->SetValue($key, ($value == 'open'));
+                    break;
+                case 'lockState':
+                    $isLocked = in_array($value, ['locked', 'latchboltlocked']);
+                    $this->SetValue($key, $isLocked);
+                    break;
+                case 'isStuck':
+                    $this->RegisterVariableBoolean($key, $this->Translate('Is Stuck'), '~Switch', 60);
+                    $this->SetValue($key, ($value == 'true'));
+                    break;
+                case 'timeOfSample':
+                    $this->RegisterVariableInteger($key, $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
+                    $this->SetValue($key, intval($value / 1000));
+                    break;
+
                 case 'hubDeviceId':
                 case 'deviceId':
                 case 'deviceMac':
+                case 'deviceType':
+                    // not to save in Symcon variables
                     break;
-
                 default:
-                    $this->RegisterVariableString($key, $key, '', $i);
-                    $this->SetValue($key, $value);
-                    $i += 10;
+                    if (is_string($value)) {
+                        $this->RegisterVariableString($key, $key, '', $i);
+                        $this->SetValue($key, $value);
+                        $i += 10;
+                    }
             }
         }
     }
 
-    protected function SendData($Buffer)
+    public function ReceiveData($JSONString)
+    // all returns from WebHook
+    // Cloud -> WebHook -> Splitter -> Device
+    {
+        $data = json_decode($JSONString);
+        $receivedData = json_decode(utf8_decode($data->Buffer), true);
+        $this->SendDebug(__FUNCTION__, utf8_decode($data->Buffer), 0);
+        $this->ProcessReturnData($receivedData['context']);
+    }
+
+    public function DeviceStatus()
+    // Retrieve information from the device
+    {
+        $data = array();
+        $data['deviceID'] = $this->ReadPropertyString('deviceID');
+        $data['command'] = 'getStatus';
+        $this->SendDebug(__FUNCTION__, $data['command'], 0);
+        $return = $this->SendDataToSplitter($data = json_encode($data));
+        $return = json_decode($return, true);
+        $this->SendDebug(__FUNCTION__, $return['message'], 0);
+        $this->ProcessReturnData($return['body']);
+    }
+
+    public function SendCommand()
+    // test center in the configuration form
+    {
+        $data = array();
+        $data['deviceID']  = $this->ReadPropertyString('deviceID');
+        $data['command']   = $this->ReadPropertyString('command');
+        $data['parameter'] = $this->ReadPropertyString('parameter');
+        $data['commandType'] = 'command';
+        $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
+        // Send Command to Splitter
+        $return = json_decode($this->SendDataToSplitter($data = json_encode($data)), true);
+        $this->ProcessReturnData($return['body']['items'][0]['status']);
+    }
+
+    protected function SendDataToSplitter($Buffer)
+    // forward to the Splitter
     {
         $return = $this->SendDataToParent(json_encode([
             'DataID' => "{950EE1ED-3DEB-AF74-4728-3A179CDB7100}",
@@ -380,6 +421,7 @@ class SwitchBotDevice extends IPSModule
                 $form = file_get_contents(__DIR__ . '/../libs/formLightIRDevice.json');
                 break;
             case 'Curtain':
+            case 'Curtain 3':
                 $form = file_get_contents(__DIR__ . '/../libs/formCurtainDevice.json');
                 break;
             default:
