@@ -149,7 +149,7 @@ class SwitchBotSplitter extends IPSModule
 
         $data = array(
             'command' => $command,
-            'parameter' => $parameter,
+            'parameter' => json_decode($parameter),
             'commandType' => $commandType
         );
         $data = json_encode($data);
