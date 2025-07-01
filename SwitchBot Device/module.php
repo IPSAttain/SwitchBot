@@ -144,7 +144,11 @@ class SwitchBotDevice extends IPSModule
                 //$stateVariable = false;
                 $this->RegisterVariableInteger('setPurifierMode', $this->Translate('Mode'), 'SwitchBot.purifierMode', 21);
                 $this->EnableAction('setPurifierMode');
-
+                $this->RegisterProfile('SwitchBot.fanSpeed', 'Shutter', '', '', 1, 3, 1, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 1, $this->Translate('Low'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.FanSpeed', 2, $this->Translate('Medium'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 3, $this->Translate('High'), '', -1);
+                $this->RegisterVariableInteger('fanGear', $this->Translate('Fan Speed'), 'SwitchBot.fanSpeed', 100);
                 $this->RegisterVariableBoolean('setChildLock', $this->Translate('Child Lock'), '~Lock', 100);
                 $this->EnableAction('setChildLock');
                 break;
@@ -259,8 +263,12 @@ class SwitchBotDevice extends IPSModule
             
             case 'setPurifierMode':
                 $data['command'] = 'setMode';
-                $data['parameter'] = '{"mode":' . strval($value) . '}';
-                // ,"fanGear:1
+                If ($value == 1) {
+                   $fanSpeed = $this->GetValue('fanGear');
+                   $data['parameter'] = '{"mode":' . strval($value) . ',"fanGear:' . $fanSpeed . '}'; 
+                } else {
+                    $data['parameter'] = '{"mode":' . strval($value) . '}';
+                }
                 break;
 
             case 'setChildLock':
@@ -357,6 +365,9 @@ class SwitchBotDevice extends IPSModule
                     break;
                 case 'mode':
                     $this->SetValue('setPurifierMode', $value);
+                    break;
+                case 'fanGear':
+                    $this->SetValue('fanGear',$value);
                     break;
                 case 'childLock':
                     $this->SetValue('setChildLock', ($value == '1'));
