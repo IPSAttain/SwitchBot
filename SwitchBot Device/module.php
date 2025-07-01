@@ -259,7 +259,7 @@ class SwitchBotDevice extends IPSModule
             
             case 'setPurifierMode':
                 $data['command'] = 'setMode';
-                $data['parameter'] = 'mode,level';
+                $data['parameter'] = strval($value) . ',1';
                 break;
 
             case 'setChildLock':
