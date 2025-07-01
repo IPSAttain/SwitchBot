@@ -266,7 +266,7 @@ class SwitchBotDevice extends IPSModule
                 $data['command'] = 'setMode';
                 If ($value == 1) {
                    $fanSpeed = $this->GetValue('fanGear');
-                   $data['parameter'] = '{"mode":' . strval($value) . ',"fanGear:' . $fanSpeed . '}'; 
+                   $data['parameter'] = '{"mode":' . strval($value) . ',"fanGear":' . $fanSpeed . '}'; 
                 } else {
                     $data['parameter'] = '{"mode":' . strval($value) . '}';
                 }
@@ -274,7 +274,7 @@ class SwitchBotDevice extends IPSModule
             
             case 'fanGear':
                 $data['command'] = 'setMode';
-                $data['parameter'] = '{"mode": 1,"fanGear:' . strval($value) . '}'; 
+                $data['parameter'] = '{"mode": 1,"fanGear":' . strval($value) . '}'; 
                  break;
 
             case 'setChildLock':
