@@ -144,7 +144,7 @@ class SwitchBotDevice extends IPSModule
                 $stateVariable = false;
                 $this->RegisterVariableInteger('setPurifierMode', $this->Translate('Mode'), 'SwitchBot.purifierMode', 21);
                 $this->EnableAction('setPurifierMode');
-                $this->RegisterVariableBoolean('setPower',$this->Translate('Power','~Switch',22));
+                $this->RegisterVariableBoolean('setPower',$this->Translate('Power'),'~Switch',22);
                 $this->EnableAction('setPower');
 
                 break;
