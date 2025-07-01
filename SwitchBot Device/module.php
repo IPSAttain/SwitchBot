@@ -146,7 +146,7 @@ class SwitchBotDevice extends IPSModule
                 $this->EnableAction('setPurifierMode');
                 $this->RegisterProfile('SwitchBot.fanSpeed', 'Shutter', '', '', 1, 3, 1, '', 1);
                 IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 1, $this->Translate('Low'), '', -1);
-                IPS_SetVariableProfileAssociation('SwitchBot.FanSpeed', 2, $this->Translate('Medium'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 2, $this->Translate('Medium'), '', -1);
                 IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 3, $this->Translate('High'), '', -1);
                 $this->RegisterVariableInteger('fanGear', $this->Translate('Fan Speed'), 'SwitchBot.fanSpeed', 100);
                 $this->RegisterVariableBoolean('setChildLock', $this->Translate('Child Lock'), '~Lock', 100);
