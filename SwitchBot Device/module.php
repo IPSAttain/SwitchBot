@@ -136,17 +136,14 @@ class SwitchBotDevice extends IPSModule
             case 'Air Purifier Table VOC':
             case 'Air Purifier PM2.5':
             case 'Air Purifier Table PM2.5':
-                $this->RegisterProfile('SwitchBot.purifierMode', 'Shutter', '', '', 0, 3, 1, '', 1);
-                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 0, $this->Translate('Normal Mode'), '', -1);
-                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 1, $this->Translate('Auto Mode'), '', -1);
-                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 2, $this->Translate('Sleep Mode'), '', -1);
-                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 3, $this->Translate('Pet Mode'), '', -1);
+                $this->RegisterProfile('SwitchBot.purifierMode', 'Shutter', '', '', 1, 4, 1, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 1, $this->Translate('Normal Mode'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 2, $this->Translate('Auto Mode'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 3, $this->Translate('Sleep Mode'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 4, $this->Translate('Pet Mode'), '', -1);
                 $stateVariable = false;
                 $this->RegisterVariableInteger('setPurifierMode', $this->Translate('Mode'), 'SwitchBot.purifierMode', 21);
                 $this->EnableAction('setPurifierMode');
-                $this->RegisterVariableBoolean('setPower',$this->Translate('Power'),'~Switch',22);
-                $this->EnableAction('setPower');
-
                 break;
 
             case 'Motion Sensor':
