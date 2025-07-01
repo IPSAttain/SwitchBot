@@ -358,8 +358,7 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue('setPurifierMode', $value);
                     break;
                 case 'childLock':
-                    
-                    $this->SetValue($key, ($value == '1'));
+                    $this->SetValue('setChildLock', ($value == '1'));
                     break;
                 case 'hubDeviceId':
                 case 'deviceId':
