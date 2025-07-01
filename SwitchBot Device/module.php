@@ -141,9 +141,12 @@ class SwitchBotDevice extends IPSModule
                 IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 2, $this->Translate('Auto Mode'), '', -1);
                 IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 3, $this->Translate('Sleep Mode'), '', -1);
                 IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 4, $this->Translate('Pet Mode'), '', -1);
-                $stateVariable = false;
+                //$stateVariable = false;
                 $this->RegisterVariableInteger('setPurifierMode', $this->Translate('Mode'), 'SwitchBot.purifierMode', 21);
                 $this->EnableAction('setPurifierMode');
+
+                $this->RegisterVariableBoolean('setChildLock', $this->Translate('Child Lock'), '~Lock', 100);
+                $this->EnableAction('setChildLock');
                 break;
 
             case 'Motion Sensor':
@@ -257,7 +260,11 @@ class SwitchBotDevice extends IPSModule
             case 'setPurifierMode':
                 $data['command'] = 'setMode';
                 $data['parameter'] = 'mode,level';
+                break;
 
+            case 'setChildLock':
+                $data['command'] = 'setChildLock';
+                $data['parameter'] = ($value ? '1' : '0');;
                 break;
         }
         $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
@@ -351,7 +358,7 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue('setPurifierMode', $value);
                     break;
                 case 'childLock':
-                    $this->RegisterVariableBoolean($key, $this->Translate('Child Lock'), '~Lock', 100);
+                    
                     $this->SetValue($key, ($value == '1'));
                     break;
                 case 'hubDeviceId':
