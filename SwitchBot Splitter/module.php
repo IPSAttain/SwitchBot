@@ -153,7 +153,7 @@ class SwitchBotSplitter extends IPSModule
             'commandType' => $commandType
         );
         $data = json_encode($data);
-
+        $this->SendDebug(__FUNCTION__, $data, 0);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
