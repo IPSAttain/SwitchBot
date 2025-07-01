@@ -136,18 +136,18 @@ class SwitchBotDevice extends IPSModule
             case 'Air Purifier Table VOC':
             case 'Air Purifier PM2.5':
             case 'Air Purifier Table PM2.5':
-                $this->RegisterProfile('SwitchBot.purifierMode', 'Shutter', '', '', 1, 4, 1, '', 1);
-                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 1, $this->Translate('Normal Mode'), '', -1);
+                $this->RegisterProfile('SwitchBot.purifierMode', 'Climate', '', '', 1, 4, 1, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 1, $this->Translate('Fan Mode'), '', -1);
                 IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 2, $this->Translate('Auto Mode'), '', -1);
                 IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 3, $this->Translate('Sleep Mode'), '', -1);
                 IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 4, $this->Translate('Pet Mode'), '', -1);
                 //$stateVariable = false;
                 $this->RegisterVariableInteger('setPurifierMode', $this->Translate('Mode'), 'SwitchBot.purifierMode', 21);
                 $this->EnableAction('setPurifierMode');
-                $this->RegisterProfile('SwitchBot.fanSpeed', 'Shutter', '', '', 1, 3, 1, '', 1);
-                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 1, $this->Translate('Low'), '', -1);
-                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 2, $this->Translate('Medium'), '', -1);
-                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 3, $this->Translate('High'), '', -1);
+                $this->RegisterProfile('SwitchBot.fanSpeed', 'Ventilation', '', '', 1, 3, 1, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 1, $this->Translate('Level') . ' 1', '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 2, $this->Translate('Level') . ' 2', '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 3, $this->Translate('Level') . ' 3', '', -1);
                 $this->RegisterVariableInteger('fanGear', $this->Translate('Fan Speed'), 'SwitchBot.fanSpeed', 100);
                 $this->EnableAction('fanGear');
                 $this->RegisterVariableBoolean('setChildLock', $this->Translate('Child Lock'), '~Lock', 100);
