@@ -149,6 +149,7 @@ class SwitchBotDevice extends IPSModule
                 IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 2, $this->Translate('Medium'), '', -1);
                 IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 3, $this->Translate('High'), '', -1);
                 $this->RegisterVariableInteger('fanGear', $this->Translate('Fan Speed'), 'SwitchBot.fanSpeed', 100);
+                $this->EnableAction('fanGear');
                 $this->RegisterVariableBoolean('setChildLock', $this->Translate('Child Lock'), '~Lock', 100);
                 $this->EnableAction('setChildLock');
                 break;
@@ -270,6 +271,11 @@ class SwitchBotDevice extends IPSModule
                     $data['parameter'] = '{"mode":' . strval($value) . '}';
                 }
                 break;
+            
+            case 'fanGear':
+                $data['command'] = 'setMode';
+                $data['parameter'] = '{"mode": 1,"fanGear:' . strval($value) . '}'; 
+                 break;
 
             case 'setChildLock':
                 $data['command'] = 'setChildLock';
