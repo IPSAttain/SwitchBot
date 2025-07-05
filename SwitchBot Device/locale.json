@@ -42,7 +42,16 @@
             "Up":"Oben",
             "Down":"Unten",
             "Open":"Offen",
-            "Blind":"Jalousie"
+            "Blind":"Jalousie",
+            "Level":"Stufe",
+            "Fan":"Lüfter",
+            "Fan Speed":"Lüfter Geschw.",
+            "Mode":"Modus",
+            "Child Lock":"Kindersicherung",
+            "Fan Mode":"Lüfter Modus",
+            "Pet Mode":"Haustier Modus",
+            "Auto Mode":"Auto Modus",
+            "Sleep Mode":"Nacht Modus"
         }
     }
 }

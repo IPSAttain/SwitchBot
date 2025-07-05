@@ -132,6 +132,28 @@ class SwitchBotDevice extends IPSModule
                 $this->EnableAction('setSuctionLevel');
                 break;
 
+            case 'Air Purifier VOC':
+            case 'Air Purifier Table VOC':
+            case 'Air Purifier PM2.5':
+            case 'Air Purifier Table PM2.5':
+                $this->RegisterProfile('SwitchBot.purifierMode', 'Climate', '', '', 1, 4, 1, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 1, $this->Translate('Fan Mode'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 2, $this->Translate('Auto Mode'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 3, $this->Translate('Sleep Mode'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.purifierMode', 4, $this->Translate('Pet Mode'), '', -1);
+                //$stateVariable = false;
+                $this->RegisterVariableInteger('setPurifierMode', $this->Translate('Mode'), 'SwitchBot.purifierMode', 21);
+                $this->EnableAction('setPurifierMode');
+                $this->RegisterProfile('SwitchBot.fanSpeed', 'Ventilation', '', '', 1, 3, 1, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 1, $this->Translate('Level') . ' 1', '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 2, $this->Translate('Level') . ' 2', '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.fanSpeed', 3, $this->Translate('Level') . ' 3', '', -1);
+                $this->RegisterVariableInteger('fanGear', $this->Translate('Fan Speed'), 'SwitchBot.fanSpeed', 100);
+                $this->EnableAction('fanGear');
+                $this->RegisterVariableBoolean('setChildLock', $this->Translate('Child Lock'), '~Lock', 100);
+                $this->EnableAction('setChildLock');
+                break;
+
             case 'Motion Sensor':
             case 'Contact Sensor':
             case 'Meter':
@@ -164,6 +186,7 @@ class SwitchBotDevice extends IPSModule
         switch ($Ident) {
             case 'setState':
             case 'setCurtain':
+            case 'setPower':
                 $data['command'] = ($value ? 'turnOn' : 'turnOff');
                 break;
 
@@ -238,6 +261,26 @@ class SwitchBotDevice extends IPSModule
                 $data['parameter'] = strval($value);
                 $data['command'] = 'PowLevel';
                 break;
+            
+            case 'setPurifierMode':
+                $data['command'] = 'setMode';
+                If ($value == 1) {
+                   $fanSpeed = $this->GetValue('fanGear');
+                   $data['parameter'] = '{"mode":' . strval($value) . ',"fanGear":' . $fanSpeed . '}'; 
+                } else {
+                    $data['parameter'] = '{"mode":' . strval($value) . '}';
+                }
+                break;
+            
+            case 'fanGear':
+                $data['command'] = 'setMode';
+                $data['parameter'] = '{"mode": 1,"fanGear":' . strval($value) . '}'; 
+                 break;
+
+            case 'setChildLock':
+                $data['command'] = 'setChildLock';
+                $data['parameter'] = ($value ? '1' : '0');;
+                break;
         }
         $this->SendDebug(__FUNCTION__, $data['command'] . ' ' . $data['parameter'], 0);
         // Send Command to Splitter
@@ -298,8 +341,8 @@ class SwitchBotDevice extends IPSModule
                     }
                     break;
                 case 'power':
-                    $this->RegisterVariableBoolean($key, 'Power', '~Switch', 40);
-                    $this->SetValue($key, ($value == 'on'));
+                    //$this->RegisterVariableBoolean($key, 'Power', '~Switch', 40);
+                    $this->SetValue('setState', ($value == 'on'));
                     break;
                 case 'calibrate':
                 case 'isCalibrate':
@@ -326,7 +369,15 @@ class SwitchBotDevice extends IPSModule
                     $this->RegisterVariableInteger($key, $this->Translate('timeOfSample'), '~UnixTimestamp', 100);
                     $this->SetValue($key, intval($value / 1000));
                     break;
-
+                case 'mode':
+                    $this->SetValue('setPurifierMode', $value);
+                    break;
+                case 'fanGear':
+                    $this->SetValue('fanGear',$value);
+                    break;
+                case 'childLock':
+                    $this->SetValue('setChildLock', ($value == '1'));
+                    break;
                 case 'hubDeviceId':
                 case 'deviceId':
                 case 'deviceMac':

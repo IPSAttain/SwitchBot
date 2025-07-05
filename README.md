@@ -16,15 +16,16 @@
 ### 1. Funktionsumfang
 
 
-### Das Modul unterstützt aktuell (02.10.2023) folgende Geräte.
+### Das Modul unterstützt aktuell (01.07.2025) folgende Geräte.
 * SwitchBot Bot (Cloud Unterstützung muss aktiviert sein)
 * Curtain
-* Lock
+* Lock /Smart Lock Ultra
 * Plug
 * Strip Light
 * Ceiling Light / Ceiling Light Pro
 * Color Bulb
 * Blind Tilt
+* Air Purifier
 
 ### IR Fernbedienung 
 * Light
@@ -92,3 +93,5 @@ Folgende Module beinhaltet das Switchbot Repository:
 Schenkungen zur Unterstützung sind hier möglich:
 
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6CSLZLEKKGT8Q" target="_blank"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" border="0" /></a>
+
+Danke an da8ter für die Unterstützung.
