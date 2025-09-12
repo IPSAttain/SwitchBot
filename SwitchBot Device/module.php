@@ -161,6 +161,9 @@ class SwitchBotDevice extends IPSModule
             case 'WoIOSensor':
             case 'Indoor Cam':
             case 'Pan/Tilt Cam':
+            case 'Hub 2':
+            case 'Hub 3':
+            case 'Hub Mini':
                 $stateVariable = false;
                 break;
 
