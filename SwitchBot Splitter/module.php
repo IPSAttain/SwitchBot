@@ -147,9 +147,14 @@ class SwitchBotSplitter extends IPSModule
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $this->GetHeaders());
 
-        $data = array(
+        /*$data = array(
             'command' => $command,
             'parameter' => json_decode($parameter),
+            'commandType' => $commandType
+        );*/
+        $data = array(
+            'command' => $command,
+            'parameter' => $parameter,
             'commandType' => $commandType
         );
         $data = json_encode($data);
