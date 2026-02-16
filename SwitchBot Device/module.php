@@ -125,8 +125,8 @@ class SwitchBotDevice extends IPSModule
 
             case 'AI Art Frame':
                 $this->RegisterProfile('SwitchBot.setAIFrame', 'Repeat', '', '', 0, 1, 1, '', 1);
-                IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 0, $this->Translate('Next'), '', -1);
-                IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 1, $this->Translate('Previous'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.setAIFrame', 0, $this->Translate('Next'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.setAIFrame', 1, $this->Translate('Previous'), '', -1);
                 $this->RegisterVariableInteger('setAIFrame', $this->Translate('Playback'), 'SwitchBot.setAIFrame', 40);
                 $this->EnableAction('setAIFrame');
                 $this->RegisterProfile('SwitchBot.displayMode', 'Repeat', '', '', 0, 1, 1, '', 1);
