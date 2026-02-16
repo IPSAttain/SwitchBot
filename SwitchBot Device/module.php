@@ -128,7 +128,7 @@ class SwitchBotDevice extends IPSModule
                 $this->RegisterProfile('SwitchBot.setAIFrame', 'Repeat', '', '', 0, 1, 1, '', 1);
                 IPS_SetVariableProfileAssociation('SwitchBot.setAIFrame', 0, $this->Translate('Next'), '', -1);
                 IPS_SetVariableProfileAssociation('SwitchBot.setAIFrame', 1, $this->Translate('Previous'), '', -1);
-                $this->RegisterVariableInteger('setAIFrame', $this->Translate('Playback'), 'SwitchBot.setAIFrame', 40);
+                $this->RegisterVariableInteger('setAIFrame', $this->Translate('Switch Image'), 'SwitchBot.setAIFrame', 40);
                 $this->EnableAction('setAIFrame');
                 $this->RegisterProfile('SwitchBot.displayMode', 'Repeat', '', '', 0, 1, 1, '', 1);
                 IPS_SetVariableProfileAssociation('SwitchBot.displayMode', 0, $this->Translate('Static'), '', -1);
@@ -256,6 +256,7 @@ class SwitchBotDevice extends IPSModule
             case 'setPlayback':
                 $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
                 $data['command'] = $Playback[$value];
+                $data['parameter'] ='default';
                 break;
 
             case 'setAIFrame':
