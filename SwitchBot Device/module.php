@@ -122,6 +122,18 @@ class SwitchBotDevice extends IPSModule
                 $this->RegisterVariableInteger('setPlayback', $this->Translate('Playback'), 'SwitchBot.setPlayback', 35);
                 $this->EnableAction('setPlayback');
                 break;
+
+            case 'AI Art Frame':
+                $this->RegisterProfile('SwitchBot.setAIFrame', 'Repeat', '', '', 0, 1, 1, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 0, $this->Translate('Next'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.setPlayback', 1, $this->Translate('Previous'), '', -1);
+                $this->RegisterVariableInteger('setAIFrame', $this->Translate('Playback'), 'SwitchBot.setAIFrame', 40);
+                $this->EnableAction('setAIFrame');
+                $this->RegisterProfile('SwitchBot.displayMode', 'Repeat', '', '', 0, 1, 1, '', 1);
+                IPS_SetVariableProfileAssociation('SwitchBot.displayMode', 0, $this->Translate('Static'), '', -1);
+                IPS_SetVariableProfileAssociation('SwitchBot.displayMode', 1, $this->Translate('Slideshow'), '', -1);
+                break;
+            
             case 'Robot Vacuum Cleaner S1':
             case 'Robot Vacuum Cleaner S1 Plus':
                 $this->RegisterProfile('SwitchBot.setSuctionLevel', 'Intensity', '', '', 0, 3, 1, '', 1);
@@ -242,6 +254,11 @@ class SwitchBotDevice extends IPSModule
 
             case 'setPlayback':
                 $Playback = array('FastForward','Rewind','Next','Previous','Pause','Play','Stop');
+                $data['command'] = $Playback[$value];
+                break;
+
+            case 'setAIFrame':
+                $Playback = array('next','previous');
                 $data['command'] = $Playback[$value];
                 break;
 
@@ -380,6 +397,10 @@ class SwitchBotDevice extends IPSModule
                     break;
                 case 'childLock':
                     $this->SetValue('setChildLock', ($value == '1'));
+                    break;
+                case 'displayMode':
+                    $this->RegisterVariableInteger($key, $this->Translate('Mode'), 'SwitchBot.displayMode', 30);
+                    $this->SetValue($key, $value);
                     break;
                 case 'hubDeviceId':
                 case 'deviceId':

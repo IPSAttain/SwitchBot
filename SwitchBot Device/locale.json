@@ -51,7 +51,9 @@
             "Fan Mode":"Lüfter Modus",
             "Pet Mode":"Haustier Modus",
             "Auto Mode":"Auto Modus",
-            "Sleep Mode":"Nacht Modus"
+            "Sleep Mode":"Nacht Modus",
+            "Static":"Statisch",
+            "Slideshow":"Dia Show"
         }
     }
 }
