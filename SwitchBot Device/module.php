@@ -50,8 +50,23 @@ class SwitchBotDevice extends IPSModule
             case 'Smart Lock Pro':
             case 'Smart Lock Ultra':
                 $stateVariable = false;
-                $this->RegisterVariableBoolean('lockState', $this->Translate('Lock'), '~Lock', 20);
-                $this->EnableAction('lockState');
+                $this->RegisterVariableBoolean('lockState', $this->Translate('State'), '~Lock', 20);
+                if ($this->ReadPropertyString('deviceType') == 'Smart Lock Ultra') {
+                    // Beim Ultra ist lockState nur Statusanzeige (nicht schaltbar), gesteuert wird über lockControl
+                    $this->RegisterVariableInteger('lockControl', $this->Translate('Control'), '', 21);
+                    $this->EnableAction('lockControl');
+                    IPS_SetVariableCustomPresentation($this->GetIDForIdent('lockControl'), [
+                        'PRESENTATION' => VARIABLE_PRESENTATION_ENUMERATION,
+                        'ICON'         => 'Lock',
+                        'OPTIONS'      => json_encode([
+                            ['Value' => 0, 'Caption' => $this->Translate('Open Door'), 'IconValue' => 'door-open', 'IconActive' => true, 'ColorActive' => false, 'Color' => -1],
+                            ['Value' => 1, 'Caption' => $this->Translate('Lock'),      'IconValue' => 'Lock',      'IconActive' => true, 'ColorActive' => false, 'Color' => -1],
+                            ['Value' => 2, 'Caption' => $this->Translate('Unlock'),    'IconValue' => 'LockOpen',  'IconActive' => true, 'ColorActive' => false, 'Color' => -1],
+                        ]),
+                    ]);
+                } else {
+                    $this->EnableAction('lockState');
+                }
                 break;
 
             case 'Curtain':
@@ -232,6 +247,11 @@ class SwitchBotDevice extends IPSModule
                 $data['command'] = ($value ? 'lock' : 'unlock');
                 break;
 
+            case 'lockControl':
+                $commands = [0 => 'unlock', 1 => 'lock', 2 => 'deadbolt'];
+                $data['command'] = $commands[$value] ?? 'lock';
+                break;
+
             case 'setPosition':
                 $data['parameter'] = ($this->ReadPropertyBoolean('deviceMode') ? '0,1,' . $value : '0,0,' . $value);
                 break;
@@ -380,8 +400,16 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue($key, ($value == 'open'));
                     break;
                 case 'lockState':
-                    $isLocked = in_array($value, ['locked', 'latchboltlocked']);
-                    $this->SetValue($key, $isLocked);
+                    if (@$this->GetIDForIdent('lockState')) {
+                        // Nur 'locked' (Riegel voll ausgefahren) = abgeschlossen; analog HA switchbot_cloud
+                        $isLocked = ($value == 'locked');
+                        $this->SetValue('lockState', $isLocked);
+                    }
+                    // lockControl (Ultra) wird bewusst NICHT aus Webhooks aktualisiert,
+                    // da die Cloud nach 'deadbolt' fehlerhaft 'LOCKED' meldet.
+                    if ($value == 'jammed') {
+                        $this->LogMessage($this->Translate('Lock is jammed'), KL_WARNING);
+                    }
                     break;
                 case 'isStuck':
                     $this->RegisterVariableBoolean($key, $this->Translate('Is Stuck'), '~Switch', 60);

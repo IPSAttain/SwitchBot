@@ -18,7 +18,7 @@
 
 - SwitchBot Bot (Cloud support must be enabled)
 - Curtain
-- Lock
+- Lock / Smart Lock Pro / Smart Lock Ultra (Ultra incl. deadbolt support via integer variable `lockControl`)
 - Plug
 - Strip Light
 - Ceiling Light / Ceiling Light Pro
@@ -33,7 +33,7 @@
 
 ### 2. Requirements
 
-- IP-Symcon from version 6.0
+- IP-Symcon from version 8.0
 - SwitchBot Hub / Hub 2
 - SwitchBot App (IOS or Android)
 - Registered SwitchBot account

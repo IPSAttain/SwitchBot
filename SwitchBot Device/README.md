@@ -17,7 +17,7 @@ Beschreibung des Moduls.
 
 ### 2. Voraussetzungen
 
-- IP-Symcon ab Version 6.0
+- IP-Symcon ab Version 8.0
 
 ### 3. Software-Installation
 
@@ -42,17 +42,14 @@ Die Statusvariablen/Kategorien werden automatisch angelegt. Das Löschen einzeln
 
 #### Statusvariablen
 
-Name   | Typ     | Beschreibung
------- | ------- | ------------
-       |         |
-       |         |
+Name          | Typ     | Beschreibung
+------------- | ------- | ------------
+lockState     | Boolean | Schloss-Status (true = verriegelt, false = entriegelt). Wird für **Lock**, **Smart Lock Pro** und **Smart Lock Ultra** angelegt. Bei Lock/Smart Lock Pro ist die Variable **schaltbar** (Boolean-Aktion `lock`/`unlock`). Beim **Smart Lock Ultra** dient sie als **reine Statusanzeige** – die Bedienung erfolgt dort über `lockControl`.
+lockControl   | Integer | **Nur** **Smart Lock Ultra**: 0 = Tür öffnen (Cloud-Command `unlock`, zieht die Falle → Tür geht auf), 1 = abschließen (`lock`, Riegel voll ausfahren), 2 = aufschließen (`deadbolt`, Riegel zurück — Falle hält die Tür zu). Die Zuordnung spiegelt das tatsächlich beobachtete Verhalten eines SwitchBot Lock Ultra mit Night-Latch und weicht bewusst von der HA-Dokumentation ab, die `deadbolt` als „Open Door" beschreibt. Die Variable wird **nicht** aus Webhooks aktualisiert, sondern behält den zuletzt gesendeten Befehl, weil die Cloud nach `unlock` irrtümlich einen `LOCKED`-Status sendet. Den Live-Status zeigt `lockState`. Nutzt eine **Custom Presentation** (Aufzählung, `VARIABLE_PRESENTATION_ENUMERATION`) via `IPS_SetVariableCustomPresentation`. Status `jammed` erzeugt lediglich eine Log-Warnung.
 
 #### Profile
 
-Name   | Typ
------- | -------
-       |
-       |
+Dieses Modul verwendet keine eigenen Variablenprofile – für `lockControl` kommt eine Custom Presentation vom Typ „Aufzählung" (ab Symcon 8.0) zum Einsatz.
 
 ### 6. WebFront
 
