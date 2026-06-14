@@ -171,6 +171,8 @@ class SwitchBotDevice extends IPSModule
             case 'Contact Sensor':
             case 'Meter':
             case 'Meter Plus':
+            case 'MeterPro':
+            case 'MeterPro(CO2)'
             case 'WoIOSensor':
             case 'Indoor Cam':
             case 'Pan/Tilt Cam':
@@ -336,6 +338,10 @@ class SwitchBotDevice extends IPSModule
                     break;
                 case 'humidity':
                     $this->RegisterVariableInteger($key, $this->Translate('Humidity'), '~Humidity', 20);
+                    $this->SetValue($key, $value);
+                    break;
+                case 'CO2':
+                    $this->RegisterVariableInteger($key, 'CO2', '~Occurrence.CO2', 25);
                     $this->SetValue($key, $value);
                     break;
                 case 'battery':
