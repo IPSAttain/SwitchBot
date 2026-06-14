@@ -172,7 +172,7 @@ class SwitchBotDevice extends IPSModule
             case 'Meter':
             case 'Meter Plus':
             case 'MeterPro':
-            case 'MeterPro(CO2)'
+            case 'MeterPro(CO2)':
             case 'WoIOSensor':
             case 'Indoor Cam':
             case 'Pan/Tilt Cam':
