@@ -52,7 +52,8 @@ class SwitchBotDevice extends IPSModule
                 $stateVariable = false;
                 $this->RegisterVariableBoolean('lockState', $this->Translate('State'), '~Lock', 20);
                 if ($this->ReadPropertyString('deviceType') == 'Smart Lock Ultra') {
-                    // Beim Ultra ist lockState nur Statusanzeige (nicht schaltbar), gesteuert wird über lockControl
+                    // Beim Ultra ist lockState nur Statusanzeige (nicht schaltbar), gesteuert wird über lockControl.
+                    // Darstellung (Enumeration) direkt bei der Registrierung gesetzt.
                     $this->RegisterVariableInteger('lockControl', $this->Translate('Control'), [
                         'PRESENTATION' => VARIABLE_PRESENTATION_ENUMERATION,
                         'ICON'         => 'Lock',
