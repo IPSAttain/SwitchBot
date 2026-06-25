@@ -15,7 +15,7 @@
             "State":"Status",
             "Toggle":"Umschalten",
             "Light":"Licht",
-            "Lock":"Schloss",
+            "Lock":"abschließen",
             "Curtain":"Vorhang",
             "Battery":"Batterie",
             "Playback":"Wiedergabe",
@@ -54,7 +54,11 @@
             "Sleep Mode":"Nacht Modus",
             "Static":"Statisch",
             "Slideshow":"Dia Show",
-            "Switch Image":"Bild wechseln"
+            "Switch Image":"Bild wechseln",
+            "Control":"Steuerung",
+            "Unlock":"aufschließen",
+            "Open Door":"Tür öffnen",
+            "Lock is jammed":"Schloss klemmt"
         }
     }
 }

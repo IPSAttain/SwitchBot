@@ -19,7 +19,7 @@
 ### Das Modul unterstützt aktuell (01.07.2025) folgende Geräte.
 * SwitchBot Bot (Cloud Unterstützung muss aktiviert sein)
 * Curtain
-* Lock /Smart Lock Ultra
+* Lock / Smart Lock Pro / Smart Lock Ultra (Ultra inkl. Deadbolt-Funktion über Integer-Variable `lockControl`)
 * Plug
 * Strip Light
 * Ceiling Light / Ceiling Light Pro
@@ -34,7 +34,7 @@
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 6.0
+* IP-Symcon ab Version 8.0
 * SwitchBot Hub/Hub 2
 * SwitchBot App (IOS oder Android) 
 * Registrierter SwitchBot Account
