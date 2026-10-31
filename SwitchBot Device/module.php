@@ -229,9 +229,13 @@ class SwitchBotDevice extends IPSModule
         $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command', 'command' => $Ident);
         switch ($Ident) {
             case 'switch1Status':
+                $data['command'] = ($value ? 'turnOn' : 'turnOff');
+                $data['parameter'] = '1';
+                break;
+                
             case 'switch2Status':
                 $data['command'] = ($value ? 'turnOn' : 'turnOff');
-                $data['parameter'] = ($Ident == 'switch1Status' ? 'switch1' : 'switch2');
+                $data['parameter'] = '2';
                 break;
             
             case 'setState':
