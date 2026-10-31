@@ -42,6 +42,9 @@ class SwitchBotDevice extends IPSModule
                 break;
 
             case 'Plug':
+            case 'Plug Mini (US)':
+            case 'Plug Mini (JP)':
+            case 'Plug Mini (EU)':
                 $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
                 $this->EnableAction('toggle');
                 break;
@@ -389,8 +392,15 @@ class SwitchBotDevice extends IPSModule
                     }
                     break;
                 case 'power':
-                    //$this->RegisterVariableBoolean($key, 'Power', '~Switch', 40);
-                    $this->SetValue('setState', ($value == 'on'));
+                    if (is_numeric($value)) { // e.g.Plug Mini (EU)
+                        $this->RegisterVariableFloat($key, $key, '~Watt', 50);
+                        $this->SetValue($key, $value);
+                    } else { // e.g. Air Purifier
+                        $this->SetValue('setState', ($value == 'on'));
+                    }
+                    break;
+                case 'switchStatus':
+                    $this->SetValue('setState', ($value == '1'));
                     break;
                 case 'calibrate':
                 case 'isCalibrate':
@@ -438,6 +448,19 @@ class SwitchBotDevice extends IPSModule
                     $this->RegisterVariableInteger($key, $this->Translate('Mode'), 'SwitchBot.displayMode', 30);
                     $this->SetValue($key, $value);
                     break;
+                case 'voltage':
+                    $this->RegisterVariableFloat($key, $key, '~Volt.230', 30);
+                    $this->SetValue($key, $value);
+                    break;
+                case 'electricCurrent':
+                    $this->RegisterVariableFloat($key, $key, '~Ampere', 40);
+                    $this->SetValue($key, $value/1000);
+                    break;
+                case 'online':
+                case 'overTemperature':
+                case 'overload':
+                    $this->RegisterVariableBoolean($key, $key, '~Switch', 50);
+                    $this->SetValue($key, ($value == 'true'));
                 case 'hubDeviceId':
                 case 'deviceId':
                 case 'deviceMac':
