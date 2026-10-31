@@ -26,6 +26,8 @@
 * Color Bulb
 * Blind Tilt
 * Air Purifier
+* Relay Switch
+* Plug Mini
 
 ### IR Fernbedienung 
 * Light

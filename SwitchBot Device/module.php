@@ -41,6 +41,14 @@ class SwitchBotDevice extends IPSModule
                 $this->RegisterVariableInteger('battery', $this->Translate('Battery'), '~Battery.100', 30);
                 break;
 
+            case 'Relay Switch 2PM':
+                $stateVariable = false;
+                $this->RegisterVariableBoolean('switch1Status', $this->Translate('Switch 1'), '~Switch', 20);
+                $this->EnableAction('switch1Status');
+                $this->RegisterVariableBoolean('switch2Status', $this->Translate('Switch 2'), '~Switch', 21);
+                $this->EnableAction('switch2Status');
+                break;
+
             case 'Plug':
             case 'Plug Mini (US)':
             case 'Plug Mini (JP)':
@@ -220,6 +228,12 @@ class SwitchBotDevice extends IPSModule
     {
         $data = array('deviceID' => $this->ReadPropertyString('deviceID'), 'parameter' => 'default', 'commandType' => 'command', 'command' => $Ident);
         switch ($Ident) {
+            case 'switch1Status':
+            case 'switch2Status':
+                $data['command'] = ($value ? 'turnOn' : 'turnOff');
+                $data['parameter'] = ($Ident == 'switch1Status' ? 'switch1' : 'switch2');
+                break;
+            
             case 'setState':
             case 'setCurtain':
             case 'setPower':
@@ -392,6 +406,8 @@ class SwitchBotDevice extends IPSModule
                     }
                     break;
                 case 'power':
+                case 'switch1Power':
+                case 'switch2Power':
                     if (is_numeric($value)) { // e.g.Plug Mini (EU)
                         $this->RegisterVariableFloat($key, $key, '~Watt', 50);
                         $this->SetValue($key, $value);
@@ -400,6 +416,8 @@ class SwitchBotDevice extends IPSModule
                     }
                     break;
                 case 'switchStatus':
+                case 'switch1Status':
+                case 'switch2Status':
                     $this->SetValue('setState', ($value == '1'));
                     break;
                 case 'calibrate':
@@ -449,10 +467,14 @@ class SwitchBotDevice extends IPSModule
                     $this->SetValue($key, $value);
                     break;
                 case 'voltage':
+                case 'switch1Voltage':
+                case 'switch2Voltage':
                     $this->RegisterVariableFloat($key, $key, '~Volt.230', 30);
                     $this->SetValue($key, $value);
                     break;
                 case 'electricCurrent':
+                case 'switch1ElectricCurrent':
+                case 'switch2ElectricCurrent':
                     $this->RegisterVariableFloat($key, $key, '~Ampere', 40);
                     $this->SetValue($key, $value/1000);
                     break;
