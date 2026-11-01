@@ -53,6 +53,8 @@ class SwitchBotDevice extends IPSModule
             case 'Plug Mini (US)':
             case 'Plug Mini (JP)':
             case 'Plug Mini (EU)':
+            case 'Relay Switch 1PM':
+            case 'Relay Switch 1':
                 $this->RegisterVariableInteger('toggle', $this->Translate('Toggle'), 'SwitchBot.toggle', 32);
                 $this->EnableAction('toggle');
                 break;
