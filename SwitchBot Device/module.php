@@ -420,9 +420,11 @@ class SwitchBotDevice extends IPSModule
                     }
                     break;
                 case 'switchStatus':
+                    $this->SetValue('setState', ($value == '1'));
+                    break;
                 case 'switch1Status':
                 case 'switch2Status':
-                    $this->SetValue('setState', ($value == '1'));
+                    $this->SetValue($key, ($value == '1'));
                     break;
                 case 'calibrate':
                 case 'isCalibrate':
